@@ -32,7 +32,7 @@ const AboutPage = () => {
               <div className={styles.memberContainer}>
                 <div className={styles.profileFrame}>
                   <img
-                    src="./assets/images/Kalo.jpeg"
+                    src="./assets/images/kalo.png"
                     alt="PH Ramaikalo"
                     className={styles.profileImage}
                   />
@@ -48,12 +48,18 @@ const AboutPage = () => {
                   <p className={`${styles.memberName} subTitle3`}>Co Founder</p>
                   <p>
                     A Postgraduate from Tata Institute of Social Sciences with 7
-                    years of experience in the development sector. Work
-                    experience spans across notable organizations including
-                    NRLM, Tata Trusts, SwitchON Foundation, Spectra Foundation,
-                    and Realms of Nature-Based Actions. An enthusiastic
-                    entrepreneur, passionate about contributing to societal
-                    growth through innovative and sustainable solutions.
+                    years of experience in the development sector. His work
+                    spans across notable organizations including NRLM, Tata
+                    Trusts, SwitchON Foundation, Spectra Foundation, and Realms
+                    of Nature-Based Actions. He has collaborated with government
+                    ministries such as RD&PR, MoW&CD, and MoA&FW on policy
+                    development and project implementation. Having worked across
+                    India in regions such as Rajasthan, Delhi, Kolkata,
+                    Meghalaya, Nagaland, Manipur, and Hyderabad, He has gained a
+                    deep understanding of the country&apos;s diverse cultures. An
+                    enthusiastic entrepreneur, he is passionate about
+                    contributing to societal growth through innovative and
+                    sustainable solutions.
                   </p>
                 </div>
               </div>
@@ -63,7 +69,7 @@ const AboutPage = () => {
               <div className={styles.memberContainer}>
                 <div className={styles.profileFrame}>
                   <img
-                    src="./assets/images/ashuli.jpeg"
+                    src="./assets/images/ashuli.png"
                     alt="Ashuli Phimu"
                     className={styles.profileImage}
                   />
@@ -91,9 +97,9 @@ const AboutPage = () => {
                     He graduated with a Bachelor of Commerce degree from Gauhati
                     University. Following that, he worked as a contractor at
                     HPCL in Visakhapatnam for a year before co-founding
-                    FinerBlue as a freelancer. As a marketing professional, he
-                    has been worked with some of the leading companies in the
-                    industry, including Google, Meta, and Dentsu, since 2018.
+                    FinerBlue as a freelancer. Since 2018, he has worked as a
+                    marketing professional with some of the world&apos;s leading
+                    companies, including Google, Meta, and Dentsu.
                   </p>
                   <p>
                     Throughout his career, Ashuli has demonstrated a strong
@@ -152,7 +158,7 @@ const AboutPage = () => {
               <div className={styles.memberContainer}>
                 <div className={styles.profileFrame}>
                   <img
-                    src="./assets/images/profile-image.png"
+                    src="./assets/images/alexander.png"
                     alt="Alexander"
                     className={styles.profileImage}
                   />
@@ -163,10 +169,31 @@ const AboutPage = () => {
                   style={{ textAlign: "justify" }}
                 >
                   <h3 className={`${styles.memberName} subTitle2`}>
-                    Alexander
+                    Alexander Ngiimei
                   </h3>
                   <p className={`${styles.memberName} subTitle3`}>Investor</p>
-                  <p>Profile Details</p>
+                  <p>
+                    Graduated from Rajagiri Business School with Marketing and
+                    Finance. Since then, hehas worked in the insurance industry,
+                    spending 3.4 years at ICICI Prudential Life Insurance before
+                    moving to Bharti AXA Life Insurance for another 2 years.
+                  </p>
+                  <p>
+                    He is currently working with Bajaj Allianz Life Insurance
+                    Co. Ltd. as the Regional Manager, overseeing the Delhi NCR
+                    region and heading corporate business related to Employee
+                    Benefits Schemes in Uttarakhand.
+                  </p>
+                  <p>
+                    Additionally, he is responsible for developing corporate
+                    business in Nagaland for the time being through his current
+                    organization. He has a strong mindset for building and
+                    supporting small businesses and is an investor in Zewa
+                    Studio, based in Delhi, which focuses on women&apos;s
+                    clothing, accessories, and candles. He also possesses a
+                    solid understanding of the stock markets.
+                  </p>
+                  <p>And also a fitness enthusiast since 2009. ;)</p>
                 </div>
               </div>
             </div>
