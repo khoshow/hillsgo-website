@@ -11,7 +11,7 @@ export default function Home() {
         <title>HillsGo || Home </title>
         <meta
           name="description"
-          content="A beautiful landing page built with Next.js"
+          content="HillsGo aims to offer a versatile solution for various delivery needs in the region's growing towns by leveraging technology, real-time tracking, and a customer-centric approach."
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/logo.png" />
