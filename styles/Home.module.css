@@ -18,14 +18,14 @@
 }
 
 .navLinks li a {
-  color: #fff;
+  color: black;
   text-decoration: none;
   font-size: 16px;
   font-weight: bold;
 }
 
 .navLinks li a:hover {
-  color: #f39c12;
+  color: rgb(134, 134, 134);
 }
 
 /* Hero Section */
