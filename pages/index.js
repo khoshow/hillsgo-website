@@ -14,7 +14,7 @@ export default function Home() {
           content="A beautiful landing page built with Next.js"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/logo.png" />
       </Head>
 
       <Header />
@@ -26,6 +26,7 @@ export default function Home() {
               color: "black",
               fontSize: "1.2rem",
               marginBottom: "1.5rem",
+              textAlign: "center",
             }}
           >
             App based delivery service in Senapati. Coming Soon...
@@ -37,7 +38,7 @@ export default function Home() {
 
           <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
             <h2 style={{ fontSize: "2rem", fontWeight: "bold" }}>HillsGo</h2>
-            <p style={{ fontSize: "1rem", color: "#555", }}>
+            <p style={{ fontSize: "1rem", color: "#555" }}>
               We bring you a little joy
             </p>
           </div>

@@ -9,12 +9,9 @@ export default function Home() {
     <>
       <Head>
         <title>HillsGo || Contact </title>
-        <meta
-          name="description"
-          content="HillsGo || Contact Page"
-        />
+        <meta name="description" content="HillsGo || Contact Page" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/logo.png" />
       </Head>
 
       <Header />
@@ -34,8 +31,6 @@ export default function Home() {
           {/* <div style={{ width: 200, height: 200, marginBottom: "1.5rem" }}>
             <Lottie animationData={run_scooty} loop={true} />
           </div> */}
-
-         
         </section>
       </main>
     </>
