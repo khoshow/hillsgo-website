@@ -19,7 +19,7 @@ const AboutPage = () => {
             commitment to the community. By providing a platform for local
             businesses to thrive and actively participating in community-driven
             events, HillsGo strives to be more than just a delivery service—it
-            aims to be an essential part of Senapatis growth. With plans to
+            aims to be an essential part of Senapati&apos;s growth. With plans to
             expand to nearby towns, HillsGo Delivery is poised to bring
             convenience, flavor, and joy to the region. Coming soon...
           </p>
