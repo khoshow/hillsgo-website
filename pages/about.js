@@ -175,7 +175,7 @@ const AboutPage = () => {
                   <p className={`${styles.memberName} subTitle3`}>Investor</p>
                   <p>
                     Graduated from Rajagiri Business School with Marketing and
-                    Finance. Since then, hehas worked in the insurance industry,
+                    Finance. Since then, he has worked in the insurance industry,
                     spending 3.4 years at ICICI Prudential Life Insurance before
                     moving to Bharti AXA Life Insurance for another 2 years.
                   </p>
