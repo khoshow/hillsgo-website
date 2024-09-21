@@ -135,10 +135,9 @@ const AboutPage = () => {
                     primarily on U.S. clients. He has developed various
                     solutions, ranging from websites to web applications and
                     inventory management systems, catering to both local and
-                    international clients. To his name, he has self published a
-                    novel titled, &quot;In search of a home.&quot; From a young
-                    age, he has been driven by a desire to bring positive change
-                    to the region.
+                    international clients. He wrote a novel titled, &quot;In
+                    search of a home.&quot; From a young age, he has been driven
+                    by a desire to bring positive change to the region.
                   </p>
                   <p>
                     One quotes that keeps him grounded: &quot;If I have seen
