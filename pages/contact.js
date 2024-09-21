@@ -8,10 +8,10 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>HillsGo || Home </title>
+        <title>HillsGo || Contact </title>
         <meta
           name="description"
-          content="A beautiful landing page built with Next.js"
+          content="HillsGo || Contact Page"
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
@@ -28,25 +28,14 @@ export default function Home() {
               marginBottom: "1.5rem",
             }}
           >
-            App based delivery service in Senapati. Coming Soon...
+            contact@hillsgo.com
           </p>
 
-          <div style={{ width: 200, height: 200, marginBottom: "1.5rem" }}>
+          {/* <div style={{ width: 200, height: 200, marginBottom: "1.5rem" }}>
             <Lottie animationData={run_scooty} loop={true} />
-          </div>
+          </div> */}
 
-          <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-            <h2 style={{ fontSize: "2rem", fontWeight: "bold" }}>HillsGo</h2>
-            <p style={{ fontSize: "1rem", color: "#555", }}>
-              We bring you a little joy
-            </p>
-          </div>
-
-          <div style={{ textAlign: "center" }}>
-            <p style={{ fontSize: "1rem", color: "#777" }}>
-              contact@hillsgo.com
-            </p>
-          </div>
+         
         </section>
       </main>
     </>

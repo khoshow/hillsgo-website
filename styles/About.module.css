@@ -1,0 +1,86 @@
+.aboutPage {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.hero {
+  margin: 0 auto 3rem auto;
+  margin-bottom: 3rem;
+  width: 700px;
+  max-width: 80vw;
+}
+
+.title {
+  font-size: 1.5rem;
+  color: #555;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.description {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 3rem;
+}
+
+.team {
+  padding: 2rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.teamTitle {
+  font-size: 1.5rem;
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+.teamGrid {
+  display: grid;
+  /* grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); */
+  gap: 2rem;
+
+  justify-content: center; /* Center the item horizontally */
+  align-items: center;
+}
+
+.teamMember {
+  width: 700px;
+  max-width: 80vw;
+}
+.memberContainer {
+  display: flex;
+  align-items: flex-start; /* Align items to the top */
+  gap: 2rem; /* Space between columns */
+  padding: 2rem 0;
+}
+
+.profileFrame {
+  flex: 1; /* Make the image column responsive */
+  max-width: 150px; /* Optional, adjust to your needs */
+}
+
+.profileImage {
+  width: 150px;
+  height: 150px;
+  border-radius: 30px; /* Optional, for rounded images */
+  object-fit: cover;
+}
+
+.memberDetails {
+  flex: 2; /* Take more space for the description */
+  text-align: justify;
+}
+
+@media (max-width: 768px) {
+  .memberContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .profileFrame {
+    max-width: 100%;
+  }
+}
