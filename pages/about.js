@@ -47,16 +47,17 @@ const AboutPage = () => {
                   </h3>
                   <p className={`${styles.memberName} subTitle3`}>Co Founder</p>
                   <p>
-                    A Postgraduate from Tata Institute of Social Sciences with 7
-                    years of experience in the development sector. His work
-                    spans across notable organizations including NRLM, Tata
-                    Trusts, SwitchON Foundation, Spectra Foundation, and Realms
-                    of Nature-Based Actions. He has collaborated with government
-                    ministries such as RD&PR, MoW&CD, and MoA&FW on policy
-                    development and project implementation. Having worked across
-                    India in regions such as Rajasthan, Delhi, Kolkata,
-                    Meghalaya, Nagaland, Manipur, and Hyderabad, He has gained a
-                    deep understanding of the country&apos;s diverse cultures. An
+                    A postgraduate from the Tata Institute of Social Sciences in
+                    Rural Development & Governance, he has 7 years of experience
+                    in the development sector, working with notable
+                    organizations such as NRLM, Tata Trusts, SwitchON
+                    Foundation, Spectra Foundation, and Realms of Nature-Based
+                    Actions. He has collaborated with government ministries such
+                    as RD&PR, MoW&CD, and MoA&FW on policy development and
+                    project implementation. Having worked across India in
+                    regions such as Rajasthan, Delhi, Kolkata, Meghalaya,
+                    Nagaland, Manipur, and Hyderabad, He has gained a deep
+                    understanding of the country&apos;s diverse cultures. An
                     enthusiastic entrepreneur, he is passionate about
                     contributing to societal growth through innovative and
                     sustainable solutions.
@@ -97,8 +98,8 @@ const AboutPage = () => {
                     He graduated with a Bachelor of Commerce degree from Gauhati
                     University. Following that, he worked as a contractor at
                     HPCL in Visakhapatnam for a year before co-founding
-                    FinerBlue as a freelancer. Since 2018, he has worked as a
-                    marketing professional with some of the world&apos;s leading
+                    FinerBlue. Since 2018, he has worked as a marketing
+                    professional with some of the world&apos;s leading
                     companies, including Google, Meta, and Dentsu.
                   </p>
                   <p>
