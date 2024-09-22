@@ -52,16 +52,17 @@ const AboutPage = () => {
                     A postgraduate from the Tata Institute of Social Sciences in
                     Rural Development & Governance, he has 7 years of experience
                     in the development sector, working with notable
-                    organizations, namely NRLM, Tata Trusts, SwitchON Foundation,
-                    Spectra Foundation, and Realms of Nature-Based Actions. He
-                    has collaborated with government ministries such as RD&PR,
-                    MoW&CD, and MoA&FW on policy development and project
-                    implementation. Having worked across India in Rajasthan,
-                    Delhi, Kolkata, Meghalaya, Nagaland, Manipur, and Hyderabad,
-                    He has gained a deep understanding of the country&apos;s
-                    diverse cultures. An enthusiastic entrepreneur, he is
-                    passionate about contributing to societal growth through
-                    innovative and sustainable solutions.
+                    organizations, namely NRLM, Tata Trusts, SwitchON
+                    Foundation, Spectra Foundation, and Realms of Nature-Based
+                    Actions. He has collaborated with government ministries such
+                    as RD&PR, MoW&CD, and MoA&FW on policy development and
+                    project implementation. Having worked across India in
+                    Rajasthan, Delhi, Kolkata, Meghalaya, Nagaland, Manipur, and
+                    Hyderabad, he has gained a deep understanding of the
+                    country&apos;s diverse cultures. An enthusiastic
+                    entrepreneur, he is passionate about contributing to
+                    societal growth through innovative and sustainable
+                    solutions.
                   </p>
                 </div>
               </div>
@@ -149,10 +150,7 @@ const AboutPage = () => {
                     search of a home.&quot; From a young age, he has been driven
                     by a desire to bring positive change to the region.
                   </p>
-                  <p>
-                    One quotes that keeps him grounded: &quot;If I have seen
-                    further, it is by standing on the shoulders of giants.&quot;
-                  </p>
+
                   <p>A leader he greatly admires is Dr. APJ Abdul Kalam.</p>
                 </div>
               </div>
