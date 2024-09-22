@@ -19,8 +19,8 @@ const AboutPage = () => {
             commitment to the community. By providing a platform for local
             businesses to thrive and actively participating in community-driven
             events, HillsGo strives to be more than just a delivery service—it
-            aims to be an essential part of Senapati&apos;s growth. With plans to
-            expand to nearby towns, HillsGo Delivery is poised to bring
+            aims to be an essential part of Senapati&apos;s growth. With plans
+            to expand to nearby towns, HillsGo Delivery is poised to bring
             convenience, flavor, and joy to the region. Coming soon...
           </p>
         </section>
@@ -45,22 +45,23 @@ const AboutPage = () => {
                   <h3 className={`${styles.memberName} subTitle2`}>
                     PH Ramaikalo
                   </h3>
-                  <p className={`${styles.memberName} subTitle3`}>Co Founder</p>
+                  <p className={`${styles.memberName} subTitle3`}>
+                    Co-Founder | Operations Lead
+                  </p>
                   <p>
                     A postgraduate from the Tata Institute of Social Sciences in
                     Rural Development & Governance, he has 7 years of experience
                     in the development sector, working with notable
-                    organizations such as NRLM, Tata Trusts, SwitchON
-                    Foundation, Spectra Foundation, and Realms of Nature-Based
-                    Actions. He has collaborated with government ministries such
-                    as RD&PR, MoW&CD, and MoA&FW on policy development and
-                    project implementation. Having worked across India in
-                    regions such as Rajasthan, Delhi, Kolkata, Meghalaya,
-                    Nagaland, Manipur, and Hyderabad, He has gained a deep
-                    understanding of the country&apos;s diverse cultures. An
-                    enthusiastic entrepreneur, he is passionate about
-                    contributing to societal growth through innovative and
-                    sustainable solutions.
+                    organizations, namely NRLM, Tata Trusts, SwitchON Foundation,
+                    Spectra Foundation, and Realms of Nature-Based Actions. He
+                    has collaborated with government ministries such as RD&PR,
+                    MoW&CD, and MoA&FW on policy development and project
+                    implementation. Having worked across India in Rajasthan,
+                    Delhi, Kolkata, Meghalaya, Nagaland, Manipur, and Hyderabad,
+                    He has gained a deep understanding of the country&apos;s
+                    diverse cultures. An enthusiastic entrepreneur, he is
+                    passionate about contributing to societal growth through
+                    innovative and sustainable solutions.
                   </p>
                 </div>
               </div>
@@ -84,7 +85,7 @@ const AboutPage = () => {
                     Ashuli Phimu
                   </h3>
                   <p className={`${styles.memberName} subTitle3`}>
-                    Co Founder || Digital Marketing Professional
+                    Co-Founder | Marketing Lead
                   </p>
                   <p>
                     Known for his cheerful and friendly demeanor, he is adored
@@ -133,7 +134,9 @@ const AboutPage = () => {
                   style={{ textAlign: "justify" }}
                 >
                   <h3 className={`${styles.memberName} subTitle2`}>Khoshow</h3>
-                  <p className={`${styles.memberName} subTitle3`}>Co Founder</p>
+                  <p className={`${styles.memberName} subTitle3`}>
+                    Co-Founder | Tech Lead
+                  </p>
                   <p>
                     Graduated in Software Engineering from Delhi College of
                     Engineering, he has been a wanderer ever since. He worked at
@@ -175,9 +178,10 @@ const AboutPage = () => {
                   <p className={`${styles.memberName} subTitle3`}>Investor</p>
                   <p>
                     Graduated from Rajagiri Business School with Marketing and
-                    Finance. Since then, he has worked in the insurance industry,
-                    spending 3.4 years at ICICI Prudential Life Insurance before
-                    moving to Bharti AXA Life Insurance for another 2 years.
+                    Finance. Since then, he has worked in the insurance
+                    industry, spending 3.4 years at ICICI Prudential Life
+                    Insurance before moving to Bharti AXA Life Insurance for
+                    another 2 years.
                   </p>
                   <p>
                     He is currently working with Bajaj Allianz Life Insurance
