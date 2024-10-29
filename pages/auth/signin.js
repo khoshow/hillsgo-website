@@ -1,9 +1,9 @@
 // pages/login.js
 import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
+// import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/router";
 import Header from "@/components/Header";
-import { auth, db } from "../../firebase/firebase";
+// import { auth, db } from "../../firebase/firebase";
 
 export default function Login() {
   const [email, setEmail] = useState("");

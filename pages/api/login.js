@@ -1,6 +1,6 @@
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../../firebase/firebase"; // Adjust path as necessary
-import { collection, query, where, getDocs } from "firebase/firestore";
+// import { signInWithEmailAndPassword } from "firebase/auth";
+// import { auth, db } from "../../firebase/firebase"; // Adjust path as necessary
+// import { collection, query, where, getDocs } from "firebase/firestore";
 import nookies from "nookies";
 
 export default async function handler(req, res) {

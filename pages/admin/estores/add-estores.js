@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { auth, db } from "../../../firebase/firebase"; // Adjust your import path
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+// import { auth, db } from "../../../firebase/firebase"; // Adjust your import path
+// import { createUserWithEmailAndPassword } from "firebase/auth";
+// import { collection, addDoc } from "firebase/firestore";
+// import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Header from "@/components/Header";
 // import withAuth from "@/lib/isAuth";
 

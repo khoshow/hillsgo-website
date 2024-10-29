@@ -1,7 +1,7 @@
 import "@/styles/globals.css"; // Ensure this path is correct
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { auth } from "../firebase/firebase";
+// import { auth } from "../firebase/firebase";
 import nookies from "nookies";
 import Header from "../components/Header"; // Import the Header component
 

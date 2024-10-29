@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Head from "next/head";
-import { signInWithEmailAndPassword } from "firebase/auth";
+// import { signInWithEmailAndPassword } from "firebase/auth";
 import Header from "../../components/Header";
 import { useRouter } from "next/router";
-import { auth, db } from "../../firebase/firebase";
-import { collection, query, where, getDocs } from "firebase/firestore";
+// import { auth, db } from "../../firebase/firebase";
+// import { collection, query, where, getDocs } from "firebase/firestore";
 import { setCookie } from "nookies";
 
 export default function Home() {
