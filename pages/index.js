@@ -1,10 +1,21 @@
+import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import Header from "../components/Header";
 import Lottie from "lottie-react";
-import run_scooty from "../public/assets/animations/run_scooty.json";
 
 export default function Home() {
+  const [animationData, setAnimationData] = useState(null);
+
+  useEffect(() => {
+    const fetchAnimationData = async () => {
+      const response = await fetch("/assets/animations/run_scooty.json");
+      const data = await response.json();
+      setAnimationData(data);
+    };
+
+    fetchAnimationData();
+  }, []);
   return (
     <>
       <Head>
@@ -33,7 +44,7 @@ export default function Home() {
           </p>
 
           <div style={{ width: 200, height: 200, marginBottom: "1.5rem" }}>
-            <Lottie animationData={run_scooty} loop={true} />
+            {/* <Lottie animationData={animationData} loop={true} /> */}
           </div>
 
           <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>

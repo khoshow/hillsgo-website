@@ -8,20 +8,18 @@ const AboutPage = () => {
       <Header />
       <div className={styles.aboutPage}>
         <section className={styles.hero}>
-          <h1 className={styles.title}>About HillsGo</h1>
+          <h1 className={styles.title}>About HillsGO</h1>
           <p className={styles.description} style={{ textAlign: "justify" }}>
-            HillsGo Delivery is an innovative food and commodity delivery
-            service based in Senapati, Manipur, designed to bring convenience
-            and variety to the local community. HillsGo aims to offer a
-            versatile solution for various delivery needs in the region&apos;s
-            growing towns by leveraging technology, real-time tracking, and a
-            customer-centric approach. What sets HillsGo apart is its deep
-            commitment to the community. By providing a platform for local
-            businesses to thrive and actively participating in community-driven
-            events, HillsGo strives to be more than just a delivery service—it
-            aims to be an essential part of Senapati&apos;s growth. With plans
-            to expand to nearby towns, HillsGo Delivery is poised to bring
-            convenience, flavor, and joy to the region. Coming soon...
+            HillsGO is a dynamic startup based in Senapati, Manipur, dedicated
+            to revolutionizing the local economy through innovative technology.
+            Our platform serves as a hub that connects skilled labor, local
+            businesses, and consumers, offering services like job matching,
+            e-commerce for local products, and reliable pick-and-drop services.
+            With a focus on empowering the community, HillsGO aims to generate
+            employment, support local entrepreneurs, and provide convenience to
+            residents. We are committed to driving economic growth, fostering
+            development, and building a sustainable ecosystem for the future of
+            Senapati and beyond. Coming soon...
           </p>
         </section>
 
@@ -59,10 +57,10 @@ const AboutPage = () => {
                     project implementation. Having worked across India in
                     Rajasthan, Delhi, Kolkata, Meghalaya, Nagaland, Manipur, and
                     Hyderabad, he has gained a deep understanding of the
-                    country&apos;s diverse cultures. An enthusiastic
-                    entrepreneur, he is passionate about contributing to
-                    societal growth through innovative and sustainable
-                    solutions.
+                    country&apos;s diverse cultures. He is the creative designer
+                    at FinerBlue. An enthusiastic entrepreneur, he is passionate
+                    about contributing to societal growth through innovative and
+                    sustainable solutions.
                   </p>
                 </div>
               </div>
@@ -86,7 +84,7 @@ const AboutPage = () => {
                     Ashuli Phimu
                   </h3>
                   <p className={`${styles.memberName} subTitle3`}>
-                    Co-Founder | Marketing Lead
+                    Co-Founder | Marketing and Finance Lead
                   </p>
                   <p>
                     Known for his cheerful and friendly demeanor, he is adored
