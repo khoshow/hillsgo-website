@@ -32,6 +32,12 @@ export default function Home() {
 
       <main className={styles.main}>
         <section className={styles.hero}>
+          <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+            <h2 style={{ fontSize: "2rem", fontWeight: "bold" }}>HillsGo</h2>
+            {/* <p style={{ fontSize: "1rem", color: "#555" }}>
+              We bring you a little joy
+            </p> */}
+          </div>
           <p
             style={{
               color: "black",
@@ -40,18 +46,13 @@ export default function Home() {
               textAlign: "center",
             }}
           >
-            App based delivery service in Senapati. Coming Soon...
+            To revolutionize the local economy through innovative technology.{" "}
+            <br></br>
+            Coming Soon...
           </p>
 
           <div style={{ width: 200, height: 200, marginBottom: "1.5rem" }}>
             {/* <Lottie animationData={animationData} loop={true} /> */}
-          </div>
-
-          <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-            <h2 style={{ fontSize: "2rem", fontWeight: "bold" }}>HillsGo</h2>
-            <p style={{ fontSize: "1rem", color: "#555" }}>
-              We bring you a little joy
-            </p>
           </div>
 
           <div style={{ textAlign: "center" }}>
