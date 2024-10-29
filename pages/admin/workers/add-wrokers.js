@@ -6,92 +6,92 @@ import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Header from "@/components/Header";
 
 const AdminAddEstore = () => {
-  const [formData, setFormData] = useState({
-    estoreName: "",
-    imageUrl: "",
-    ownerName: "",
-    ownerEmail: "",
-    ownerPassword: "",
-    estoreContact: "",
-    estoreAddress: "",
-    estoreCity: "",
-  });
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
+  // const [formData, setFormData] = useState({
+  //   estoreName: "",
+  //   imageUrl: "",
+  //   ownerName: "",
+  //   ownerEmail: "",
+  //   ownerPassword: "",
+  //   estoreContact: "",
+  //   estoreAddress: "",
+  //   estoreCity: "",
+  // });
+  // const [error, setError] = useState(null);
+  // const [success, setSuccess] = useState(null);
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  // const handleChange = (e) => {
+  //   setFormData({
+  //     ...formData,
+  //     [e.target.name]: e.target.value,
+  //   });
+  // };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(null);
-    setSuccess(null);
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setError(null);
+  //   setSuccess(null);
 
-    const {
-      estoreName,
-      imageFile,
-      ownerName,
-      ownerEmail,
-      ownerPassword,
-      estoreContact,
-      estoreAddress,
-      estoreCity,
-    } = formData;
+  //   const {
+  //     estoreName,
+  //     imageFile,
+  //     ownerName,
+  //     ownerEmail,
+  //     ownerPassword,
+  //     estoreContact,
+  //     estoreAddress,
+  //     estoreCity,
+  //   } = formData;
 
-    try {
-      const ownerCredential = await createUserWithEmailAndPassword(
-        auth,
-        ownerEmail,
-        ownerPassword
-      );
+  //   try {
+  //     const ownerCredential = await createUserWithEmailAndPassword(
+  //       auth,
+  //       ownerEmail,
+  //       ownerPassword
+  //     );
 
-      let imageUrl = "";
-      if (imageFile) {
-        // Upload image to Firebase Storage
-        const storage = getStorage();
-        const imageRef = ref(storage, `estores/${imageFile.name}`);
-        await uploadBytes(imageRef, imageFile);
-        imageUrl = await getDownloadURL(imageRef);
-      }
+  //     let imageUrl = "";
+  //     if (imageFile) {
+  //       // Upload image to Firebase Storage
+  //       const storage = getStorage();
+  //       const imageRef = ref(storage, `estores/${imageFile.name}`);
+  //       await uploadBytes(imageRef, imageFile);
+  //       imageUrl = await getDownloadURL(imageRef);
+  //     }
 
-      await addDoc(collection(db, "estores"), {
-        estoreName,
-        imageUrl,
-        ownerName,
-        ownerEmail,
-        ownerId: ownerCredential.user.uid,
-        estoreContact,
-        estoreAddress,
-        estoreCity,
-        imageUrl,
-        createdAt: new Date(),
-      });
+  //     await addDoc(collection(db, "estores"), {
+  //       estoreName,
+  //       imageUrl,
+  //       ownerName,
+  //       ownerEmail,
+  //       ownerId: ownerCredential.user.uid,
+  //       estoreContact,
+  //       estoreAddress,
+  //       estoreCity,
+  //       imageUrl,
+  //       createdAt: new Date(),
+  //     });
 
-      setSuccess("Estore successfully created and owner registered.");
-      setFormData({
-        estoreName: "",
-        imageUrl: "",
-        ownerName: "",
-        ownerEmail: "",
-        ownerPassword: "",
-        estoreContact: "",
-        estoreAddress: "",
-        estoreCity: "",
-        imageFile: null,
-      });
-    } catch (error) {
-      setError(error.message);
-    }
-  };
+  //     setSuccess("Estore successfully created and owner registered.");
+  //     setFormData({
+  //       estoreName: "",
+  //       imageUrl: "",
+  //       ownerName: "",
+  //       ownerEmail: "",
+  //       ownerPassword: "",
+  //       estoreContact: "",
+  //       estoreAddress: "",
+  //       estoreCity: "",
+  //       imageFile: null,
+  //     });
+  //   } catch (error) {
+  //     setError(error.message);
+  //   }
+  // };
 
   return (
     <>
       <Header />
-      <div style={styles.container}>
+      {/* <div style={styles.container}>
         <h1 style={styles.title}>Add New Estore</h1>
         <form onSubmit={handleSubmit} style={styles.form}>
           {error && <p style={styles.error}>{error}</p>}
@@ -115,7 +115,7 @@ const AdminAddEstore = () => {
             Add Estore
           </button>
         </form>
-      </div>
+      </div> */}
     </>
   );
 };
