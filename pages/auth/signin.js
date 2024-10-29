@@ -15,42 +15,45 @@ export default function Login() {
   const router = useRouter();
 
   const handleStoreOwnerLogin = async (e) => {
-    e.preventDefault();
-    setError(null);
+    console.log("hUI");
 
-    try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, role: roleOption }),
-      });
+    // e.preventDefault();
+    // setError(null);
 
-      const data = await response.json();
-      console.log("response", response);
+    // try {
+    //   const response = await fetch("/api/login", {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify({ email, password, role: roleOption }),
+    //   });
 
-      if (response.ok) {
-        // Redirect to the specified dashboard
-        console.log("push", data.redirectPath);
+    //   const data = await response.json();
+    //   console.log("response", response);
 
-        router.push(data.redirectPath);
-      } else {
-        console.error("Login error:", data.error);
-        // Handle login error (show a message, etc.)
-      }
-    } catch (error) {
-      setError(error.message);
-    }
+    //   if (response.ok) {
+    //     // Redirect to the specified dashboard
+    //     console.log("push", data.redirectPath);
+
+    //     router.push(data.redirectPath);
+    //   } else {
+    //     console.error("Login error:", data.error);
+    //     // Handle login error (show a message, etc.)
+    //   }
+    // } catch (error) {
+    //   setError(error.message);
+    // }
   };
 
   const handleSkilledWorkerLogin = async (e) => {
-    e.preventDefault();
-    setError(null);
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      router.push("/hire-skills/dashboard"); // Redirect after successful login
-    } catch (error) {
-      setError(error.message);
-    }
+    console.log("hUI");
+    // e.preventDefault();
+    // setError(null);
+    // try {
+    //   await signInWithEmailAndPassword(auth, email, password);
+    //   router.push("/hire-skills/dashboard"); // Redirect after successful login
+    // } catch (error) {
+    //   setError(error.message);
+    // }
   };
 
   const handleRoleChange = (role) => {

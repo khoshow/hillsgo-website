@@ -15,48 +15,39 @@ export default function Home() {
   const router = useRouter();
 
   const handleStoreOwnerLogin = async (e) => {
-    e.preventDefault();
-    setError(null);
-    if (email === "khoshow.developer@gmail.com") {
-      try {
-        // Authenticate the user
-        const userCredential = await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
-        const user = userCredential.user;
-        console.log("owner ", userCredential);
+    console.log("hUI");
+    // e.preventDefault();
+    // setError(null);
+    // if (email === "khoshow.developer@gmail.com") {
+    //   try {
+    //     // Authenticate the user
+    //     const userCredential = await signInWithEmailAndPassword(
+    //       auth,
+    //       email,
+    //       password
+    //     );
+    //     const user = userCredential.user;
+    //     console.log("owner ", userCredential);
 
-        // Check if the user exists in the 'estore' collection
-        const estoreRef = collection(db, "user"); // Reference the collection
-        const estoreQuery = query(estoreRef, where("user", "==", user.uid));
-        const querySnapshot = await getDocs(estoreQuery);
+    //     // Check if the user exists in the 'estore' collection
+    //     const estoreRef = collection(db, "user"); // Reference the collection
+    //     const estoreQuery = query(estoreRef, where("user", "==", user.uid));
+    //     const querySnapshot = await getDocs(estoreQuery);
 
-        if (!querySnapshot.empty) {
-          // Get the store owner details
-          const storeOwnerDetails = querySnapshot.docs[0].data();
+    //     if (!querySnapshot.empty) {
+    //       // Get the store owner details
 
-          // Set cookies with the store owner details
-          setCookie(null, "storeOwnerName", storeOwnerDetails.name, {
-            path: "/",
-          });
-          setCookie(null, "storeOwnerEmail", storeOwnerDetails.email, {
-            path: "/",
-          });
-          setCookie(null, "storeOwnerID", user.uid, { path: "/" });
-
-          // Redirect to the dashboard after successful login and cookie setting
-          router.push("/admin/dashboard");
-        } else {
-          throw new Error("You are not registered as a store owner.");
-        }
-      } catch (error) {
-        setError(error.message);
-      }
-    } else {
-      alert("Hi");
-    }
+    //       // Redirect to the dashboard after successful login and cookie setting
+    //       router.push("/admin/dashboard");
+    //     } else {
+    //       throw new Error("You are not registered as a store owner.");
+    //     }
+    //   } catch (error) {
+    //     setError(error.message);
+    //   }
+    // } else {
+    //   alert("Hi");
+    // }
   };
 
   return (
