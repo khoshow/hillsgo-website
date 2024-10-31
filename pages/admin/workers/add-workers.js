@@ -8,17 +8,16 @@ import Admin from "@/components/auth/Admin";
 import AdminLayout from "@/components/layout/AdminLayout";
 // import withAuth from "@/lib/isAuth";
 
-const AdminAddEstore = () => {
+const AdminAddWorker = () => {
   const [formData, setFormData] = useState({
-    estoreName: "",
+    workerName: "",
     imageUrl: "",
-    ownerName: "",
-    ownerEmail: "",
-    ownerPassword: "",
-    estoreContact: "",
-    estoreAddress: "",
-    estoreCity: "",
-    role: "estore",
+    workerEmail: "",
+    workerPassword: "",
+    workerContact: "",
+    workerAddress: "",
+    workerCity: "",
+    role: "worker",
   });
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -38,57 +37,54 @@ const AdminAddEstore = () => {
     setLoading(true);
 
     const {
-      estoreName,
+      workerName,
       imageFile,
-      ownerName,
-      ownerEmail,
-      ownerPassword,
-      estoreContact,
-      estoreAddress,
-      estoreCity,
+      workerEmail,
+      workerPassword,
+      workerContact,
+      workerAddress,
+      workerCity,
       role,
     } = formData;
 
     try {
-      const ownerCredential = await createUserWithEmailAndPassword(
+      const workerCredential = await createUserWithEmailAndPassword(
         auth,
-        ownerEmail,
-        ownerPassword
+        workerEmail,
+        workerPassword
       );
 
       let imageUrl = "";
       if (imageFile) {
         // Upload image to Firebase Storage
         const storage = getStorage();
-        const imageRef = ref(storage, `estores/${imageFile.name}`);
+        const imageRef = ref(storage, `workers/${imageFile.name}`);
         await uploadBytes(imageRef, imageFile);
         imageUrl = await getDownloadURL(imageRef);
       }
 
-      await addDoc(collection(db, "estores"), {
-        estoreName,
+      await addDoc(collection(db, "workers"), {
+        workerName,
         imageUrl,
-        ownerName,
-        ownerEmail,
-        ownerId: ownerCredential.user.uid,
-        estoreContact,
-        estoreAddress,
-        estoreCity,
+        workerEmail,
+        workerId: workerCredential.user.uid,
+        workerContact,
+        workerAddress,
+        workerCity,
         imageUrl,
         role,
         createdAt: new Date(),
       });
       setLoading(false);
-      setSuccess("Estore successfully created and owner registered.");
+      setSuccess("Worker successfully created and worker registered.");
       setFormData({
-        estoreName: "",
+        workerName: "",
         imageUrl: "",
-        ownerName: "",
-        ownerEmail: "",
-        ownerPassword: "",
-        estoreContact: "",
-        estoreAddress: "",
-        estoreCity: "",
+        workerEmail: "",
+        workerPassword: "",
+        workerContact: "",
+        workerAddress: "",
+        workerCity: "",
         role: "",
         imageFile: null,
       });
@@ -102,7 +98,7 @@ const AdminAddEstore = () => {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.title}>Add New Estore</h1>
+          <h1 style={styles.title}>Add New Worker</h1>
           <form onSubmit={handleSubmit} style={styles.form}>
             {error && <p style={styles.error}>{error}</p>}
             {success && <p style={styles.success}>{success}</p>}
@@ -122,7 +118,7 @@ const AdminAddEstore = () => {
             ))}
 
             <button type="submit" style={styles.button} disabled={loading}>
-              {loading ? "Submitting..." : " Add Estore"}
+              {loading ? "Submitting..." : " Add worker"}
             </button>
           </form>
         </div>
@@ -132,14 +128,14 @@ const AdminAddEstore = () => {
 };
 
 const formFields = [
-  { label: "Estore Name", name: "estoreName", type: "text" },
-  { label: "Estore Image", name: "imageFile", type: "file" },
-  { label: "Owner Name", name: "ownerName", type: "text" },
-  { label: "Owner Email", name: "ownerEmail", type: "email" },
-  { label: "Owner Password", name: "ownerPassword", type: "password" },
-  { label: "Estore Contact", name: "estoreContact", type: "text" },
-  { label: "Estore Address", name: "estoreAddress", type: "text" },
-  { label: "Estore City", name: "estoreCity", type: "text" },
+  { label: "Worker Name", name: "workerName", type: "text" },
+  { label: "Worker Image", name: "imageFile", type: "file" },
+
+  { label: "Worker Email", name: "workerEmail", type: "email" },
+  { label: "Worker Password", name: "workerPassword", type: "password" },
+  { label: "Worker Contact", name: "workerContact", type: "text" },
+  { label: "Worker Address", name: "workerAddress", type: "text" },
+  { label: "Worker City", name: "workerCity", type: "text" },
 ];
 // Styles
 const styles = {
@@ -203,4 +199,4 @@ const styles = {
 
 // Form fields configuration
 
-export default AdminAddEstore;
+export default AdminAddWorker;

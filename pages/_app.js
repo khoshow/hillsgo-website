@@ -4,8 +4,10 @@ import { useRouter } from "next/router";
 // import { auth } from "../firebase/firebase";
 import nookies from "nookies";
 import Header from "../components/Header"; // Import the Header component
+import { UserProvider } from "../contexts/UserContext";
+import Footer from "@/components/Footer";
 
-export default function App({ Component, pageProps }) {
+function MyApp({ Component, pageProps }) {
   // const router = useRouter();
   // const [loading, setLoading] = useState(true);
   // const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -34,8 +36,13 @@ export default function App({ Component, pageProps }) {
   // }
 
   return (
-    <>
-      <Component {...pageProps} />
-    </>
+    <div id="__next">
+      <UserProvider>
+        <Component {...pageProps} />
+        <Footer />
+      </UserProvider>
+    </div>
   );
 }
+
+export default MyApp;

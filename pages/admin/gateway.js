@@ -4,26 +4,45 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/router";
 import Header from "@/components/Header";
 import { auth, db } from "../../firebase/firebase";
+import { useUser } from "../../contexts/UserContext";
 
-const API = process.env.API_DOMAIN_SERVER;
+const API = process.env.NEXT_PUBLIC_API_DOMAIN_SERVER;
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const { setUser } = useUser();
   const [roleOption, setRoleOption] = useState("");
   const [roleDisplay, setRoleDisplay] = useState(true);
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
 
-  const handleRoleChange = (role) => {
-    console.log("Role selected:", role);
-    if (role === "storeOwner") {
-      router.push("/auth/store-owner-signin");
-    }
-    if (role === "skilledWorker") {
-      router.push("/auth/skilled-worker-signin");
+  const handleAdminLogin = async (e) => {
+    console.log("hUI");
+    e.preventDefault();
+    setError(null);
+    try {
+      if (email === "khoshow.developer@gmail.com") {
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        const idToken = await userCredential.user.getIdToken();
+
+        // Set the user in context
+        setUser({
+          email: userCredential.user.email,
+          token: idToken,
+        });
+        router.push("/admin/dashboard"); // Redirect after successful login
+      } else {
+        return alert("Hi user");
+      }
+    } catch (error) {
+      setError(error.message);
     }
   };
 
@@ -31,42 +50,34 @@ export default function Login() {
     <>
       <Header />
       <div style={styles.container}>
-        <div style={styles.headerContainer}>
-          <h1 style={styles.heading}>
-            {roleOption === "storeOwner"
-              ? "Store Owner Login"
-              : roleOption === "skilledWorker"
-              ? "Skilled Worker Login"
-              : "Login"}
-          </h1>
-
-          {roleDisplay && <p style={styles.prompt}>Please select your role:</p>}
-        </div>
-
-        <>
-          <div>
+        <h3>Admin</h3>
+        <form onSubmit={handleAdminLogin} style={styles.form}>
+          <div style={styles.inputGroup}>
+            <label>Email </label>
             <input
-              type="radio"
-              id="option1"
-              name="options"
-              value="storeOwner"
-              checked={roleOption === "storeOwner"}
-              onChange={() => handleRoleChange("storeOwner")}
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={styles.input}
+              required
             />
-            <label htmlFor="option1">Store Owner</label>
           </div>
-          <div>
+          <div style={styles.inputGroup}>
+            <label>Password</label>
             <input
-              type="radio"
-              id="option2"
-              name="options"
-              value="skilledWorker"
-              checked={roleOption === "skilledWorker"}
-              onChange={() => handleRoleChange("skilledWorker")}
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={styles.input}
+              required
             />
-            <label htmlFor="option2">Skilled Worker</label>
           </div>
-        </>
+          <button type="submit" style={styles.button}>
+            Login
+            {loading ? "Loading..." : ""}
+          </button>
+          {error && <p style={styles.error}>{error}</p>}
+        </form>
       </div>
     </>
   );
