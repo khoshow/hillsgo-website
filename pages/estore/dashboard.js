@@ -19,8 +19,8 @@ export default function EstoreDashboard() {
 
         <Header />
 
-        <main class={styles.main}>
-          <section class={styles.hero}>
+        <main className={styles.main}>
+          <section className={styles.hero}>
             <p
               style={{
                 color: "black",

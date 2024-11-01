@@ -20,7 +20,7 @@ const Footer = () => {
           </Link>
         </div>
         <nav>
-          <ul class="footerNavLinks">
+          <ul className="footerNavLinks">
             <li>
               <Link href="/">Home</Link>
             </li>
