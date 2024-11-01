@@ -18,13 +18,17 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+  const allowedEmails = [
+    "khoshow.developer@gmail.com",
+    "afinerblue@gmail.com",
+    "creativekalo1@gmail.com",
+  ];
 
   const handleAdminLogin = async (e) => {
-    console.log("hUI");
     e.preventDefault();
     setError(null);
     try {
-      if (email === "khoshow.developer@gmail.com") {
+      if (allowedEmails.includes(email)) {
         const userCredential = await signInWithEmailAndPassword(
           auth,
           email,
