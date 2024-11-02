@@ -1,12 +1,20 @@
 import { useState } from "react";
 import { auth, db } from "../../../firebase/firebase"; // Adjust your import path
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  doc,
+  setDoc,
+  getDocs,
+  getDoc,
+} from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Header from "@/components/Header";
 import Admin from "@/components/auth/Admin";
 import AdminLayout from "@/components/layout/AdminLayout";
 // import withAuth from "@/lib/isAuth";
+import { workerCategory } from "../../../data/worker";
 
 const AdminAddWorker = () => {
   const [formData, setFormData] = useState({
@@ -17,11 +25,14 @@ const AdminAddWorker = () => {
     workerContact: "",
     workerAddress: "",
     workerCity: "",
+    categories: [],
     role: "worker",
   });
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const workerCategories = workerCategory;
 
   const handleChange = (e) => {
     setFormData({
@@ -45,6 +56,7 @@ const AdminAddWorker = () => {
       workerAddress,
       workerCity,
       role,
+      categories,
     } = formData;
 
     try {
@@ -63,7 +75,7 @@ const AdminAddWorker = () => {
         imageUrl = await getDownloadURL(imageRef);
       }
 
-      await addDoc(collection(db, "workers"), {
+      const workerRef = await addDoc(collection(db, "workers"), {
         workerName,
         imageUrl,
         workerEmail,
@@ -72,9 +84,12 @@ const AdminAddWorker = () => {
         workerAddress,
         workerCity,
         imageUrl,
+        categories,
         role,
+
         createdAt: new Date(),
       });
+      await addWorkerToCategories(workerRef.id, formData, formData.categories);
       setLoading(false);
       setSuccess("Worker successfully created and worker registered.");
       setFormData({
@@ -86,11 +101,57 @@ const AdminAddWorker = () => {
         workerAddress: "",
         workerCity: "",
         role: "",
+        categories: [],
         imageFile: null,
       });
     } catch (error) {
       setError(error.message);
     }
+  };
+
+  const addWorkerToCategories = async (workerId, workerData, categories) => {
+    console.log("Adding worker to categories:", workerId);
+
+    try {
+      for (const category of categories) {
+        // Reference to the category document in workerCategories
+        const categoryRef = doc(db, "workerCategories", category);
+
+        // Check if the category document exists; create it if it doesn’t
+        const categoryDoc = await getDoc(categoryRef);
+        if (!categoryDoc.exists()) {
+          console.log(`Creating category document for: ${category}`);
+          await setDoc(categoryRef, { createdAt: new Date() });
+        }
+
+        // Reference to the specific worker document within the category's stores subcollection
+        const workerRef = doc(categoryRef, "worker", workerId);
+
+        // Check if the worker already exists in the category's stores subcollection
+        const workerDoc = await getDoc(workerRef);
+        if (!workerDoc.exists()) {
+          // Add the worker document if it doesn’t exist in this category
+          await setDoc(workerRef, workerData);
+          console.log(`Added worker ${workerId} to category: ${category}`);
+        } else {
+          console.log(
+            `Worker ${workerId} already exists in category: ${category}`
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Error adding worker to categories:", error);
+    }
+  };
+
+  const handleCategoryChange = (e) => {
+    const { value, checked } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      categories: checked
+        ? [...prevData.categories, value] // Add category ID if checked
+        : prevData.categories.filter((categoryId) => categoryId !== value), // Remove if unchecked
+    }));
   };
 
   return (
@@ -116,6 +177,28 @@ const AdminAddWorker = () => {
                 />
               </div>
             ))}
+            <h3> Category: </h3>
+            <div
+              style={{
+                ...styles.label,
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "10px",
+              }}
+            >
+              {workerCategories.map((category) => (
+                <label key={category.id} style={styles.checkboxLabel}>
+                  <input
+                    type="checkbox"
+                    value={category.name} // Use category ID as the value
+                    checked={formData.categories?.includes(category.name)}
+                    onChange={handleCategoryChange}
+                    style={styles.checkbox}
+                  />
+                  {category.name}
+                </label>
+              ))}
+            </div>
 
             <button type="submit" style={styles.button} disabled={loading}>
               {loading ? "Submitting..." : " Add worker"}
