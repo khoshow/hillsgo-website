@@ -5,19 +5,19 @@ export const category = [
   },
   {
     id: 2,
-    name: "Agricultural Products",
+    name: "Agricultural",
   },
   {
     id: 3,
-    name: "Textiles and Garments",
+    name: "Clothings",
   },
   {
     id: 4,
-    name: "Food Products",
+    name: "Foods",
   },
   {
     id: 5,
-    name: "Medicinal and Wellness Products",
+    name: "Wellness",
   },
   {
     id: 6,
@@ -25,14 +25,18 @@ export const category = [
   },
   {
     id: 7,
-    name: "Furniture and Home Decor",
+    name: "Furnitures",
   },
   {
     id: 8,
-    name: "Cultural and Ritual Items",
+    name: "Cultural",
   },
   {
     id: 9,
-    name: "Gift Items",
+    name: "Gifts",
+  },
+  {
+    id: 10,
+    name: "Home Decor",
   },
 ];

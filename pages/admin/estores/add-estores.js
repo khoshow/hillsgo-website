@@ -1,34 +1,30 @@
 import { useState } from "react";
 import { auth, db } from "../../../firebase/firebase"; // Adjust your import path
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import {
-  collection,
-  addDoc,
-  doc,
-  setDoc,
-  getDocs,
-  getDoc,
-} from "firebase/firestore";
+import { collection, addDoc, doc, setDoc, getDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Header from "@/components/Header";
 import Admin from "@/components/auth/Admin";
 import AdminLayout from "@/components/layout/AdminLayout";
-// import withAuth from "@/lib/isAuth";
 import { category } from "@/data/category";
 
 const AdminAddEstore = () => {
   const [formData, setFormData] = useState({
     estoreName: "",
-    imageUrl: "",
     ownerName: "",
     ownerEmail: "",
+
     ownerPassword: "",
     estoreContact: "",
     estoreAddress: "",
+    estoreLocation: "",
     estoreCity: "",
+    estoreDistrict: "",
+    estoreState: "",
     role: "estore",
     categories: [],
   });
+  const [imageFile, setImageFile] = useState(null); // Separate state for the image file
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -36,10 +32,18 @@ const AdminAddEstore = () => {
   const estoreCategories = category;
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file); // Set the image file state
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -50,12 +54,15 @@ const AdminAddEstore = () => {
 
     const {
       estoreName,
-      imageFile,
+
       ownerName,
       ownerEmail,
       ownerPassword,
       estoreContact,
       estoreAddress,
+      estoreLocation,
+      estoreDistrict,
+      estoreState,
       estoreCity,
       role,
       categories,
@@ -68,79 +75,86 @@ const AdminAddEstore = () => {
         ownerPassword
       );
 
-      let imageUrl = "";
+      let firebaseImageUrl;
       if (imageFile) {
         // Upload image to Firebase Storage
         const storage = getStorage();
-        const imageRef = ref(storage, `estores/${imageFile.name}`);
+        const uniqueFilename = `estores/${Date.now()}_${imageFile.name}`;
+        const imageRef = ref(storage, uniqueFilename);
+
+        // Upload image to Firebase Storage
         await uploadBytes(imageRef, imageFile);
-        imageUrl = await getDownloadURL(imageRef);
+        firebaseImageUrl = await getDownloadURL(imageRef);
+        setFormData((prevData) => ({
+          ...prevData,
+          imageUrl: firebaseImageUrl,
+        }));
       }
 
       const estoreRef = await addDoc(collection(db, "estores"), {
         estoreName,
-        imageUrl,
+        imageUrl: firebaseImageUrl,
         ownerName,
         ownerEmail,
         ownerId: ownerCredential.user.uid,
         estoreContact,
         estoreAddress,
+        estoreLocation,
+        estoreDistrict,
+        estoreState,
         estoreCity,
-        imageUrl,
         role,
         categories,
         createdAt: new Date(),
       });
-      await addEstoreToCategories(estoreRef.id, formData, formData.categories);
+
+      await addEstoreToCategories(
+        estoreRef.id,
+        {
+          ...formData,
+          imageUrl: firebaseImageUrl, // Ensure the updated imageUrl is included
+          ownerId: ownerCredential.user.uid,
+        },
+        formData.categories
+      );
       setLoading(false);
       setSuccess("Estore successfully created and owner registered.");
       alert("Estore successfully created and owner registered.");
+      // Reset form
       setFormData({
         estoreName: "",
-        imageUrl: "",
         ownerName: "",
         ownerEmail: "",
         ownerPassword: "",
         estoreContact: "",
         estoreAddress: "",
+        estoreLocation: "",
+        estoreDistrict: "",
         estoreCity: "",
-        role: "",
+        estoreState: "",
+        role: "estore",
         categories: [],
-        imageFile: null,
       });
+      setImageFile(null); // Reset the image file
     } catch (error) {
       setError(error.message);
+      setLoading(false);
     }
   };
 
   const addEstoreToCategories = async (estoreId, estoreData, categories) => {
-    console.log("Adding e-store to categories:", estoreId);
-
     try {
       for (const category of categories) {
-        // Reference to the category document in estoreCategories
         const categoryRef = doc(db, "estoreCategories", category);
-
-        // Check if the category document exists; create it if it doesn’t
         const categoryDoc = await getDoc(categoryRef);
         if (!categoryDoc.exists()) {
-          console.log(`Creating category document for: ${category}`);
           await setDoc(categoryRef, { createdAt: new Date() });
         }
 
-        // Reference to the specific e-store document within the category's stores subcollection
         const estoreRef = doc(categoryRef, "stores", estoreId);
-
-        // Check if the e-store already exists in the category's stores subcollection
         const estoreDoc = await getDoc(estoreRef);
         if (!estoreDoc.exists()) {
-          // Add the e-store document if it doesn’t exist in this category
           await setDoc(estoreRef, estoreData);
-          console.log(`Added e-store ${estoreId} to category: ${category}`);
-        } else {
-          console.log(
-            `E-store ${estoreId} already exists in category: ${category}`
-          );
         }
       }
     } catch (error) {
@@ -153,8 +167,8 @@ const AdminAddEstore = () => {
     setFormData((prevData) => ({
       ...prevData,
       categories: checked
-        ? [...prevData.categories, value] // Add category ID if checked
-        : prevData.categories.filter((categoryId) => categoryId !== value), // Remove if unchecked
+        ? [...prevData.categories, value]
+        : prevData.categories.filter((categoryId) => categoryId !== value),
     }));
   };
 
@@ -181,6 +195,18 @@ const AdminAddEstore = () => {
                 />
               </div>
             ))}
+
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Estore Image:</label>
+              <input
+                type="file"
+                name="imageFile"
+                onChange={handleImageChange}
+                accept="image/*" // Optional: restrict to image files
+                required
+              />
+            </div>
+
             <h3> Category: </h3>
             <div
               style={{
@@ -194,8 +220,8 @@ const AdminAddEstore = () => {
                 <label key={category.id} style={styles.checkboxLabel}>
                   <input
                     type="checkbox"
-                    value={category.name} // Use category ID as the value
-                    checked={formData.categories?.includes(category.name)}
+                    value={category.name}
+                    checked={formData.categories.includes(category.name)}
                     onChange={handleCategoryChange}
                     style={styles.checkbox}
                   />
@@ -205,7 +231,7 @@ const AdminAddEstore = () => {
             </div>
 
             <button type="submit" style={styles.button} disabled={loading}>
-              {loading ? "Submitting..." : " Add Estore"}
+              {loading ? "Submitting..." : "Add Estore"}
             </button>
           </form>
         </div>
@@ -216,14 +242,17 @@ const AdminAddEstore = () => {
 
 const formFields = [
   { label: "Estore Name", name: "estoreName", type: "text" },
-  { label: "Estore Image", name: "imageFile", type: "file" },
   { label: "Owner Name", name: "ownerName", type: "text" },
   { label: "Owner Email", name: "ownerEmail", type: "email" },
   { label: "Owner Password", name: "ownerPassword", type: "password" },
   { label: "Estore Contact", name: "estoreContact", type: "text" },
   { label: "Estore Address", name: "estoreAddress", type: "text" },
+  { label: "Estore Village/Town", name: "estoreLocation", type: "text" },
+  { label: "Estore District", name: "estoreDistrict", type: "text" },
+  { label: "Estore State", name: "estoreState", type: "text" },
   { label: "Estore City", name: "estoreCity", type: "text" },
 ];
+
 // Styles
 const styles = {
   container: {

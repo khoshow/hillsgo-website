@@ -1,33 +1,28 @@
 import { useState } from "react";
 import { auth, db } from "../../../firebase/firebase"; // Adjust your import path
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import {
-  collection,
-  addDoc,
-  doc,
-  setDoc,
-  getDocs,
-  getDoc,
-} from "firebase/firestore";
+import { collection, addDoc, doc, setDoc, getDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Header from "@/components/Header";
 import Admin from "@/components/auth/Admin";
 import AdminLayout from "@/components/layout/AdminLayout";
-// import withAuth from "@/lib/isAuth";
 import { workerCategory } from "../../../data/worker";
 
 const AdminAddWorker = () => {
   const [formData, setFormData] = useState({
     workerName: "",
-    imageUrl: "",
     workerEmail: "",
     workerPassword: "",
     workerContact: "",
     workerAddress: "",
+    workerLocation: "",
+    workerDistrict: "",
+    workerState: "",
     workerCity: "",
     categories: [],
     role: "worker",
   });
+  const [imageFile, setImageFile] = useState(null); // Separate state for the image file
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -35,10 +30,18 @@ const AdminAddWorker = () => {
   const workerCategories = workerCategory;
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file); // Set the image file state
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -49,11 +52,13 @@ const AdminAddWorker = () => {
 
     const {
       workerName,
-      imageFile,
       workerEmail,
       workerPassword,
       workerContact,
       workerAddress,
+      workerLocation,
+      workerDistrict,
+      workerState,
       workerCity,
       role,
       categories,
@@ -66,77 +71,81 @@ const AdminAddWorker = () => {
         workerPassword
       );
 
-      let imageUrl = "";
+      let firebaseImageUrl = "";
       if (imageFile) {
         // Upload image to Firebase Storage
         const storage = getStorage();
-        const imageRef = ref(storage, `workers/${imageFile.name}`);
+        const uniqueFilename = `workers/${Date.now()}_${imageFile.name}`;
+        const imageRef = ref(storage, uniqueFilename);
+
         await uploadBytes(imageRef, imageFile);
-        imageUrl = await getDownloadURL(imageRef);
+        firebaseImageUrl = await getDownloadURL(imageRef);
+        setFormData((prevData) => ({
+          ...prevData,
+          imageUrl: firebaseImageUrl,
+        }));
       }
 
       const workerRef = await addDoc(collection(db, "workers"), {
         workerName,
-        imageUrl,
+        imageUrl: firebaseImageUrl,
         workerEmail,
         workerId: workerCredential.user.uid,
         workerContact,
         workerAddress,
+        workerLocation,
         workerCity,
-        imageUrl,
+        workerDistrict,
+        workerState,
         categories,
         role,
-
         createdAt: new Date(),
       });
-      await addWorkerToCategories(workerRef.id, formData, formData.categories);
+
+      await addWorkerToCategories(
+        workerRef.id,
+        {
+          ...formData,
+          imageUrl: firebaseImageUrl, // Ensure the updated imageUrl is included
+          workerId: workerCredential.user.uid,
+        },
+        categories
+      );
       setLoading(false);
-      setSuccess("Worker successfully created and worker registered.");
+      setSuccess("Worker successfully created and registered.");
       setFormData({
         workerName: "",
-        imageUrl: "",
         workerEmail: "",
         workerPassword: "",
         workerContact: "",
         workerAddress: "",
+        workerLocation: "",
+        workerDistrict: "",
+        workerState: "",
         workerCity: "",
-        role: "",
         categories: [],
-        imageFile: null,
+        role: "worker",
       });
+      setImageFile(null); // Reset the image file state after submission
     } catch (error) {
       setError(error.message);
+      setLoading(false);
     }
   };
 
   const addWorkerToCategories = async (workerId, workerData, categories) => {
-    console.log("Adding worker to categories:", workerId);
-
     try {
       for (const category of categories) {
-        // Reference to the category document in workerCategories
         const categoryRef = doc(db, "workerCategories", category);
-
-        // Check if the category document exists; create it if it doesn’t
         const categoryDoc = await getDoc(categoryRef);
         if (!categoryDoc.exists()) {
-          console.log(`Creating category document for: ${category}`);
           await setDoc(categoryRef, { createdAt: new Date() });
         }
 
-        // Reference to the specific worker document within the category's stores subcollection
-        const workerRef = doc(categoryRef, "worker", workerId);
-
-        // Check if the worker already exists in the category's stores subcollection
+        const workerRef = doc(categoryRef, "workers", workerId);
         const workerDoc = await getDoc(workerRef);
         if (!workerDoc.exists()) {
-          // Add the worker document if it doesn’t exist in this category
           await setDoc(workerRef, workerData);
-          console.log(`Added worker ${workerId} to category: ${category}`);
-        } else {
-          console.log(
-            `Worker ${workerId} already exists in category: ${category}`
-          );
         }
       }
     } catch (error) {
@@ -149,8 +158,8 @@ const AdminAddWorker = () => {
     setFormData((prevData) => ({
       ...prevData,
       categories: checked
-        ? [...prevData.categories, value] // Add category ID if checked
-        : prevData.categories.filter((categoryId) => categoryId !== value), // Remove if unchecked
+        ? [...prevData.categories, value]
+        : prevData.categories.filter((categoryId) => categoryId !== value),
     }));
   };
 
@@ -177,7 +186,19 @@ const AdminAddWorker = () => {
                 />
               </div>
             ))}
-            <h3> Category: </h3>
+
+            <div style={styles.formGroup}>
+              <label style={styles.label}>Worker Image:</label>
+              <input
+                type="file"
+                name="imageFile"
+                onChange={handleImageChange}
+                accept="image/*" // Optional: restrict to image files
+                required
+              />
+            </div>
+
+            <h3>Category:</h3>
             <div
               style={{
                 ...styles.label,
@@ -191,7 +212,7 @@ const AdminAddWorker = () => {
                   <input
                     type="checkbox"
                     value={category.name} // Use category ID as the value
-                    checked={formData.categories?.includes(category.name)}
+                    checked={formData.categories.includes(category.name)}
                     onChange={handleCategoryChange}
                     style={styles.checkbox}
                   />
@@ -201,7 +222,7 @@ const AdminAddWorker = () => {
             </div>
 
             <button type="submit" style={styles.button} disabled={loading}>
-              {loading ? "Submitting..." : " Add worker"}
+              {loading ? "Submitting..." : "Add Worker"}
             </button>
           </form>
         </div>
@@ -212,14 +233,16 @@ const AdminAddWorker = () => {
 
 const formFields = [
   { label: "Worker Name", name: "workerName", type: "text" },
-  { label: "Worker Image", name: "imageFile", type: "file" },
-
   { label: "Worker Email", name: "workerEmail", type: "email" },
   { label: "Worker Password", name: "workerPassword", type: "password" },
   { label: "Worker Contact", name: "workerContact", type: "text" },
   { label: "Worker Address", name: "workerAddress", type: "text" },
+  { label: "Worker Village/Town", name: "workerLocation", type: "text" },
+  { label: "Worker District", name: "workerDistrict", type: "text" },
+  { label: "Worker State", name: "workerState", type: "text" },
   { label: "Worker City", name: "workerCity", type: "text" },
 ];
+
 // Styles
 const styles = {
   container: {
