@@ -260,6 +260,7 @@ const formStyles = {
     fontSize: "1rem",
     borderRadius: "4px",
     border: "1px solid #ddd",
+    backgroundColor: "#f8f9fa",
   },
   textarea: {
     width: "100%",
@@ -267,6 +268,7 @@ const formStyles = {
     fontSize: "1rem",
     borderRadius: "4px",
     border: "1px solid #ddd",
+    backgroundColor: "#f8f9fa",
   },
   fileInput: {
     padding: "8px",

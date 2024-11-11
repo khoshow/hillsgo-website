@@ -40,6 +40,7 @@ export default function Login() {
         setUser({
           email: userCredential.user.email,
           token: idToken,
+          role: "admin",
         });
         router.push("/admin/dashboard"); // Redirect after successful login
       } else {

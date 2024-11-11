@@ -1,0 +1,78 @@
+/* AdminLayout.module.css */
+
+.container {
+    display: flex;
+    height: 100vh;
+    position: relative;
+  }
+  
+  .sidebar {
+    width: 250px;
+    background-color: #2e3b4e;
+    color: white;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    transform: translateX(-100%); /* Hide sidebar by default on mobile */
+  }
+  
+  .showSidebar {
+    transform: translateX(0); /* Show sidebar when toggled */
+  }
+  
+  .sidebarHeader {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .sidebarList {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebarItem {
+    margin: 10px 0;
+  }
+  
+  .sidebarLink {
+    color: #cfd8dc;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .mainContent {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: #f5f5f5;
+    margin-left: 250px; /* Space for sidebar on desktop */
+    transition: margin-left 0.3s ease;
+  }
+  
+  .menuIcon {
+    font-size: 2em;
+    color: #2e3b4e;
+    cursor: pointer;
+    padding: 10px;
+    display: none; /* Hidden on desktop */
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1001;
+  }
+  
+  @media (max-width: 768px) {
+    .menuIcon {
+      display: block; /* Show on mobile */
+    }
+  
+    .sidebar {
+      position: fixed;
+      transform: translateX(-100%);
+    }
+  
+    .mainContent {
+      margin-left: 0; /* Reset margin on mobile */
+    }
+  }
+  
