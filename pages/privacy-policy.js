@@ -16,7 +16,7 @@ const PrivacyPolicy = () => {
             <strong>Effective Date:</strong> 19th November 2024
           </p>
           <p>
-            <strong>HillsGO</strong> ("we," "our," or "us") is committed to
+            <strong>HillsGO</strong> (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to
             protecting your privacy. This Privacy Policy explains how we
             collect, use, and safeguard your information when you use our
             services, including our app/website.
@@ -99,7 +99,7 @@ const PrivacyPolicy = () => {
           <h2>7. Changes to This Privacy Policy</h2>
           <p>
             We may update this Privacy Policy from time to time. The updated
-            version will be posted with a new "Effective Date."
+            version will be posted with a new &quot;Effective Date.&quot;
           </p>
 
           <h2>8. Contact Us</h2>
