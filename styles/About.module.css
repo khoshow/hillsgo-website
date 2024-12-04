@@ -1,12 +1,11 @@
 .aboutPage {
-  padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
   text-align: center;
 }
 
 .hero {
-  margin: 0 auto 3rem auto;
+  margin: 2rem auto 3rem auto;
   margin-bottom: 3rem;
   width: 700px;
   max-width: 80vw;

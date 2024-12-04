@@ -118,8 +118,6 @@ export default function EditProduct() {
     );
     if (!confirmDelete) return;
     try {
-      console.log("Attempting to delete:", image);
-
       // Decode the URI to get the proper filename
       const imageName = decodeURIComponent(
         image.substring(image.lastIndexOf("/") + 1, image.indexOf("?"))
@@ -127,8 +125,6 @@ export default function EditProduct() {
 
       // Construct the storage reference using the correct path
       const imageRef = ref(storage, `/${imageName}`); // Use the original upload path
-
-      console.log("Deleting image at:", imageRef.fullPath); // Log the full path for debugging
 
       // Delete the image from Firebase Storage
       await deleteObject(imageRef);
@@ -152,14 +148,15 @@ export default function EditProduct() {
     }
   };
 
-  if (loading) return  (
-    <Estore>
-      <EstoreLayout>
-        <Header />
-        <p>Loading...</p>
-      </EstoreLayout>
-    </Estore>
-  );
+  if (loading)
+    return (
+      <Estore>
+        <EstoreLayout>
+          <Header />
+          <p>Loading...</p>
+        </EstoreLayout>
+      </Estore>
+    );
 
   return (
     <Estore>

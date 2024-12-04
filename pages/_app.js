@@ -39,7 +39,7 @@ function MyApp({ Component, pageProps }) {
     <div id="__next">
       <UserProvider>
         <Component {...pageProps} />
-        <Footer />
+        {/* <Footer /> */}
       </UserProvider>
     </div>
   );

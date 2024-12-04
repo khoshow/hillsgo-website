@@ -68,7 +68,6 @@ export default function AddProduct() {
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     setImages(files);
-    console.log("files", images);
   };
 
   const handleCategoryChange = (e) => {
@@ -101,9 +100,6 @@ export default function AddProduct() {
           return await getDownloadURL(imageRef);
         })
       );
-      console.log("Imgu", imageUrls);
-
-      console.log("cat", postData.tags);
 
       // Add product data to Firestore
       await addDoc(collection(db, "workersPosts"), {

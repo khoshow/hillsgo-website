@@ -26,6 +26,8 @@ export default function AddProduct() {
   const [images, setImages] = useState([]);
   const dataCategories = category;
   const storage = getStorage();
+
+
   // Check if the user is an e-store owner
   useEffect(() => {
     const verifyEstoreOwner = async () => {
@@ -71,7 +73,7 @@ export default function AddProduct() {
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     setImages(files);
-    console.log("files", images);
+   
   };
 
   // Submit product to Firebase
@@ -94,9 +96,7 @@ export default function AddProduct() {
           return await getDownloadURL(imageRef);
         })
       );
-      console.log("Imgu", imageUrls);
-
-      console.log("cat", productData.categories);
+    
 
       await addDoc(collection(db, "estoreProducts"), {
         ...productData,
@@ -106,6 +106,7 @@ export default function AddProduct() {
         createdAt: new Date(),
         ownerEmail: user.email,
         ownerName: user.name,
+        estoreName: user.estoreName,
       });
 
       alert("Product added successfully!");

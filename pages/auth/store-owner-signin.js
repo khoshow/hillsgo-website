@@ -47,7 +47,7 @@ export default function Login() {
       if (!estoreSnapshot.empty) {
         // Get the first matching document data
         const estoreData = estoreSnapshot.docs[0].data();
-        console.log("estore", estoreData);
+    
 
         // Set the user in context with additional details
         setUser({
@@ -56,6 +56,7 @@ export default function Login() {
           name: estoreData.ownerName,
           image: estoreData.imageUrl,
           role: estoreData.role,
+          estoreName:estoreData.estoreName,
           uid: estoreData.ownerId,
         });
 

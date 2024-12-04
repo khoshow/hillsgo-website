@@ -73,7 +73,6 @@ export default function MyPosts() {
           const imageName = decodeURIComponent(
             url.substring(url.lastIndexOf("/") + 1, url.indexOf("?"))
           );
-          console.log("Imag", imageName);
 
           const imageRef = ref(storage, `${imageName}`);
           await deleteObject(imageRef);
