@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 // import { auth, db } from "../../firebase/firebase";
 // import { collection, query, where, getDocs } from "firebase/firestore";
 import { setCookie } from "nookies";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   const [email, setEmail] = useState("");
@@ -100,6 +101,7 @@ export default function Home() {
           </section>
         </main>
       </div>
+      <Footer />
     </>
   );
 }
@@ -111,6 +113,7 @@ const styles = {
     margin: "0 auto",
     padding: "20px",
     textAlign: "center",
+    height: "80vh",
   },
 
   headerContainer: {

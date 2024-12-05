@@ -3,6 +3,7 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import Header from "../components/Header";
 import Lottie from "lottie-react";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   const [animationData, setAnimationData] = useState(null);
@@ -62,6 +63,7 @@ export default function Home() {
           </div>
         </section>
       </main>
+      <Footer />
     </>
   );
 }

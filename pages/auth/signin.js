@@ -4,6 +4,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/router";
 import Header from "@/components/Header";
 import { auth, db } from "../../firebase/firebase";
+import Footer from "@/components/Footer";
 
 const API = process.env.API_DOMAIN_SERVER;
 
@@ -42,7 +43,6 @@ export default function Login() {
 
           {roleDisplay && <p style={styles.prompt}>Please select your role:</p>}
         </div>
-
         <>
           <div>
             <input
@@ -68,6 +68,8 @@ export default function Login() {
           </div>
         </>
       </div>
+
+      <Footer />
     </>
   );
 }
@@ -79,6 +81,11 @@ const styles = {
     margin: "0 auto",
     padding: "20px",
     textAlign: "center",
+    height: "80vh",
+  },
+
+  bodyContent: {
+    flex: 1,
   },
 
   headerContainer: {

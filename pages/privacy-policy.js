@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "@/components/Header";
 import styles from "../styles/Home.module.css";
+import Footer from "@/components/Footer";
 
 const PrivacyPolicy = () => {
   return (
@@ -16,10 +17,10 @@ const PrivacyPolicy = () => {
             <strong>Effective Date:</strong> 19th November 2024
           </p>
           <p>
-            <strong>HillsGO</strong> (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to
-            protecting your privacy. This Privacy Policy explains how we
-            collect, use, and safeguard your information when you use our
-            services, including our app/website.
+            <strong>HillsGO</strong> (&quot;we,&quot; &quot;our,&quot; or
+            &quot;us&quot;) is committed to protecting your privacy. This
+            Privacy Policy explains how we collect, use, and safeguard your
+            information when you use our services, including our app/website.
           </p>
           <p>
             By using our services, you agree to the terms of this Privacy
@@ -113,6 +114,7 @@ const PrivacyPolicy = () => {
           </ul>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

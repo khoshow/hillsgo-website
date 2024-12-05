@@ -12,6 +12,7 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
+import Footer from "@/components/Footer";
 
 const API = process.env.NEXT_PUBLIC_API_DOMAIN_SERVER;
 
@@ -47,7 +48,6 @@ export default function Login() {
       if (!estoreSnapshot.empty) {
         // Get the first matching document data
         const estoreData = estoreSnapshot.docs[0].data();
-    
 
         // Set the user in context with additional details
         setUser({
@@ -56,7 +56,7 @@ export default function Login() {
           name: estoreData.ownerName,
           image: estoreData.imageUrl,
           role: estoreData.role,
-          estoreName:estoreData.estoreName,
+          estoreName: estoreData.estoreName,
           uid: estoreData.ownerId,
         });
 
@@ -103,6 +103,7 @@ export default function Login() {
           {error && <p style={styles.error}>{error}</p>}
         </form>
       </div>
+      <Footer />
     </>
   );
 }
@@ -114,7 +115,7 @@ const styles = {
     margin: "0 auto",
     padding: "50px 0",
     textAlign: "center",
-    height: "50vh",
+    height: "80vh",
   },
 
   headerContainer: {

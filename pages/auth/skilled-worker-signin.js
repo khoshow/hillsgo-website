@@ -13,6 +13,7 @@ import {
   where,
   getDocs,
 } from "firebase/firestore";
+import Footer from "@/components/Footer";
 
 const API = process.env.NEXT_PUBLIC_API_DOMAIN_SERVER;
 
@@ -104,6 +105,7 @@ export default function Login() {
           {error && <p style={styles.error}>{error}</p>}
         </form>
       </div>
+      <Footer />
     </>
   );
 }
@@ -115,6 +117,7 @@ const styles = {
     margin: "0 auto",
     padding: "20px",
     textAlign: "center",
+    height: "80vh",
   },
 
   headerContainer: {
