@@ -42,13 +42,15 @@ const Header = () => {
       router.push("/skilled-worker/dashboard");
     } else if (userRole === "admin") {
       router.push("/admin/dashboard");
+    } else if (userRole === "driver") {
+      router.push("/driver/dashboard");
     } else {
       router.push("/");
     }
   };
 
   return (
-    <header className={styles.navbar}>
+    <header className="navbar">
       <div className="container navbar">
         <div className={styles.logo}>
           <Link href="/">

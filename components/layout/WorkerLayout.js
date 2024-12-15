@@ -1,6 +1,5 @@
-// components/WorkerLayout.js
 import React, { useState } from "react";
-import Link from "next/link"; // For sample navigation links
+import Link from "next/link";
 
 const WorkerLayout = ({ children }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(false);
@@ -13,82 +12,104 @@ const WorkerLayout = ({ children }) => {
     container: {
       display: "flex",
       height: "100vh",
-      position: "relative",
     },
     sidebar: {
-      width: isSidebarVisible ? "250px" : "0",
-      overflowX: "hidden",
-      backgroundColor: "#2e3b4e",
+      width: "200px",
+      backgroundColor: "#333",
       color: "white",
-      padding: isSidebarVisible ? "20px" : "0",
-      boxShadow: isSidebarVisible ? "2px 0 5px rgba(0, 0, 0, 0.1)" : "none",
-      transition: "width 0.3s ease, padding 0.3s ease",
-      position: "fixed",
       height: "100vh",
-      zIndex: 1000,
+      padding: "20px",
+      flexShrink: 0,
+      transition: "transform 0.3s ease",
+    },
+    sidebarHidden: {
+      transform: "translateX(-100%)", // Hide sidebar off-screen for mobile
     },
     sidebarHeader: {
-      fontSize: "1.5rem",
-      marginBottom: "20px",
-      opacity: isSidebarVisible ? 1 : 0,
-      transition: "opacity 0.3s ease",
+      fontSize: "1.5em",
+      marginBottom: "10px",
     },
     sidebarList: {
-      listStyle: "none",
+      listStyleType: "none",
       padding: 0,
     },
     sidebarItem: {
-      margin: "10px 0",
+      marginBottom: "10px",
     },
     sidebarLink: {
-      color: "#cfd8dc",
+      color: "white",
       textDecoration: "none",
-      fontWeight: 500,
     },
     mainContent: {
       flex: 1,
-      padding: "20px",
-      overflowY: "auto",
-      backgroundColor: "#f5f5f5",
-      marginLeft: isSidebarVisible ? "250px" : "0",
-      transition: "margin-left 0.3s ease",
     },
     menuIcon: {
       fontSize: "2em",
-      color: "#2e3b4e",
       cursor: "pointer",
-      padding: "10px",
+      color: "#333",
+      backgroundColor: "#95D500",
       position: "absolute",
-      top: "10px",
-      left: "10px",
-      zIndex: 1001,
-      display: "block",
+
+      right: "20px",
+      width: "50px",
+      height: "50px",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: "1001",
     },
   };
 
-  const sidebarStyle = {
-    ...styles.sidebar,
-    ...(window.innerWidth <= 768
-      ? { width: isSidebarVisible ? "250px" : "0" }
-      : { width: "250px", position: "relative" }),
-  };
-
-  const mainContentStyle = {
-    ...styles.mainContent,
-    ...(window.innerWidth <= 768
-      ? { marginLeft: isSidebarVisible ? "250px" : "0" }
-      : { marginLeft: "250px" }),
-  };
+  // Media query styles for responsive behavior
+  const mediaQueryStyles = `
+    @media (max-width: 768px) {
+      .menu-icon {
+        display: flex; /* Show menu icon on mobile */
+        right: "20px",
+           zIndex: "2000",
+      }
+      .sidebar {
+        width: 200px;
+        position: fixed;
+        transform: ${isSidebarVisible ? "translateX(0)" : "translateX(-100%)"};
+        z-index: 1000;
+      }
+      .main-content {
+        margin-left: 0;
+      }
+    }
+       @media (min-width: 768px) {
+      .menu-icon {
+        display: none; /* Show menu icon on mobile */
+        right: "20px",
+           zIndex: "2000",
+      }
+      
+    }
+  `;
 
   return (
     <div style={styles.container}>
+      <style>{mediaQueryStyles}</style>
+
       {/* Hamburger Icon for Mobile */}
-      <div style={styles.menuIcon} onClick={toggleSidebar}>
-        &#9776; {/* Hamburger icon */}
+      <div
+        style={styles.menuIcon}
+        onClick={toggleSidebar}
+        className="menu-icon"
+      >
+        &#9776; {/* Unicode for hamburger icon */}
       </div>
 
       {/* Sidebar Navigation */}
-      <nav style={sidebarStyle}>
+      <nav
+        style={{
+          ...styles.sidebar,
+          ...(isSidebarVisible || window.innerWidth > 768
+            ? {}
+            : styles.sidebarHidden),
+        }}
+        className="sidebar"
+      >
         <h2 style={styles.sidebarHeader}>Dashboard</h2>
         <ul style={styles.sidebarList}>
           <li style={styles.sidebarItem}>
@@ -111,7 +132,9 @@ const WorkerLayout = ({ children }) => {
       </nav>
 
       {/* Main Content Area */}
-      <main style={mainContentStyle}>{children}</main>
+      <main style={styles.mainContent} className="">
+        {children}
+      </main>
     </div>
   );
 };

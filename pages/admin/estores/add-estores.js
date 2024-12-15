@@ -289,7 +289,7 @@ const styles = {
     fontSize: "14px",
     borderRadius: "4px",
     border: "1px solid #ccc",
-    backgroundColor:"#f8f9fa"
+    backgroundColor: "#f8f9fa",
   },
   button: {
     padding: "0.7rem",

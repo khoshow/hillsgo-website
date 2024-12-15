@@ -113,36 +113,18 @@ const DriverLayout = ({ children }) => {
         <h2 style={styles.sidebarHeader}>Dashboard</h2>
         <ul style={styles.sidebarList}>
           <li style={styles.sidebarItem}>
-            <Link href="/admin/dashboard" style={styles.sidebarLink}>
+            <Link href="/driver/dashboard" style={styles.sidebarLink}>
               Dashboard Home
             </Link>
           </li>
           <li style={styles.sidebarItem}>
-            <Link href="/admin/estores/add-estores" style={styles.sidebarLink}>
-              Add E-Store
+            <Link href="/driver/orders" style={styles.sidebarLink}>
+              Orders
             </Link>
           </li>
           <li style={styles.sidebarItem}>
-            <Link href="/admin/workers/add-workers" style={styles.sidebarLink}>
-              Add Workers
-            </Link>
-          </li>
-          <li style={styles.sidebarItem}>
-            <Link href="/admin/drivers/add-driver" style={styles.sidebarLink}>
-              Add Driver
-            </Link>
-          </li>
-          <li style={styles.sidebarItem}>
-            <Link href="/admin/push-notifications" style={styles.sidebarLink}>
-              Send Notifications
-            </Link>
-          </li>
-          <li style={styles.sidebarItem}>
-            <Link
-              href="/admin/push-notifications/sent"
-              style={styles.sidebarLink}
-            >
-              All Notifications
+            <Link href="/driver/orders-history" style={styles.sidebarLink}>
+             Orders History
             </Link>
           </li>
           {/* Add more links as needed */}
@@ -150,7 +132,7 @@ const DriverLayout = ({ children }) => {
       </nav>
 
       {/* Main Content Area */}
-      <main style={styles.mainContent} className="">
+      <main style={styles.mainContent} className="main-content">
         {children}
       </main>
     </div>

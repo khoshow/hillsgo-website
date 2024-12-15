@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
+import React, { useState } from "react";
+import Link from "next/link";
 
-const Dashboard = ({ children }) => {
+const EstoreLayout = ({ children }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(false);
 
   const toggleSidebar = () => {
@@ -10,52 +10,52 @@ const Dashboard = ({ children }) => {
 
   const styles = {
     container: {
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100vh',
+      display: "flex",
+      height: "100vh",
     },
     sidebar: {
-      width: isSidebarVisible ? '200px' : '0',
-      overflowX: 'hidden',
-      backgroundColor: '#333',
-      color: 'white',
-      position: 'fixed',
-      height: '100vh',
-      padding: isSidebarVisible ? '20px' : '0',
-      transition: 'width 0.3s ease, padding 0.3s ease',
-      display: 'flex',
-      flexDirection: 'column',
+      width: "200px",
+      backgroundColor: "#333",
+      color: "white",
+      height: "100vh",
+      padding: "20px",
+      flexShrink: 0,
+      transition: "transform 0.3s ease",
+    },
+    sidebarHidden: {
+      transform: "translateX(-100%)", // Hide sidebar off-screen for mobile
     },
     sidebarHeader: {
-      fontSize: '1.5em',
-      marginBottom: '10px',
-      opacity: isSidebarVisible ? 1 : 0,
-      transition: 'opacity 0.3s ease',
+      fontSize: "1.5em",
+      marginBottom: "10px",
     },
     sidebarList: {
-      listStyleType: 'none',
+      listStyleType: "none",
       padding: 0,
     },
     sidebarItem: {
-      marginBottom: '10px',
+      marginBottom: "10px",
     },
     sidebarLink: {
-      color: 'white',
-      textDecoration: 'none',
+      color: "white",
+      textDecoration: "none",
     },
     mainContent: {
       flex: 1,
-      padding: '20px',
-      marginLeft: isSidebarVisible ? '200px' : '0', // Adjusts main content when sidebar is open
-      transition: 'margin-left 0.3s ease',
     },
     menuIcon: {
-      fontSize: '2em',
-      cursor: 'pointer',
-      color: '#333',
-      padding: '10px',
-      display: 'block',
-      marginLeft: '10px',
+      fontSize: "2em",
+      cursor: "pointer",
+      color: "#333",
+      backgroundColor: "#95D500",
+      position: "absolute",
+
+      right: "20px",
+      width: "50px",
+      height: "50px",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: "1001",
     },
   };
 
@@ -63,31 +63,53 @@ const Dashboard = ({ children }) => {
   const mediaQueryStyles = `
     @media (max-width: 768px) {
       .menu-icon {
-        display: block;
+        display: flex; /* Show menu icon on mobile */
+        right: "20px",
+           zIndex: "2000",
       }
       .sidebar {
-        width: ${isSidebarVisible ? '200px' : '0'};
+        width: 200px;
         position: fixed;
+        transform: ${isSidebarVisible ? "translateX(0)" : "translateX(-100%)"};
         z-index: 1000;
-        transition: width 0.3s;
       }
       .main-content {
-        margin-left: ${isSidebarVisible ? '200px' : '0'};
+        margin-left: 0;
       }
+    }
+       @media (min-width: 768px) {
+      .menu-icon {
+        display: none; /* Show menu icon on mobile */
+        right: "20px",
+           zIndex: "2000",
+      }
+      
     }
   `;
 
   return (
     <div style={styles.container}>
       <style>{mediaQueryStyles}</style>
-      
+
       {/* Hamburger Icon for Mobile */}
-      <div style={styles.menuIcon} onClick={toggleSidebar} className="menu-icon">
+      <div
+        style={styles.menuIcon}
+        onClick={toggleSidebar}
+        className="menu-icon"
+      >
         &#9776; {/* Unicode for hamburger icon */}
       </div>
 
       {/* Sidebar Navigation */}
-      <nav style={styles.sidebar} className="sidebar">
+      <nav
+        style={{
+          ...styles.sidebar,
+          ...(isSidebarVisible || window.innerWidth > 768
+            ? {}
+            : styles.sidebarHidden),
+        }}
+        className="sidebar"
+      >
         <h2 style={styles.sidebarHeader}>Dashboard</h2>
         <ul style={styles.sidebarList}>
           <li style={styles.sidebarItem}>
@@ -110,9 +132,11 @@ const Dashboard = ({ children }) => {
       </nav>
 
       {/* Main Content Area */}
-      <main style={styles.mainContent} className="main-content">{children}</main>
+      <main style={styles.mainContent} className="">
+        {children}
+      </main>
     </div>
   );
 };
 
-export default Dashboard;
+export default EstoreLayout;
