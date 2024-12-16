@@ -107,11 +107,12 @@ const AdminAddEstore = () => {
         categories,
         createdAt: new Date(),
       });
+      const { ownerPassword, ...formDataWithoutPassword } = formData;
 
       await addEstoreToCategories(
         estoreRef.id,
         {
-          ...formData,
+          ...formDataWithoutPassword,
           imageUrl: firebaseImageUrl, // Ensure the updated imageUrl is included
           ownerId: ownerCredential.user.uid,
         },
