@@ -13,7 +13,6 @@ const AdminAddEstore = () => {
     estoreName: "",
     ownerName: "",
     ownerEmail: "",
-
     ownerPassword: "",
     estoreContact: "",
     estoreAddress: "",
@@ -54,7 +53,6 @@ const AdminAddEstore = () => {
 
     const {
       estoreName,
-
       ownerName,
       ownerEmail,
       ownerPassword,
@@ -107,7 +105,7 @@ const AdminAddEstore = () => {
         categories,
         createdAt: new Date(),
       });
-      const { ownerPassword, ...formDataWithoutPassword } = formData;
+      const { ownerPassword: _, ...formDataWithoutPassword } = formData;
 
       await addEstoreToCategories(
         estoreRef.id,
