@@ -57,6 +57,7 @@ export default function Login() {
           image: estoreData.imageUrl,
           role: estoreData.role,
           estoreName: estoreData.estoreName,
+          estoreContact: estoreData.estoreContact,
           uid: estoreData.ownerId,
         });
 

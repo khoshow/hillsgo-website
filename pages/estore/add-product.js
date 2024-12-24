@@ -27,6 +27,7 @@ export default function AddProduct() {
   const dataCategories = category;
   const storage = getStorage();
 
+  console.log("userss", user);
 
   // Check if the user is an e-store owner
   useEffect(() => {
@@ -73,7 +74,6 @@ export default function AddProduct() {
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     setImages(files);
-   
   };
 
   // Submit product to Firebase
@@ -96,7 +96,6 @@ export default function AddProduct() {
           return await getDownloadURL(imageRef);
         })
       );
-    
 
       await addDoc(collection(db, "estoreProducts"), {
         ...productData,
@@ -107,6 +106,7 @@ export default function AddProduct() {
         ownerEmail: user.email,
         ownerName: user.name,
         estoreName: user.estoreName,
+        estoreContact: user.estoreContact,
       });
 
       alert("Product added successfully!");
