@@ -102,6 +102,16 @@ const AdminAddWorker = () => {
         createdAt: new Date(),
       });
 
+      await addDoc(collection(db, "users"), {
+        city: workerCity,
+        email: workerEmail,
+        id: workerCredential.user.uid,
+        name: workerName,
+        phone: workerContact,
+        role: role,
+        createdAt: new Date(),
+      });
+
       await addWorkerToCategories(
         workerRef.id,
         {
@@ -279,7 +289,7 @@ const styles = {
     fontSize: "14px",
     borderRadius: "4px",
     border: "1px solid #ccc",
-    backgroundColor:"#f8f9fa"
+    backgroundColor: "#f8f9fa",
   },
   button: {
     padding: "0.7rem",

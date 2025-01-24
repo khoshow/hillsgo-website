@@ -98,11 +98,18 @@ const AdminAddDriver = () => {
         driverCity,
         driverDistrict,
         driverState,
-
         role,
         createdAt: new Date(),
       });
-
+      await addDoc(collection(db, "users"), {
+        city: driverCity,
+        email: driverEmail,
+        id: driverCredential.user.uid,
+        name: driverName,
+        phone: driverContact,
+        role: role,
+        createdAt: new Date(),
+      });
       setLoading(false);
       setSuccess("Driver successfully created and registered.");
       setFormData({

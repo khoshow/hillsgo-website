@@ -22,8 +22,6 @@ export default function SendNotificationForm() {
     setResponseMessage("");
 
     try {
-      console.log("Api", api);
-
       const response = await fetch(api, {
         method: "POST",
         headers: {
@@ -41,7 +39,7 @@ export default function SendNotificationForm() {
         setResponseMessage(`Error: ${data.error}`);
       }
     } catch (error) {
-      setResponseMessage("An unexpected error occurred.");
+      setResponseMessage("An unexpected error occurred.", error);
     } finally {
       setLoading(false);
     }

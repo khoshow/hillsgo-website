@@ -105,6 +105,15 @@ const AdminAddEstore = () => {
         categories,
         createdAt: new Date(),
       });
+      await addDoc(collection(db, "users"), {
+        city: estoreCity,
+        email: ownerEmail,
+        id: ownerCredential.user.uid,
+        name: ownerName,
+        phone: estoreContact,
+        role: role,
+        createdAt: new Date(),
+      });
       const { ownerPassword: _, ...formDataWithoutPassword } = formData;
 
       await addEstoreToCategories(

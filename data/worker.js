@@ -1,43 +1,43 @@
 export const workerCategory = [
   {
     id: 1,
-    name: "Daily wages",
+    name: "Daily Wages",
   },
   {
     id: 2,
-    name: "Plumber",
+    name: "Artist",
   },
   {
     id: 3,
-    name: "Electrician",
+    name: "Beautician",
   },
   {
     id: 4,
-    name: "House Painter",
+    name: "Car Mechanic",
   },
   {
     id: 5,
-    name: "Spa",
+    name: "Carpentry",
   },
   {
     id: 6,
-    name: "Haircut",
+    name: "Catering",
   },
   {
     id: 7,
-    name: "House Wash",
-  },
-  {
-    id: 8,
     name: "Construction",
   },
   {
+    id: 8,
+    name: "Data Entry",
+  },
+  {
     id: 9,
-    name: "Lawn Maintenance",
+    name: "Driver",
   },
   {
     id: 10,
-    name: "Toilet Cleaner",
+    name: "Electrician",
   },
   {
     id: 11,
@@ -45,38 +45,50 @@ export const workerCategory = [
   },
   {
     id: 12,
-    name: "Driver",
+    name: "Gardener",
   },
   {
     id: 13,
-    name: "Taxi Hire",
+    name: "Graphic Designer",
   },
   {
     id: 14,
-    name: "Car Mechanic",
+    name: "Haircut",
   },
   {
     id: 15,
-    name: "Carpentry",
-  },
-  {
-    id: 16,
-    name: "Artist",
-  },
-  {
-    id: 17,
     name: "Home Tutor",
   },
   {
-    id: 18,
-    name: "Music Teacher",
+    id: 16,
+    name: "House Painter",
   },
   {
-    id: 19,
+    id: 17,
+    name: "House Wash",
+  },
+  {
+    id: 18,
     name: "Interior Designer",
   },
   {
+    id: 19,
+    name: "Lawn Maintenance",
+  },
+  {
     id: 20,
+    name: "Music Teacher",
+  },
+  {
+    id: 21,
     name: "Photographer",
+  },
+  {
+    id: 22,
+    name: "Plumber",
+  },
+  {
+    id: 23,
+    name: "Taxi Hire",
   },
 ];
