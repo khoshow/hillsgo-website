@@ -22,6 +22,7 @@ export default function EditProduct() {
   const [productData, setProductData] = useState({
     name: "",
     price: "",
+    wholesalePrice: "",
     size: "",
     weight: "",
     categories: [],
@@ -99,6 +100,7 @@ export default function EditProduct() {
       setProductData({
         name: "",
         price: "",
+        wholesalePrice: "",
         size: "",
         weight: "",
         categories: [],
@@ -177,11 +179,22 @@ export default function EditProduct() {
               />
             </label>
             <label style={styles.label}>
-              Price:
+              Maximum Retail Price (MRP):
               <input
                 type="number"
                 name="price"
                 value={productData.price}
+                onChange={handleInputChange}
+                required
+                style={styles.input}
+              />
+            </label>
+            <label style={styles.label}>
+              Wholesale Price:
+              <input
+                type="number"
+                name="wholesalePrice"
+                value={productData.wholesalePrice}
                 onChange={handleInputChange}
                 required
                 style={styles.input}
@@ -234,7 +247,7 @@ export default function EditProduct() {
           <div style={styles.container}>
             <div style={styles.currentImages}>
               <h3 style={styles.label}>Current Images:</h3>
-              {productData.images.map((img, index) => (
+              {productData.images?.map((img, index) => (
                 <div key={index} style={styles.imageContainer}>
                   <img
                     src={img}

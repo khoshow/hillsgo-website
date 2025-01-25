@@ -127,6 +127,11 @@ const EstoreLayout = ({ children }) => {
               My Products
             </Link>
           </li>
+          <li style={styles.sidebarItem}>
+            <Link href="/estore/profile-edit" style={styles.sidebarLink}>
+              Profile
+            </Link>
+          </li>
           {/* Add more links as needed */}
         </ul>
       </nav>

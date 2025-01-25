@@ -6,7 +6,6 @@ import { useUser } from "../../contexts/UserContext";
 const Estore = ({ children }) => {
   const { user, loading } = useUser();
   const router = useRouter();
-  console.log("User in Admin:", user);
 
   useEffect(() => {
     // Redirect if no user is authenticated or user is not an admin

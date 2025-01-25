@@ -18,6 +18,7 @@ export default function AddProduct() {
   const [productData, setProductData] = useState({
     name: "",
     price: "",
+    wholesalePrice: "",
     size: "",
     weight: "",
     categories: [],
@@ -100,6 +101,7 @@ export default function AddProduct() {
       await addDoc(collection(db, "estoreProducts"), {
         ...productData,
         price: parseFloat(productData.price),
+        wholesalePrice: parseFloat(productData.wholesalePrice),
         images: imageUrls,
         ownerId: user.uid,
         createdAt: new Date(),
@@ -113,6 +115,7 @@ export default function AddProduct() {
       setProductData({
         name: "",
         price: "",
+        wholesalePrice: "",
         size: "",
         weight: "",
         categories: [],
@@ -167,11 +170,22 @@ export default function AddProduct() {
               />
             </label>
             <label style={formStyles.label}>
-              Price (INR):
+              Maximum Retail Price (MRP):
               <input
                 type="number"
                 name="price"
                 value={productData.price}
+                onChange={handleInputChange}
+                required
+                style={formStyles.input}
+              />
+            </label>
+            <label style={formStyles.label}>
+              Wholesale Price:
+              <input
+                type="number"
+                name="wholesalePrice"
+                value={productData.wholesalePrice}
                 onChange={handleInputChange}
                 required
                 style={formStyles.input}
