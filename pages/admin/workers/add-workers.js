@@ -67,7 +67,7 @@ const AdminAddWorker = () => {
     try {
       const workerCredential = await createUserWithEmailAndPassword(
         auth,
-        workerEmail,
+        workerEmail.toLowerCase(),
         workerPassword
       );
 
@@ -89,7 +89,7 @@ const AdminAddWorker = () => {
       const workerRef = await addDoc(collection(db, "workers"), {
         workerName,
         imageUrl: firebaseImageUrl,
-        workerEmail,
+        workerEmail: workerEmail.toLowerCase(),
         workerId: workerCredential.user.uid,
         workerContact,
         workerAddress,
@@ -104,7 +104,7 @@ const AdminAddWorker = () => {
 
       await addDoc(collection(db, "users"), {
         city: workerCity,
-        email: workerEmail,
+        email: workerEmail.toLowerCase(),
         id: workerCredential.user.uid,
         name: workerName,
         phone: workerContact,

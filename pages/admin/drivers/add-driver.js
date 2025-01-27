@@ -90,7 +90,7 @@ const AdminAddDriver = () => {
       await addDoc(collection(db, "drivers"), {
         driverName,
         imageUrl: firebaseImageUrl,
-        driverEmail,
+        driverEmail: driverEmail.toLowerCase(),
         driverId: driverCredential.user.uid,
         driverContact,
         driverAddress,
@@ -103,7 +103,7 @@ const AdminAddDriver = () => {
       });
       await addDoc(collection(db, "users"), {
         city: driverCity,
-        email: driverEmail,
+        email: driverEmail.toLowerCase(),
         id: driverCredential.user.uid,
         name: driverName,
         phone: driverContact,

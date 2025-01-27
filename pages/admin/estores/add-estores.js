@@ -69,7 +69,7 @@ const AdminAddEstore = () => {
     try {
       const ownerCredential = await createUserWithEmailAndPassword(
         auth,
-        ownerEmail,
+        ownerEmail.toLowerCase(),
         ownerPassword
       );
 
@@ -93,7 +93,7 @@ const AdminAddEstore = () => {
         estoreName,
         imageUrl: firebaseImageUrl,
         ownerName,
-        ownerEmail,
+        ownerEmail: ownerEmail.toLowerCase(),
         ownerId: ownerCredential.user.uid,
         estoreContact,
         estoreAddress,
@@ -107,7 +107,7 @@ const AdminAddEstore = () => {
       });
       await addDoc(collection(db, "users"), {
         city: estoreCity,
-        email: ownerEmail,
+        email: ownerEmail.toLowerCase(),
         id: ownerCredential.user.uid,
         name: ownerName,
         phone: estoreContact,

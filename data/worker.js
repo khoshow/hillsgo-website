@@ -57,38 +57,42 @@ export const workerCategory = [
   },
   {
     id: 15,
-    name: "Home Tutor",
+    name: "Home Appliances Repair",
   },
   {
     id: 16,
-    name: "House Painter",
+    name: "Home Tutor",
   },
   {
     id: 17,
-    name: "House Wash",
+    name: "House Painter",
   },
   {
     id: 18,
-    name: "Interior Designer",
+    name: "House Wash",
   },
   {
     id: 19,
-    name: "Lawn Maintenance",
+    name: "Interior Designer",
   },
   {
     id: 20,
-    name: "Music Teacher",
+    name: "Lawn Maintenance",
   },
   {
     id: 21,
-    name: "Photographer",
+    name: "Music Teacher",
   },
   {
     id: 22,
-    name: "Plumber",
+    name: "Photographer",
   },
   {
     id: 23,
-    name: "Taxi Hire",
+    name: "Plumber",
+  },
+  {
+    id: 24,
+    name: "Private Car",
   },
 ];
