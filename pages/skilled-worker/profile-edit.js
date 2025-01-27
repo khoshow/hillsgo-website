@@ -18,25 +18,26 @@ import {
 } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Header from "@/components/Header";
-import Estore from "@/components/auth/Estore";
-import EstoreLayout from "@/components/layout/EstoreLayout";
-import { category } from "@/data/category";
+import Worker from "@/components/auth/Worker";
+import WorkerLayout from "@/components/layout/WorkerLayout";
+import { workerCategory } from "../../data/worker";
 import { useUser } from "../../contexts/UserContext"; // Import your UserContext
 
-const ProfileEditEstore = () => {
+const ProfileEditWorker = () => {
   const { user, loading: userLoading } = useUser(); // Access the user context
   const [formData, setFormData] = useState({
-    estoreName: "",
-    ownerName: "",
-    estoreContact: "",
-    estoreAddress: "",
-    estoreLocation: "",
-    estoreCity: "",
-    estoreDistrict: "",
-    estoreState: "",
-    estoreDescription: "",
-    role: "estore",
+    workerName: "",
+    workerEmail: "",
+    workerPassword: "",
+    workerContact: "",
+    workerAddress: "",
+    workerLocation: "",
+    workerDistrict: "",
+    workerState: "",
+    workerCity: "",
     categories: [],
+    workerDescription: "",
+    role: "worker",
   });
   const [profileId, setProfileId] = useState();
   const [imageFile, setImageFile] = useState(null); // Separate state for the image file
@@ -44,7 +45,7 @@ const ProfileEditEstore = () => {
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const estoreCategories = category;
+  const workerCategories = workerCategory;
 
   useEffect(() => {
     if (userLoading) return;
@@ -56,17 +57,18 @@ const ProfileEditEstore = () => {
 
       try {
         const profileQuery = query(
-          collection(db, "estores"),
-          where("ownerId", "==", user.uid) // Fetch products created by the logged-in user
+          collection(db, "workers"),
+          where("workerId", "==", user.uid) // Fetch products created by the logged-in user
         );
 
         const querySnapshot = await getDocs(profileQuery);
         if (!querySnapshot.empty) {
-          const docId = querySnapshot.docs[0].ownerId; // Get the ID of the first document
+          const docId = querySnapshot.docs[0].workerId; // Get the ID of the first document
 
           const profileData = querySnapshot.docs[0].data();
 
           setFormData(profileData);
+
           setProfileId(docId);
           return docId; // Use this ID as needed
         } else {
@@ -106,17 +108,15 @@ const ProfileEditEstore = () => {
     setLoading(true);
 
     const {
-      estoreName,
-      ownerName,
-
-      estoreContact,
-      estoreAddress,
-      estoreLocation,
-      estoreDistrict,
-      estoreState,
-      estoreCity,
-      estoreDescription,
+      workerName,
+      workerContact,
+      workerAddress,
+      workerLocation,
+      workerDistrict,
+      workerState,
+      workerCity,
       role,
+      workerDescription,
       categories,
     } = formData;
 
@@ -124,7 +124,7 @@ const ProfileEditEstore = () => {
     if (imageFile) {
       // Upload image to Firebase Storage
       const storage = getStorage();
-      const uniqueFilename = `estores/${Date.now()}_${imageFile.name}`;
+      const uniqueFilename = `workers/${Date.now()}_${imageFile.name}`;
       const imageRef = ref(storage, uniqueFilename);
 
       // Upload image to Firebase Storage
@@ -142,12 +142,12 @@ const ProfileEditEstore = () => {
       //   }));
     }
 
-    let estoreId;
+    let workerId;
     try {
-      // Query the document where ownerId matches
+      // Query the document where workerId matches
       const profileQuery = query(
-        collection(db, "estores"),
-        where("ownerId", "==", user.uid)
+        collection(db, "workers"),
+        where("workerId", "==", user.uid)
       );
 
       const querySnapshot = await getDocs(profileQuery);
@@ -155,26 +155,24 @@ const ProfileEditEstore = () => {
       if (!querySnapshot.empty) {
         // Get the document ID
         const docId = querySnapshot.docs[0].id;
-        estoreId = docId;
+        workerId = docId;
         // Update the document
-        await updateDoc(doc(db, "estores", docId), {
-          estoreName,
+        await updateDoc(doc(db, "workers", docId), {
+          workerName,
           imageUrl: firebaseImageUrl,
-          ownerName,
-
-          estoreContact,
-          estoreAddress,
-          estoreLocation,
-          estoreDistrict,
-          estoreState,
-          estoreCity,
-          estoreDescription,
-          role,
+          workerContact,
+          workerAddress,
+          workerLocation,
+          workerCity,
+          workerDistrict,
+          workerState,
           categories,
+          workerDescription,
+          role,
           editedAt: new Date(),
         });
       } else {
-        console.log("No document found for this ownerId.");
+        console.log("No document found for this workerId.");
       }
     } catch (error) {
       console.error("Error updating e-store:", error);
@@ -182,47 +180,47 @@ const ProfileEditEstore = () => {
 
     try {
       // Query the worker document where workerId matches user.uid
-      const estoreQuery = query(
-        collection(db, "estores"),
-        where("ownerId", "==", user.uid)
+      const workerQuery = query(
+        collection(db, "workers"),
+        where("workerId", "==", user.uid)
       );
-      const estoreSnapshot = await getDocs(estoreQuery);
+      const workerSnapshot = await getDocs(workerQuery);
 
-      if (estoreSnapshot.empty) {
-        console.log("No document found for this estoreId.");
+      if (workerSnapshot.empty) {
+        console.log("No document found for this workerId.");
         return;
       }
 
       // Get the worker's document ID
-      const ownerDocId = estoreSnapshot.docs[0].data().ownerId;
+      const workerDocId = workerSnapshot.docs[0].data().workerId;
 
       // Query the user document where id matches workerDocId
       const userQuery = query(
         collection(db, "users"),
-        where("id", "==", ownerDocId)
+        where("id", "==", workerDocId)
       );
       const userSnapshot = await getDocs(userQuery);
-
       if (userSnapshot.empty) {
         console.log("No matching user document found for the given workerId.");
         return;
       }
-
       // Update the user document with the provided data
       const userDoc = userSnapshot.docs[0];
       await updateDoc(doc(db, "users", userDoc.id), {
-        city: estoreCity,
-        name: ownerName,
-        phone: estoreContact,
-        role: role,
-        editeddAt: new Date(),
+        city: workerCity,
+        name: workerName,
+        phone: workerContact,
+        role,
+        editedAt: new Date(),
       });
     } catch (error) {
       console.error("Error updating user details:", error);
     }
-    const { ownerPassword: _, ...formDataWithoutPassword } = formData;
-    await updateEstoreCategories(
-      estoreId,
+
+    const { workerPassword: _, ...formDataWithoutPassword } = formData;
+
+    await updateWorkerCategories(
+      workerId,
       {
         ...formDataWithoutPassword,
         imageUrl: firebaseImageUrl, // Ensure the updated imageUrl is included
@@ -230,28 +228,29 @@ const ProfileEditEstore = () => {
       formData.categories
     );
     setLoading(false);
-    setSuccess("Estore successfully updated.");
-    alert("Estore successfully updated..");
+    setSuccess("Worker successfully updated.");
+    alert("Worker successfully updated.");
     // Reset form
     setFormData({
-      estoreName: "",
-      ownerName: "",
-      estoreContact: "",
-      estoreAddress: "",
-      estoreLocation: "",
-      estoreDistrict: "",
-      estoreCity: "",
-      estoreState: "",
-      estoreDescription: "",
-      role: "estore",
+      workerName: "",
+      workerEmail: "",
+      workerPassword: "",
+      workerContact: "",
+      workerAddress: "",
+      workerLocation: "",
+      workerDistrict: "",
+      workerState: "",
+      workerCity: "",
+      workerDescription: "",
       categories: [],
+      role: "worker",
     });
     setImageFile(null); // Reset the image file
   };
 
-  const updateEstoreCategories = async (
-    estoreId,
-    estoreData,
+  const updateWorkerCategories = async (
+    workerId,
+    workerData,
     newCategories
   ) => {
     const batch = writeBatch(db); // Initialize batch
@@ -259,13 +258,17 @@ const ProfileEditEstore = () => {
     try {
       // Remove e-store from old categories
       const categoriesSnapshot = await getDocs(
-        collection(db, "estoreCategories")
+        collection(db, "workerCategories")
       );
+
       for (const categoryDoc of categoriesSnapshot.docs) {
         const categoryRef = categoryDoc.ref;
-        const storesSnapshot = await getDocs(collection(categoryRef, "stores"));
+        const storesSnapshot = await getDocs(
+          collection(categoryRef, "workers")
+        );
+
         for (const storeDoc of storesSnapshot.docs) {
-          if (storeDoc.id === estoreId) {
+          if (storeDoc.id === workerId) {
             batch.delete(storeDoc.ref); // Add delete operation to batch
           }
         }
@@ -274,26 +277,26 @@ const ProfileEditEstore = () => {
       // Add e-store to new categories
       try {
         for (const category of newCategories) {
-          const categoryRef = doc(db, "estoreCategories", category);
+          const categoryRef = doc(db, "workerCategories", category);
           const categoryDoc = await getDoc(categoryRef);
           if (!categoryDoc.exists()) {
             await setDoc(categoryRef, { createdAt: new Date() });
           }
 
-          const estoreRef = doc(categoryRef, "stores", estoreId);
-          const estoreDoc = await getDoc(estoreRef);
-          if (!estoreDoc.exists()) {
-            await setDoc(estoreRef, estoreData);
+          const workerRef = doc(categoryRef, "workers", workerId);
+          const workerDoc = await getDoc(workerRef);
+          if (!workerDoc.exists()) {
+            await setDoc(workerRef, workerData);
           }
         }
       } catch (error) {
-        console.error("Error adding e-store to categories:", error);
+        console.error("Error updating to categories:", error);
       }
 
       // Commit the batch after all operations
       await batch.commit();
     } catch (error) {
-      console.error("Error updating e-store categories:", error);
+      console.error("Error updating categories:", error);
     }
   };
 
@@ -308,11 +311,11 @@ const ProfileEditEstore = () => {
   };
 
   return (
-    <Estore>
-      <EstoreLayout>
+    <Worker>
+      <WorkerLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.title}>Edit Estore</h1>
+          <h1 style={styles.title}>Edit Worker</h1>
           <form onSubmit={handleEditSubmit} style={styles.form}>
             {error && <p style={styles.error}>{error}</p>}
             {success && <p style={styles.success}>{success}</p>}
@@ -331,11 +334,11 @@ const ProfileEditEstore = () => {
             ))}
 
             <div style={styles.formGroup}>
-              <label style={styles.label}>A short note about your store:</label>
+              <label style={styles.label}>A short note about you:</label>
               <textarea
                 type="text"
-                name="estoreDescription"
-                value={formData.estoreDescription}
+                name="workerDescription"
+                value={formData.workerDescription}
                 onChange={handleChange}
                 required
                 style={styles.input}
@@ -343,7 +346,7 @@ const ProfileEditEstore = () => {
             </div>
 
             <div style={styles.formGroup}>
-              <label style={styles.label}>Estore Image:</label>
+              <label style={styles.label}>Worker Image:</label>
               <input
                 type="file"
                 name="imageFile"
@@ -361,7 +364,7 @@ const ProfileEditEstore = () => {
                 gap: "10px",
               }}
             >
-              {estoreCategories.map((category) => (
+              {workerCategories.map((category) => (
                 <label key={category.id} style={styles.checkboxLabel}>
                   <input
                     type="checkbox"
@@ -380,21 +383,19 @@ const ProfileEditEstore = () => {
             </button>
           </form>
         </div>
-      </EstoreLayout>
-    </Estore>
+      </WorkerLayout>
+    </Worker>
   );
 };
 
 const formFields = [
-  { label: "Estore Name", name: "estoreName", type: "text" },
-  { label: "Owner Name", name: "ownerName", type: "text" },
-
-  { label: "Estore Contact", name: "estoreContact", type: "text" },
-  { label: "Estore Address", name: "estoreAddress", type: "text" },
-  { label: "Estore Village/Town", name: "estoreLocation", type: "text" },
-  { label: "Estore District", name: "estoreDistrict", type: "text" },
-  { label: "Estore State", name: "estoreState", type: "text" },
-  { label: "Estore City", name: "estoreCity", type: "text" },
+  { label: "Worker Name", name: "workerName", type: "text" },
+  { label: "Worker Contact", name: "workerContact", type: "text" },
+  { label: "Worker Address", name: "workerAddress", type: "text" },
+  { label: "Worker Village/Town", name: "workerLocation", type: "text" },
+  { label: "Worker District", name: "workerDistrict", type: "text" },
+  { label: "Worker State", name: "workerState", type: "text" },
+  { label: "Worker City", name: "workerCity", type: "text" },
 ];
 
 // Styles
@@ -470,4 +471,4 @@ const styles = {
 
 // Form fields configuration
 
-export default ProfileEditEstore;
+export default ProfileEditWorker;

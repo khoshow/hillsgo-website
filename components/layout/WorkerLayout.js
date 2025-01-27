@@ -127,6 +127,14 @@ const WorkerLayout = ({ children }) => {
               My Posts
             </Link>
           </li>
+          <li style={styles.sidebarItem}>
+            <Link
+              href="/skilled-worker/profile-edit"
+              style={styles.sidebarLink}
+            >
+              Profile
+            </Link>
+          </li>
           {/* Add more links as needed */}
         </ul>
       </nav>

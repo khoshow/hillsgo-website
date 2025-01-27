@@ -49,7 +49,6 @@ export default function Login() {
       if (!workerSnapshot.empty) {
         // Get the first matching document data
         const workerData = workerSnapshot.docs[0].data();
-        console.log("worker", workerData);
 
         // Set the user in context with additional details
         setUser({
@@ -99,8 +98,7 @@ export default function Login() {
             />
           </div>
           <button type="submit" style={styles.button}>
-            Login
-            {loading ? "Loading..." : ""}
+            {loading ? "Loading..." : "Login"}
           </button>
           {error && <p style={styles.error}>{error}</p>}
         </form>

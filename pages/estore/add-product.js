@@ -28,7 +28,7 @@ export default function AddProduct() {
   const dataCategories = category;
   const storage = getStorage();
 
-  console.log("userss", user);
+
 
   // Check if the user is an e-store owner
   useEffect(() => {

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css"; // Ensure the path is correct
 import Link from "next/link";
 import { auth } from "../firebase/firebase"; // Ensure auth is correctly imported
-import nookies from "nookies";
+import { parseCookies, setCookie, destroyCookie } from "nookies";
 import { useRouter } from "next/router"; // Import useRouter
 import { useUser } from "@/contexts/UserContext";
 
@@ -22,13 +22,20 @@ const Header = () => {
     try {
       await auth.signOut(); // Log out the user
       localStorage.clear();
-      const allCookies = nookies.get();
+      const allCookies = parseCookies();
+
       Object.keys(allCookies).forEach((cookieName) => {
-        nookies.destroy(null, cookieName, { path: "/" });
+        destroyCookie(null, cookieName, { path: "/" });
       });
 
       // Redirect to the homepage after sign out
-      router.push("/"); // Ensure router is available
+      // router.push("/"); // Ensure router is available
+
+      auth.onAuthStateChanged((user) => {
+        if (!user) {
+          router.push("/"); // Redirect only after sign-out is confirmed
+        }
+      });
     } catch (error) {
       console.error("Error signing out:", error);
     }
