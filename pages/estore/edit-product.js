@@ -93,6 +93,7 @@ export default function EditProduct() {
       await updateDoc(doc(db, "estoreProducts", id), {
         ...productData,
         price: parseFloat(productData.price),
+        wholesalePrice: parseFloat(productData.wholesalePrice),
         images: [...productData.images, ...imageUrls], // Append new image URLs,
         estoreContact: user.estoreContact,
         estoreName: user.estoreName,
