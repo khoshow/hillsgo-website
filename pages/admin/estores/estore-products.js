@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { db } from "../../firebase/firebase"; // Import your Firestore config
+import { db } from "../../../firebase/firebase"; // Import your Firestore config
 import {
   collection,
   query,
@@ -16,17 +16,20 @@ import {
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
-import { useUser } from "../../contexts/UserContext"; // Import your UserContext
+import { useUser } from "../../../contexts/UserContext"; // Import your UserContext
 import Header from "@/components/Header";
-import EstoreLayout from "@/components/layout/EstoreLayout"; // Assuming you have a layout for Estore
-import Estore from "@/components/auth/Estore";
+import AdminLayout from "@/components/layout/AdminLayout"; // Assuming you have a layout for Admin
+import Admin from "@/components/auth/Admin";
 
 export default function MyProducts() {
   const { user, loading: userLoading } = useUser(); // Access the user context
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+
   const router = useRouter();
+  const { id, ownerId } = router.query;
   const storage = getStorage();
+  console.log("id dgfdsg", id);
 
   useEffect(() => {
     if (userLoading) return;
@@ -39,7 +42,7 @@ export default function MyProducts() {
       try {
         const productsQuery = query(
           collection(db, "estoreProducts"),
-          where("ownerId", "==", user.uid) // Fetch products created by the logged-in user
+          where("ownerId", "==", id) // Fetch products created by the logged-in user
         );
 
         const querySnapshot = await getDocs(productsQuery);
@@ -91,17 +94,17 @@ export default function MyProducts() {
   };
   if (loading)
     return (
-      <Estore>
-        <EstoreLayout>
+      <Admin>
+        <AdminLayout>
           <Header />
           <p>Loading...</p>
-        </EstoreLayout>
-      </Estore>
+        </AdminLayout>
+      </Admin>
     );
 
   return (
-    <Estore>
-      <EstoreLayout>
+    <Admin>
+      <AdminLayout>
         <Header />
         <div style={styles.container}>
           <h1 style={styles.heading}>My Products</h1>
@@ -117,7 +120,10 @@ export default function MyProducts() {
                   <h3 style={styles.productName}>{product.name}</h3>
                   <p style={styles.productPrice}>MRP: ₹{product.mrp}</p>
                   <p style={styles.productPrice}>
-                    Wholesale Price: ₹{product.wholesalePrice}
+                    Discount: ₹{product.discountPrice}
+                  </p>
+                  <p style={styles.productPrice}>
+                    SP: ₹{product.price.toFixed(2)}
                   </p>
                   <p style={styles.productDescription}>
                     {product.description.length > 100
@@ -127,7 +133,9 @@ export default function MyProducts() {
                   <button
                     style={styles.editButton}
                     onClick={() =>
-                      router.push(`/estore/edit-product?id=${product.id}`)
+                      router.push(
+                        `/admin/estores/edit-product?id=${product.id}`
+                      )
                     }
                   >
                     Edit
@@ -145,8 +153,8 @@ export default function MyProducts() {
             )}
           </div>
         </div>
-      </EstoreLayout>
-    </Estore>
+      </AdminLayout>
+    </Admin>
   );
 }
 

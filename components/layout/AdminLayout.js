@@ -118,33 +118,28 @@ const DriverLayout = ({ children }) => {
             </Link>
           </li>
           <li style={styles.sidebarItem}>
-            <Link href="/admin/estores/add-estores" style={styles.sidebarLink}>
-              Add E-Store
+            <Link href="/admin/estores" style={styles.sidebarLink}>
+              E-Stores
             </Link>
           </li>
           <li style={styles.sidebarItem}>
-            <Link href="/admin/workers/add-workers" style={styles.sidebarLink}>
-              Add Workers
+            <Link href="/admin/workers" style={styles.sidebarLink}>
+              Workers
             </Link>
           </li>
-          <li style={styles.sidebarItem}>
-            <Link href="/admin/drivers/add-driver" style={styles.sidebarLink}>
-              Add Driver
-            </Link>
-          </li>
+
           <li style={styles.sidebarItem}>
             <Link href="/admin/push-notifications" style={styles.sidebarLink}>
-              Send Notifications
+              Notifications
             </Link>
           </li>
+
           <li style={styles.sidebarItem}>
-            <Link
-              href="/admin/push-notifications/sent"
-              style={styles.sidebarLink}
-            >
-              All Notifications
+            <Link href="/admin/home-banner" style={styles.sidebarLink}>
+              Home Banner
             </Link>
           </li>
+
           {/* Add more links as needed */}
         </ul>
       </nav>

@@ -18,6 +18,7 @@ export default function AddProduct() {
   const [productData, setProductData] = useState({
     name: "",
     price: "",
+    mrp: "",
     wholesalePrice: "",
     size: "",
     weight: "",
@@ -27,8 +28,6 @@ export default function AddProduct() {
   const [images, setImages] = useState([]);
   const dataCategories = category;
   const storage = getStorage();
-
-
 
   // Check if the user is an e-store owner
   useEffect(() => {
@@ -100,7 +99,8 @@ export default function AddProduct() {
 
       await addDoc(collection(db, "estoreProducts"), {
         ...productData,
-        price: parseFloat(productData.price),
+        mrp: parseFloat(productData.mrp),
+        price: parseFloat(productData.mrp),
         wholesalePrice: parseFloat(productData.wholesalePrice),
         images: imageUrls,
         ownerId: user.uid,
@@ -114,6 +114,7 @@ export default function AddProduct() {
       alert("Product added successfully!");
       setProductData({
         name: "",
+        mrp: "",
         price: "",
         wholesalePrice: "",
         size: "",
@@ -173,8 +174,8 @@ export default function AddProduct() {
               Maximum Retail Price (MRP):
               <input
                 type="number"
-                name="price"
-                value={productData.price}
+                name="mrp"
+                value={productData.mrp}
                 onChange={handleInputChange}
                 required
                 style={formStyles.input}

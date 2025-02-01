@@ -21,44 +21,44 @@ import Header from "@/components/Header";
 import AdminLayout from "@/components/layout/AdminLayout"; // Assuming you have a layout for Estore
 import Admin from "@/components/auth/Admin";
 
-export default function MyEstores() {
+export default function HomeBanners() {
   const { user, loading: userLoading } = useUser(); // Access the user context
-  const [estores, setEstores] = useState([]);
+  const [banners, setBanners] = useState([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const storage = getStorage();
 
   useEffect(() => {
     if (userLoading) return;
-    const fetchEstores = async () => {
+    const fetchBanners = async () => {
       if (!user) {
         router.push("/"); // Redirect if not logged in
         return;
       }
 
       try {
-        const estoresQuery = query(
-          collection(db, "estores")
-          // where("ownerId", "==", user.uid) // Fetch estores created by the logged-in user
+        const bannersQuery = query(
+          collection(db, "homeBanners")
+          // where("ownerId", "==", user.uid) // Fetch banners created by the logged-in user
         );
 
-        const querySnapshot = await getDocs(estoresQuery);
-        const estoreList = querySnapshot.docs.map((doc) => ({
+        const querySnapshot = await getDocs(bannersQuery);
+        const bannerList = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
 
-        setEstores(estoreList); // Update state with fetched estores
+        setBanners(bannerList); // Update state with fetched banners
       } catch (error) {
-        console.error("Error fetching estores:", error);
+        console.error("Error fetching banners:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchEstores();
+    fetchBanners();
   }, [user, router]);
-  console.log("Prod", estores);
+  console.log("Prod", banners);
 
   if (loading)
     return (
@@ -70,34 +70,47 @@ export default function MyEstores() {
       </Admin>
     );
 
+  const handleDeleteBanner = async (id) => {
+    const confirmed = confirm("Are you sure you want to delete this banner?");
+    if (!confirmed) return;
+    console.log("delete", id);
+    try {
+      await deleteDoc(doc(db, "homeBanners", id));
+      alert("Successfully deleted");
+    } catch (error) {
+      console.log("Unable to Delete");
+      alert("Unable to delete");
+    }
+  };
+
   return (
     <Admin>
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.heading}>Estores</h1>
-          <div style={styles.estoreGrid}>
-            {estores.length > 0 ? (
-              estores.map((estore) => (
-                <div key={estore.id} style={styles.estoreCard}>
+          <h1 style={styles.heading}>Home Banners</h1>
+          <div style={styles.bannerGrid}>
+            {banners.length > 0 ? (
+              banners.map((banner) => (
+                <div key={banner.id} style={styles.bannerCard}>
                   <img
-                    src={estore.imageUrl} // Assuming first image is used for the card
-                    alt={estore.name}
+                    src={banner.imageUrl} // Assuming first image is used for the card
+                    alt={banner.name}
                     style={styles.image}
                   />
-                  <h3 style={styles.estoreName}>{estore.estoreName}</h3>
+                  <h3 style={styles.bannerName}>{banner.bannerName}</h3>
 
-                  <p style={styles.estoreDescription}>
-                    Address: {estore.estoreAddress}
+                  <p style={styles.bannerDescription}>
+                    Message: {banner.message}
                   </p>
-                  <p style={styles.estoreDescription}>
-                    Owner: {estore.ownerName}
+                  <p style={styles.bannerDescription}>
+                    Banner Link: {banner.bannerUrl}
                   </p>
                   <button
                     style={styles.editButton}
                     onClick={() =>
                       router.push(
-                        `/admin/estores/edit-estore?id=${estore.ownerId}`
+                        `/admin/home-banner/edit-banner?id=${banner.id}`
                       )
                     }
                   >
@@ -105,18 +118,14 @@ export default function MyEstores() {
                   </button>
                   <button
                     style={styles.editButton}
-                    onClick={() =>
-                      router.push(
-                        `/admin/estores/estore-products?id=${estore.ownerId}`
-                      )
-                    }
+                    onClick={() => handleDeleteBanner(banner.id)}
                   >
-                    View Products
+                    Delete
                   </button>
                 </div>
               ))
             ) : (
-              <p>No estores found.</p>
+              <p>No banners found.</p>
             )}
           </div>
         </div>
@@ -136,12 +145,12 @@ const styles = {
     fontSize: "2.5em",
     marginBottom: "20px",
   },
-  estoreGrid: {
+  bannerGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
     gap: "20px",
   },
-  estoreCard: {
+  bannerCard: {
     border: "1px solid #ddd",
     borderRadius: "8px",
     padding: "10px",
@@ -154,15 +163,15 @@ const styles = {
     height: "auto",
     borderRadius: "8px",
   },
-  estoreName: {
+  bannerName: {
     fontSize: "1.5em",
     margin: "10px 0",
   },
-  estorePrice: {
+  bannerPrice: {
     fontSize: "1.2em",
     color: "#e67e22",
   },
-  estoreDescription: {
+  bannerDescription: {
     fontSize: "0.9em",
     color: "#7f8c8d",
   },

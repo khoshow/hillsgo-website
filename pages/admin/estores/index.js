@@ -1,14 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { db } from "../../../firebase/firebase"; // Import your Firestore config
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
+
 import {
   getStorage,
   ref,
@@ -21,7 +13,7 @@ import Header from "@/components/Header";
 import AdminLayout from "@/components/layout/AdminLayout"; // Assuming you have a layout for Estore
 import Admin from "@/components/auth/Admin";
 
-export default function PushNotification() {
+export default function Estores() {
   const { user, loading: userLoading } = useUser(); // Access the user context
 
   const router = useRouter();
@@ -32,24 +24,22 @@ export default function PushNotification() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.heading}>Notification Management</h1>
+          <h1 style={styles.heading}>Estores Management</h1>
           <div style={styles.productGrid}>
             <div style={styles.productCard}>
               <button
                 style={styles.editButton}
-                onClick={() =>
-                  router.push(`/admin/push-notifications/notification-form`)
-                }
+                onClick={() => router.push(`/admin/estores/add-estores`)}
               >
-                Send Notification
+                Add Estores
               </button>
             </div>
             <div style={styles.productCard}>
               <button
                 style={styles.editButton}
-                onClick={() => router.push(`/admin/push-notifications/sent`)}
+                onClick={() => router.push(`/admin/estores/estores-list`)}
               >
-                Notifications History
+                Estores List
               </button>
             </div>
           </div>
@@ -75,7 +65,7 @@ const styles = {
     gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
     gap: "20px",
   },
- 
+
   image: {
     width: "100%",
     height: "auto",

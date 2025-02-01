@@ -39,4 +39,12 @@ export const category = [
     id: 10,
     name: "Home Decor",
   },
+  {
+    id: 11,
+    name: "Beverages",
+  },
+  {
+    id: 12,
+    name: "Flowers",
+  },
 ];

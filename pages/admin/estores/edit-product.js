@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { db, storage } from "../../firebase/firebase"; // Import your Firestore and Storage
+import { db, storage } from "../../../firebase/firebase"; // Import your Firestore and Storage
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import {
   getStorage,
@@ -10,9 +10,9 @@ import {
   deleteObject,
 } from "firebase/storage";
 
-import { useUser } from "../../contexts/UserContext"; // Import your UserContext
-import Estore from "@/components/auth/Estore";
-import EstoreLayout from "@/components/layout/EstoreLayout";
+import { useUser } from "../../../contexts/UserContext"; // Import your UserContext
+import Admin from "@/components/auth/Admin";
+import AdminLayout from "@/components/layout/AdminLayout";
 import Header from "@/components/Header";
 
 export default function EditProduct() {
@@ -24,6 +24,7 @@ export default function EditProduct() {
     mrp: "",
     price: "",
     wholesalePrice: "",
+    discountPrice: "",
     size: "",
     weight: "",
     categories: [],
@@ -71,10 +72,13 @@ export default function EditProduct() {
     const files = Array.from(e.target.files);
     setImages(files);
   };
-
+  const calculatePrice = () => {
+    return parseFloat(productData.mrp) - parseFloat(productData.discountPrice);
+  };
   // Submit updated product to Firebase
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("idggg", id);
 
     if (!user) return;
 
@@ -89,24 +93,23 @@ export default function EditProduct() {
           return await getDownloadURL(imageRef);
         })
       );
-
       // Update product data in Firestore
       await updateDoc(doc(db, "estoreProducts", id), {
         ...productData,
         mrp: parseFloat(productData.mrp),
-        price: parseFloat(productData.mrp),
+        price: calculatePrice(),
         wholesalePrice: parseFloat(productData.wholesalePrice),
+        discountPrice: parseFloat(productData.discountPrice),
         images: [...productData.images, ...imageUrls], // Append new image URLs,
-        estoreContact: user.estoreContact,
-        estoreName: user.estoreName,
-        ownerName: user.name,
       });
 
       alert("Product updated successfully!");
       setProductData({
         name: "",
+        mrp: "",
         price: "",
         wholesalePrice: "",
+        discountPrice: "",
         size: "",
         weight: "",
         categories: [],
@@ -158,17 +161,17 @@ export default function EditProduct() {
 
   if (loading)
     return (
-      <Estore>
-        <EstoreLayout>
+      <Admin>
+        <AdminLayout>
           <Header />
           <p>Loading...</p>
-        </EstoreLayout>
-      </Estore>
+        </AdminLayout>
+      </Admin>
     );
 
   return (
-    <Estore>
-      <EstoreLayout>
+    <Admin>
+      <AdminLayout>
         <Header />
         <div style={styles.container}>
           <h1 style={styles.heading}>Edit Product</h1>
@@ -182,6 +185,17 @@ export default function EditProduct() {
                 onChange={handleInputChange}
                 required
                 style={styles.input}
+              />
+            </label>
+            <label style={{ ...styles.label, ...styles.discountLabel }}>
+              Discount Price:
+              <input
+                type="number"
+                name="discountPrice"
+                value={productData.discountPrice}
+                onChange={handleInputChange}
+                required
+                style={{ ...styles.input, ...styles.discountLabel }}
               />
             </label>
             <label style={styles.label}>
@@ -206,6 +220,7 @@ export default function EditProduct() {
                 style={styles.input}
               />
             </label>
+
             <label style={styles.label}>
               Size:
               <input
@@ -272,8 +287,8 @@ export default function EditProduct() {
             {/* Add other form fields for editing the product */}
           </div>
         </div>
-      </EstoreLayout>
-    </Estore>
+      </AdminLayout>
+    </Admin>
   );
 }
 
@@ -295,6 +310,9 @@ const styles = {
   label: {
     fontSize: "1.1em",
     marginBottom: "5px",
+  },
+  discountLabel: {
+    backgroundColor: "#95d500",
   },
   input: {
     width: "100%",

@@ -103,14 +103,11 @@ const PrivacyPolicy = () => {
             version will be posted with a new &quot;Effective Date.&quot;
           </p>
 
-          <h2>8. Contact Us</h2>
-          <p>
-            If you have questions about this Privacy Policy, please contact us:
-          </p>
+          <p>For any queries, please contact us:</p>
           <ul>
-            <li>Email: contact@hillsgo.com</li>
-            <li>Webiste:www.hillsgo.com</li>
-            <li>Address: Senapati, India</li>
+            <li>contact@hillsgo.com</li>
+            <li>www.hillsgo.com</li>
+            <li>Senapati, India</li>
           </ul>
         </div>
       </div>
