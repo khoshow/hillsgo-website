@@ -117,7 +117,6 @@ export default function EditBanner() {
                 name="message"
                 value={bannerData.message}
                 onChange={handleInputChange}
-                required
                 style={styles.input}
               />
             </label>

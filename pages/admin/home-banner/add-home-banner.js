@@ -86,7 +86,6 @@ const AdminAddBanner = () => {
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                required
                 style={styles.input}
               />
             </div>
