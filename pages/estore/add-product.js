@@ -182,7 +182,7 @@ export default function AddProduct() {
               />
             </label>
             <label style={formStyles.label}>
-              Wholesale Price:
+              HillsGO Price:
               <input
                 type="number"
                 name="wholesalePrice"
