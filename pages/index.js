@@ -4,6 +4,7 @@ import styles from "../styles/Home.module.css";
 import Header from "../components/Header";
 import Lottie from "lottie-react";
 import Footer from "@/components/Footer";
+import Image from "next/image";
 
 export default function Home() {
   const [animationData, setAnimationData] = useState(null);
@@ -48,12 +49,22 @@ export default function Home() {
             }}
           >
             To revolutionize the local economy through innovative technology.{" "}
-            <br></br>
-            Coming Soon...
           </p>
 
-          <div style={{ width: 200, height: 200, marginBottom: "1.5rem" }}>
-            {/* <Lottie animationData={animationData} loop={true} /> */}
+          <div
+            style={{
+              color: "black",
+              fontSize: "1.2rem",
+              textAlign: "center",
+            }}
+          >
+            <p>Get the App on PlayStore</p>
+            <img
+              src="https://res.cloudinary.com/finer-blue/image/upload/v1739190431/HillsGo/qrcode-page2_rqnlmw.png"
+              alt="Download App"
+              width={300}
+              height={349}
+            />
           </div>
 
           <div style={{ textAlign: "center" }}>
