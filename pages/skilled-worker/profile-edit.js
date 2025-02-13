@@ -28,6 +28,7 @@ const ProfileEditWorker = () => {
   const [formData, setFormData] = useState({
     workerName: "",
     workerEmail: "",
+    workerRate: "",
     workerPassword: "",
     workerContact: "",
     workerAddress: "",
@@ -111,6 +112,7 @@ const ProfileEditWorker = () => {
       workerName,
       workerContact,
       workerAddress,
+      workerRate,
       workerLocation,
       workerDistrict,
       workerState,
@@ -161,6 +163,7 @@ const ProfileEditWorker = () => {
           workerName,
           imageUrl: firebaseImageUrl,
           workerContact,
+          workerRate,
           workerAddress,
           workerLocation,
           workerCity,
@@ -210,6 +213,8 @@ const ProfileEditWorker = () => {
         city: workerCity,
         name: workerName,
         phone: workerContact,
+        district: workerDistrict,
+        state: workerState,
         role,
         editedAt: new Date(),
       });
@@ -390,6 +395,7 @@ const ProfileEditWorker = () => {
 
 const formFields = [
   { label: "Worker Name", name: "workerName", type: "text" },
+  { label: "Worker Rate", name: "workerRate", type: "text" },
   { label: "Worker Contact", name: "workerContact", type: "text" },
   { label: "Worker Address", name: "workerAddress", type: "text" },
   { label: "Worker Village/Town", name: "workerLocation", type: "text" },

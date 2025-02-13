@@ -27,6 +27,7 @@ const AdminAddEstore = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const estoreCategories = category;
 
@@ -109,6 +110,8 @@ const AdminAddEstore = () => {
         city: estoreCity,
         email: ownerEmail.toLowerCase(),
         id: ownerCredential.user.uid,
+        district: estoreDistrict,
+        state: estoreState,
         name: ownerName,
         phone: estoreContact,
         role: role,
@@ -205,6 +208,36 @@ const AdminAddEstore = () => {
             ))}
 
             <div style={styles.formGroup}>
+              <label style={styles.label}>
+                Create a pasword for the owner:
+              </label>
+              <div style={{ position: "relative" }}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="ownerPassword"
+                  value={formData["ownerPassword"]}
+                  onChange={handleChange}
+                  required
+                  style={{ ...styles.input, paddingRight: "30px" }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  style={{
+                    position: "absolute",
+                    right: "5px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  {showPassword ? "👁️" : "🙈"}
+                </button>
+              </div>
+            </div>
+            <div style={styles.formGroup}>
               <label style={styles.label}>Estore Image:</label>
               <input
                 type="file"
@@ -252,7 +285,7 @@ const formFields = [
   { label: "Estore Name", name: "estoreName", type: "text" },
   { label: "Owner Name", name: "ownerName", type: "text" },
   { label: "Owner Email", name: "ownerEmail", type: "email" },
-  { label: "Owner Password", name: "ownerPassword", type: "password" },
+  // { label: "Owner Password", name: "ownerPassword", type: "password" },
   { label: "Estore Contact", name: "estoreContact", type: "text" },
   { label: "Estore Address", name: "estoreAddress", type: "text" },
   { label: "Estore Village/Town", name: "estoreLocation", type: "text" },

@@ -35,7 +35,7 @@ export default function Home() {
       <main className={styles.main}>
         <section className={styles.hero}>
           <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-            <h2 style={{ fontSize: "2rem", fontWeight: "bold" }}>HillsGo</h2>
+            <h2 style={{ fontSize: "2rem", fontWeight: "bold" }}>HillsGO</h2>
             {/* <p style={{ fontSize: "1rem", color: "#555" }}>
               We bring you a little joy
             </p> */}

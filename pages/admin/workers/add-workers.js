@@ -12,6 +12,7 @@ const AdminAddWorker = () => {
   const [formData, setFormData] = useState({
     workerName: "",
     workerEmail: "",
+    workerRate: "",
     workerPassword: "",
     workerContact: "",
     workerAddress: "",
@@ -26,6 +27,7 @@ const AdminAddWorker = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const workerCategories = workerCategory;
 
@@ -53,6 +55,7 @@ const AdminAddWorker = () => {
     const {
       workerName,
       workerEmail,
+      workerRate,
       workerPassword,
       workerContact,
       workerAddress,
@@ -91,6 +94,7 @@ const AdminAddWorker = () => {
         imageUrl: firebaseImageUrl,
         workerEmail: workerEmail.toLowerCase(),
         workerId: workerCredential.user.uid,
+        workerRate,
         workerContact,
         workerAddress,
         workerLocation,
@@ -104,6 +108,8 @@ const AdminAddWorker = () => {
 
       await addDoc(collection(db, "users"), {
         city: workerCity,
+        district: workerDistrict,
+        state: workerState,
         email: workerEmail.toLowerCase(),
         id: workerCredential.user.uid,
         name: workerName,
@@ -126,6 +132,7 @@ const AdminAddWorker = () => {
       setFormData({
         workerName: "",
         workerEmail: "",
+        workerRate: "",
         workerPassword: "",
         workerContact: "",
         workerAddress: "",
@@ -196,6 +203,36 @@ const AdminAddWorker = () => {
                 />
               </div>
             ))}
+            <div style={styles.formGroup}>
+              <label style={styles.label}>
+                Create a pasword for the worker:
+              </label>
+              <div style={{ position: "relative" }}>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="workerPassword"
+                  value={formData["workerPassword"]}
+                  onChange={handleChange}
+                  required
+                  style={{ ...styles.input, paddingRight: "30px" }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  style={{
+                    position: "absolute",
+                    right: "5px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  {showPassword ? "👁️" : "🙈"}
+                </button>
+              </div>
+            </div>
 
             <div style={styles.formGroup}>
               <label style={styles.label}>Worker Image:</label>
@@ -244,7 +281,7 @@ const AdminAddWorker = () => {
 const formFields = [
   { label: "Worker Name", name: "workerName", type: "text" },
   { label: "Worker Email", name: "workerEmail", type: "email" },
-  { label: "Worker Password", name: "workerPassword", type: "password" },
+  { label: "Worker Rate", name: "workerRate", type: "text" },
   { label: "Worker Contact", name: "workerContact", type: "text" },
   { label: "Worker Address", name: "workerAddress", type: "text" },
   { label: "Worker Village/Town", name: "workerLocation", type: "text" },
