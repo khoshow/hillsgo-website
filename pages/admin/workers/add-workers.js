@@ -102,7 +102,10 @@ const AdminAddWorker = () => {
         workerDistrict,
         workerState,
         categories,
+        views: 0,
+        reviews: 0,
         role,
+
         createdAt: new Date(),
       });
 

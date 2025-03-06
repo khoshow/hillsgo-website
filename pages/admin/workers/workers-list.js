@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { db } from "../../../firebase/firebase"; // Import your Firdriver config
+import { db } from "../../../firebase/firebase"; // Import your Firworker config
 import {
   collection,
   query,
@@ -23,7 +23,7 @@ import Admin from "@/components/auth/Admin";
 
 export default function MyEstores() {
   const { user, loading: userLoading } = useUser(); // Access the user context
-  const [drivers, setDrivers] = useState([]);
+  const [workers, setWorkers] = useState([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const storage = getStorage();
@@ -37,20 +37,20 @@ export default function MyEstores() {
       }
 
       try {
-        const driversQuery = query(
-          collection(db, "drivers")
-          // where("ownerId", "==", user.uid) // Fetch drivers created by the logged-in user
+        const workersQuery = query(
+          collection(db, "workers")
+          // where("ownerId", "==", user.uid) // Fetch workers created by the logged-in user
         );
 
-        const querySnapshot = await getDocs(driversQuery);
-        const driverList = querySnapshot.docs.map((doc) => ({
+        const querySnapshot = await getDocs(workersQuery);
+        const workerList = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
 
-        setDrivers(driverList); // Update state with fetched drivers
+        setWorkers(workerList); // Update state with fetched workers
       } catch (error) {
-        console.error("Error fetching drivers:", error);
+        console.error("Error fetching workers:", error);
       } finally {
         setLoading(false);
       }
@@ -74,36 +74,46 @@ export default function MyEstores() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.heading}>Drivers</h1>
-          <div style={styles.driverGrid}>
-            {drivers.length > 0 ? (
-              drivers.map((driver) => (
-                <div key={driver.id} style={styles.driverCard}>
+          <h1 style={styles.heading}>Workers</h1>
+          <div style={styles.workerGrid}>
+            {workers.length > 0 ? (
+              workers.map((worker) => (
+                <div key={worker.id} style={styles.workerCard}>
                   <img
-                    src={driver.imageUrl} // Assuming first image is used for the card
-                    alt={driver.name}
+                    src={worker.imageUrl} // Assuming first image is used for the card
+                    alt={worker.name}
                     style={styles.image}
                   />
-                  <h3 style={styles.driverName}>{driver.driverName}</h3>
+                  <h3 style={styles.workerName}>{worker.workerName}</h3>
 
-                  <p style={styles.driverDescription}>
-                    Address: {driver.driverAddress}
+                  <p style={styles.workerDescription}>
+                    Address: {worker.workerAddress}
                   </p>
-                  <p style={styles.driverDescription}>
-                    Owner: {driver.ownerName}
+                  <p style={styles.workerDescription}>
+                    Owner: {worker.ownerName}
                   </p>
                   <button
                     style={styles.editButton}
                     onClick={() =>
-                      router.push(`/admin/drivers/edit-driver?id=${driver.id}`)
+                      router.push(`/admin/workers/edit-worker?id=${worker.id}`)
                     }
                   >
                     Edit
                   </button>
+                  <button
+                    style={styles.editButton}
+                    onClick={() =>
+                      router.push(
+                        `/admin/workers/worker-products?id=${worker.ownerId}`
+                      )
+                    }
+                  >
+                    View Products
+                  </button>
                 </div>
               ))
             ) : (
-              <p>No drivers found.</p>
+              <p>No workers found.</p>
             )}
           </div>
         </div>
@@ -123,12 +133,12 @@ const styles = {
     fontSize: "2.5em",
     marginBottom: "20px",
   },
-  driverGrid: {
+  workerGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
     gap: "20px",
   },
-  driverCard: {
+  workerCard: {
     border: "1px solid #ddd",
     borderRadius: "8px",
     padding: "10px",
@@ -141,15 +151,15 @@ const styles = {
     height: "auto",
     borderRadius: "8px",
   },
-  driverName: {
+  workerName: {
     fontSize: "1.5em",
     margin: "10px 0",
   },
-  driverPrice: {
+  workerPrice: {
     fontSize: "1.2em",
     color: "#e67e22",
   },
-  driverDescription: {
+  workerDescription: {
     fontSize: "0.9em",
     color: "#7f8c8d",
   },

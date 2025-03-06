@@ -103,6 +103,8 @@ const AdminAddEstore = () => {
         estoreState,
         estoreCity,
         role,
+        views: 0,
+        reviews: 0,
         categories,
         createdAt: new Date(),
       });
