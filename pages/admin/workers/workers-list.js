@@ -100,16 +100,6 @@ export default function MyEstores() {
                   >
                     Edit
                   </button>
-                  <button
-                    style={styles.editButton}
-                    onClick={() =>
-                      router.push(
-                        `/admin/workers/worker-products?id=${worker.ownerId}`
-                      )
-                    }
-                  >
-                    View Products
-                  </button>
                 </div>
               ))
             ) : (
