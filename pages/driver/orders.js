@@ -12,6 +12,8 @@ import {
   updateDoc,
   getDoc,
   setDoc,
+  runTransaction,
+  serverTimestamp,
 } from "firebase/firestore";
 import {
   getStorage,
@@ -31,6 +33,8 @@ export default function MyOrders() {
   const { user, loading: userLoading } = useUser(); // Access the user context
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deliveryCode, setDeliveryCode] = useState("");
+  const [deliveryNote, setDeliveryNote] = useState("");
   const router = useRouter();
   const storage = getStorage();
 
@@ -142,7 +146,7 @@ export default function MyOrders() {
         await setDoc(targetDocRef, {
           ...orderData,
           status: newStatus,
-          driver: { name: user.name, image: user.image },
+          driver: { name: user?.name || "Unknown", image: user?.image || "" },
         });
 
         // Remove the order from the current collection
@@ -154,6 +158,81 @@ export default function MyOrders() {
         await updateDoc(orderRef, { status: newStatus });
         alert(`Order status updated to "${newStatus}" successfully!`);
       }
+    } catch (error) {
+      console.error("Error updating order status:", error);
+      alert("Failed to update order status. Please try again.");
+    }
+  };
+
+  const addDeliveryNote = async (order, deliveryNote) => {
+    if (!order?.id) {
+      alert("Invalid order ID");
+      return;
+    }
+    if (!deliveryNote) {
+      alert("Please add a delivery note.");
+      return;
+    }
+    const newStatus = deliveryNote;
+    try {
+      const orderRef = doc(db, "orders", order.id);
+
+      // Get the current order data
+      const orderSnapshot = await getDoc(orderRef);
+      if (!orderSnapshot.exists()) {
+        alert("Order not found");
+        return;
+      }
+
+      await updateDoc(orderRef, { status: newStatus });
+      alert(`Order status updated to "${newStatus}" successfully!`);
+    } catch (error) {
+      console.error("Error updating order status:", error);
+      alert("Failed to update order status. Please try again.");
+    }
+  };
+
+  const completeOrder = async (order, deliveryCode) => {
+    if (!order?.id) {
+      alert("Invalid order ID");
+      return;
+    }
+
+    try {
+      const orderRef = doc(db, "orders", order.id);
+
+      // Get the current order data
+      const orderSnapshot = await getDoc(orderRef);
+      if (!orderSnapshot.exists()) {
+        alert("Order not found");
+        return;
+      }
+
+      const orderData = orderSnapshot.data();
+
+      if (order.deliveryCode !== deliveryCode) {
+        alert("Wrong delivery code. Please try again.");
+        return;
+      }
+
+      const targetDocRef = doc(db, "ordersHistory", order.id);
+      console.log("user id", user);
+
+      await runTransaction(db, async (transaction) => {
+        transaction.set(targetDocRef, {
+          ...orderData,
+          status: "completed",
+          driver: {
+            name: user?.name || "Unknown",
+            image: user?.image || "",
+            driverId: user?.uid || "",
+          },
+          deliveredAt: serverTimestamp(),
+        });
+        transaction.delete(orderRef);
+      });
+
+      alert("Order completed successfully!");
     } catch (error) {
       console.error("Error updating order status:", error);
       alert("Failed to update order status. Please try again.");
@@ -244,12 +323,12 @@ export default function MyOrders() {
                       </tbody>
                     </table>
                     <div style={{ marginTop: "20px", textAlign: "center" }}>
-                      <label
+                      {/* <label
                         htmlFor={`status-${index}`}
                         style={{ marginRight: "10px", fontWeight: "bold" }}
                       >
                         Update Status:
-                      </label>
+                      </label> */}
                       <select
                         id={`status-${index}`}
                         style={{
@@ -258,11 +337,12 @@ export default function MyOrders() {
                           border: "1px solid #ccc",
                           marginRight: "10px",
                         }}
-                        defaultValue={order?.status || "pending"} // Pre-select current status
+                        defaultValue={order?.status || "Pending"} // Pre-select current status
                         onChange={(e) =>
                           handleStatusChange(e.target.value, order)
                         }
                       >
+                        <option value="Pending">Pending</option>
                         <option value="Delivering Today">
                           Delivering Today
                         </option>
@@ -270,9 +350,9 @@ export default function MyOrders() {
                           Out for Delivery
                         </option>
 
-                        <option value="completed">Completed</option>
                         <option value="cancelled">Canceled</option>
                       </select>
+                      <br></br>
                       <button
                         style={{
                           padding: "10px 20px",
@@ -281,10 +361,86 @@ export default function MyOrders() {
                           border: "none",
                           borderRadius: "5px",
                           cursor: "pointer",
+                          marginTop: "10px",
                         }}
                         onClick={() => updateOrderStatus(order)}
                       >
-                        Submit
+                        Update Status
+                      </button>
+                    </div>
+
+                    <div style={{ marginTop: "20px", textAlign: "center" }}>
+                      {/* <label
+                        htmlFor={`status-${index}`}
+                        style={{ marginRight: "10px", fontWeight: "bold" }}
+                      >
+                        Delivery Note:
+                      </label> */}
+
+                      <label>
+                        <textarea
+                          value={deliveryNote}
+                          onChange={(e) => setDeliveryNote(e.target.value)}
+                          style={{
+                            padding: "10px",
+                            borderRadius: "5px",
+                            border: "1px solid #ccc",
+                            marginRight: "10px",
+                          }}
+                        />
+                      </label>
+                      <br></br>
+                      <button
+                        style={{
+                          padding: "10px 20px",
+                          backgroundColor: "#007bff",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "5px",
+                          cursor: "pointer",
+                          marginTop: "10px",
+                        }}
+                        onClick={() => addDeliveryNote(order, deliveryNote)}
+                      >
+                        Update Delivery Note
+                      </button>
+                    </div>
+
+                    <div style={{ marginTop: "20px", textAlign: "center" }}>
+                      {/* <label
+                        htmlFor={`status-${index}`}
+                        style={{ marginRight: "10px", fontWeight: "bold" }}
+                      >
+                        Delivery Code:
+                      </label> */}
+
+                      <input
+                        type="number"
+                        value={deliveryCode}
+                        onChange={(e) =>
+                          setDeliveryCode(Number(e.target.value))
+                        }
+                        style={{
+                          padding: "8px",
+                          borderRadius: "5px",
+                          border: "1px solid #ccc",
+                          marginRight: "10px",
+                        }}
+                      />
+                      <br></br>
+                      <button
+                        style={{
+                          padding: "10px 20px",
+                          backgroundColor: "#007bff",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "5px",
+                          cursor: "pointer",
+                          marginTop: "10px",
+                        }}
+                        onClick={() => completeOrder(order, deliveryCode)}
+                      >
+                        Complete Delivery
                       </button>
                     </div>
                   </div>

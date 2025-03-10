@@ -23,50 +23,50 @@ import Header from "@/components/Header";
 import DriverLayout from "@/components/layout/DriverLayout"; // Assuming you have a layout for Estore
 import Driver from "@/components/auth/Driver";
 
-export default function MyPosts() {
+export default function MyItems() {
   const { user, loading: userLoading } = useUser(); // Access the user context
-  const [posts, setPosts] = useState([]);
+  const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const storage = getStorage();
 
   useEffect(() => {
     if (userLoading) return;
-    const fetchPosts = async () => {
+    const fetchItems = async () => {
       if (!user) {
         router.push("/"); // Redirect if not logged in
         return;
       }
 
       try {
-        const postsQuery = query(
-          collection(db, "driversPosts"),
-          where("driverId", "==", user.uid) // Fetch products created by the logged-in user
+        const itemsQuery = query(
+          collection(db, "ordersHistory"),
+          where("driver.driverId", "==", user.uid) // Fetch products created by the logged-in user
         );
 
-        const querySnapshot = await getDocs(postsQuery);
-        const postsList = querySnapshot.docs.map((doc) => ({
+        const querySnapshot = await getDocs(itemsQuery);
+        const itemsList = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
 
-        setPosts(postsList); // Update state with fetched products
+        setItems(itemsList); // Update state with fetched products
       } catch (error) {
-        console.error("Error fetching posts:", error);
+        console.error("Error fetching items:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchPosts();
+    fetchItems();
   }, [user, router]);
-  const handleDelete = async (postId, imageUrls) => {
-    const confirmed = confirm("Are you sure you want to delete this post?");
+  const handleDelete = async (itemId, imageUrls) => {
+    const confirmed = confirm("Are you sure you want to delete this item?");
     if (!confirmed) return;
 
     try {
       // Delete product document from Firestore
-      await deleteDoc(doc(db, "driversPosts", postId));
+      await deleteDoc(doc(db, "driversItems", itemId));
       // Delete each image from Firebase Storage
       if (imageUrls) {
         const deletePromises = imageUrls.map(async (url) => {
@@ -81,12 +81,12 @@ export default function MyPosts() {
       }
 
       // Update local state to remove deleted product
-      setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+      setItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
 
-      alert("Post deleted successfully!");
+      alert("Item deleted successfully!");
     } catch (error) {
-      console.error("Error deleting post:", error);
-      alert("Failed to delete the post.");
+      console.error("Error deleting item:", error);
+      alert("Failed to delete the item.");
     }
   };
   if (loading)
@@ -104,48 +104,59 @@ export default function MyPosts() {
       <DriverLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.heading}>My Posts</h1>
+          <h1 style={styles.heading}>My Delivered Items</h1>
           <div style={styles.productGrid}>
-            {posts.length > 0 ? (
-              posts.map((post) => (
-                <div key={post.id} style={styles.productCard}>
-                  <ImageSlider images={post.images} />
-                  <p>{post.content}</p>
-
-                  {/* Display all images */}
-
-                  {/* Display all categories */}
-                  <div style={styles.categoriesContainer}>
-                    <p>Categories:</p>
-                    {post.categories && post.categories.length > 0 ? (
-                      post.categories.map((category, index) => (
-                        <span key={index} style={styles.categoryBadge}>
-                          {category}
-                        </span>
-                      ))
-                    ) : (
-                      <p>No categories assigned.</p>
-                    )}
+            {items.length > 0 ? (
+              items.map((item) => (
+                <div key={item.id} style={styles.productCard}>
+                  <div
+                    style={{
+                      backgroundColor: "#fff",
+                      padding: "16px",
+                      borderRadius: "8px",
+                      boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+                      borderLeft: "5px solid #4CAF50",
+                      marginBottom: "10px",
+                      maxWidth: "400px",
+                    }}
+                  >
+                    <h3 style={{ color: "#333", marginBottom: "10px" }}>
+                      Order Details
+                    </h3>
+                    <p>
+                      <strong>Order ID:</strong> {item.orderId}
+                    </p>
+                    <p>
+                      <strong>Delivery Address:</strong>{" "}
+                      {item.userData.deliveryAddress}
+                    </p>
+                    <p>
+                      <strong>Contact Name:</strong> {item.product.userName}
+                    </p>
+                    <p>
+                      <strong>Contact:</strong> {item.product.userContact}
+                    </p>
+                    <p>
+                      <strong>Ordered Date:</strong>{" "}
+                      {item.createdAt
+                        ? new Date(
+                            item.createdAt.seconds * 1000
+                          ).toLocaleDateString()
+                        : "N/A"}
+                    </p>
+                    <p>
+                      <strong>Date of Delivery:</strong>{" "}
+                      {item.deliveredAt
+                        ? new Date(
+                            item.deliveredAt.seconds * 1000
+                          ).toLocaleDateString()
+                        : "N/A"}
+                    </p>
                   </div>
-
-                  <button
-                    style={styles.editButton}
-                    onClick={() =>
-                      router.push(`/skilled-driver/edit-post?id=${post.id}`)
-                    }
-                  >
-                    Edit
-                  </button>
-                  <button
-                    style={styles.deleteButton}
-                    onClick={() => handleDelete(post.id, post.images)}
-                  >
-                    Delete
-                  </button>
                 </div>
               ))
             ) : (
-              <p>No posts found.</p>
+              <p>No items found.</p>
             )}
           </div>
         </div>
@@ -171,7 +182,7 @@ const styles = {
     justifyContent: "center",
   },
   productCard: {
-    width: "100%",
+    // width: "50%",
     border: "1px solid #ddd",
     borderRadius: "8px",
     overflow: "hidden",
