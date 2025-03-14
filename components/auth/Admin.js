@@ -12,6 +12,7 @@ const Admin = ({ children }) => {
     "afinerblue@gmail.com",
     "contact@hillsgo.com",
     "admin@hillsgo.com",
+    "roziiveinai99@gmail.com",
   ];
 
   useEffect(() => {
