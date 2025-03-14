@@ -8,6 +8,9 @@ import {
   getDocs,
   deleteDoc,
   doc,
+  orderBy,
+  limit,
+  startAfter,
 } from "firebase/firestore";
 import {
   getStorage,
@@ -28,11 +31,14 @@ export default function MyItems() {
   const { user, loading: userLoading } = useUser(); // Access the user context
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [lastVisible, setLastVisible] = useState(null);
+  const [hasMore, setHasMore] = useState(true);
   const router = useRouter();
   const storage = getStorage();
 
   useEffect(() => {
     if (userLoading) return;
+
     const fetchItems = async () => {
       if (!user) {
         router.push("/"); // Redirect if not logged in
@@ -41,17 +47,20 @@ export default function MyItems() {
 
       try {
         const itemsQuery = query(
-          collection(db, "ordersHistory")
-          // where("driver.driverId", "==", user.uid) // Fetch products created by the logged-in user
+          collection(db, "ordersHistory"),
+          orderBy("createdAt", "desc"), // Ensures sorting for pagination
+          limit(20) // Fetch first 20
         );
 
         const querySnapshot = await getDocs(itemsQuery);
-        const itemsList = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        setItems(itemsList); // Update state with fetched products
+        if (!querySnapshot.empty) {
+          setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]); // Store last document
+          setItems(
+            querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+          );
+        } else {
+          setHasMore(false);
+        }
       } catch (error) {
         console.error("Error fetching items:", error);
       } finally {
@@ -62,7 +71,32 @@ export default function MyItems() {
     fetchItems();
   }, [user, router]);
 
-  console.log("items", items);
+  const fetchMoreItems = async () => {
+    if (!lastVisible || !hasMore) return; // Stop if no more items
+
+    try {
+      const nextQuery = query(
+        collection(db, "ordersHistory"),
+        orderBy("createdAt", "desc"),
+        startAfter(lastVisible),
+        limit(20)
+      );
+
+      const querySnapshot = await getDocs(nextQuery);
+
+      if (!querySnapshot.empty) {
+        setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]); // Update last doc
+        setItems((prevItems) => [
+          ...prevItems,
+          ...querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })),
+        ]);
+      } else {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error("Error fetching more items:", error);
+    }
+  };
 
   const handleDelete = async (itemId, imageUrls) => {
     const confirmed = confirm("Are you sure you want to delete this item?");
@@ -93,6 +127,39 @@ export default function MyItems() {
       alert("Failed to delete the item.");
     }
   };
+
+  const outputDateTime = (time) => {
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: true,
+    };
+    const milliseconds = time.seconds * 1000 + time.nanoseconds / 1e6;
+
+    // Create a Date object
+    const date = new Date(milliseconds);
+    return date.toISOString(), date.toLocaleString("en-US", options);
+  };
+
+  const groupedItems = items.reduce((acc, item) => {
+    const orderDate = outputDateTime(item.createdAt).split(",")[0]; // Extract just the date (without time)
+
+    if (!acc[orderDate]) {
+      acc[orderDate] = [];
+    }
+
+    acc[orderDate].push(item);
+    return acc;
+  }, {});
+
+  const sortedDates = Object.keys(groupedItems).sort(
+    (a, b) => new Date(b) - new Date(a)
+  );
+
   if (loading)
     return (
       <Admin>
@@ -108,166 +175,189 @@ export default function MyItems() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.heading}>My Delivered Items</h1>
+          <h1 style={styles.heading}>Delivered Items</h1>
+
           <div style={styles.productGrid}>
-            {items.length > 0 ? (
-              items.map((item) => (
-                <div key={item.id} style={styles.productCard}>
-                  <div style={styles.tableContainerBox}>
-                    <div style={styles.tableContainer}>
-                      {/* <img
-                        src="https://firebasestorage.googleapis.com/v0/b/hillsgodev.appspot.com/o/estoreProducts%2F1734802647603_dd.jpg?alt=media&token=719f9c2e-111a-4266-addc-86c98d0508ee"
-                        alt="E-store Product"
-                        style="max-width: 300px; height: auto;"
-                      /> */}
+            {sortedDates.length > 0 ? (
+              sortedDates.map((date) => (
+                <div key={date}>
+                  <h4
+                    style={{
+                      // textAlign: "center",
+                      margin: "20px 0",
+                      color: "#333",
+                    }}
+                  >
+                    {date} {/* Display Date Heading */}
+                  </h4>
+                  {groupedItems[date].map((item, index) => (
+                    <div key={item.id} style={styles.productCard}>
+                      <h3 style={{ textAlign: "center" }}>{index + 1}</h3>
+                      <img
+                        src={item.product.productData.images[0]} // Assuming first image is used for the card
+                        alt="image detail"
+                        style={styles.image}
+                      />
 
-                      <h2>Order Details</h2>
-                      <table>
-                        <tr>
-                          <th>Order ID</th>
-                          <td>ORDER-LCUXK4AR</td>
-                        </tr>
-                        <tr>
-                          <th>Delivery Code</th>
-                          <td>5411</td>
-                        </tr>
-                        <tr>
-                          <th>Status</th>
-                          <td>Completed</td>
-                        </tr>
-                        <tr>
-                          <th>Ordered Date</th>
-                          <td>08/08/2025</td>
-                        </tr>
-                        <tr>
-                          <th>Date of Delivery</th>
-                          <td>09/09/2025</td>
-                        </tr>
-                      </table>
-                    </div>
-                    <div style={styles.tableContainer}>
-                      <h3>User Details</h3>
-                      <table>
-                        <tr>
-                          <th>Name</th>
-                          <td>Khoshow</td>
-                        </tr>
-                        <tr>
-                          <th>Phone</th>
-                          <td>9873411884</td>
-                        </tr>
-                        <tr>
-                          <th>Email</th>
-                          <td>khoshow.developer@gmail.com</td>
-                        </tr>
-                        <tr>
-                          <th>Delivery Address</th>
-                          <td>Hha</td>
-                        </tr>
-                      </table>
-                    </div>
-                    <div class="table-container">
-                      <h3>Store Details</h3>
-                      <table>
-                        <tr>
-                          <th>Store Name</th>
-                          <td>Store 2</td>
-                        </tr>
-                        <tr>
-                          <th>Owner Name</th>
-                          <td>Tommy Baltimore</td>
-                        </tr>
-                        <tr>
-                          <th>Owner Email</th>
-                          <td>store2@hillsgo.com</td>
-                        </tr>
-                        <tr>
-                          <th>Store Contact</th>
-                          <td>55555</td>
-                        </tr>
-                      </table>
-                    </div>
-                    <div class="table-container">
-                      <h3>Product Details</h3>
-                      <table>
-                        <tr>
-                          <th>Product Name</th>
-                          <td>{item.product.productData.name}</td>
-                        </tr>
-                        <tr>
-                          <th>Product Description</th>
-                          <td>{item.product.productData.description}</td>
-                        </tr>
-                        <tr>
-                          <th>Weight</th>
-                          <td>{item.product.productData.weight}</td>
-                        </tr>
-                        <tr>
-                          <th>Size</th>
-                          <td>{item?.product?.productData?.size}</td>
-                        </tr>
+                      <div style={styles.tableContainerBox}>
+                        <div style={styles.tableContainer}>
+                          <p style={styles.subTitle}>Order Details</p>
+                          <table>
+                            <tr>
+                              <th>Order ID</th>
+                              <td>{item.orderId}</td>
+                            </tr>
+                            <tr>
+                              <th>Status</th>
+                              <td>{item.status}</td>
+                            </tr>
+                            <tr>
+                              <th>Ordered Date</th>
+                              <td>{outputDateTime(item.createdAt)}</td>
+                            </tr>
+                            <tr>
+                              <th>Date of Delivery</th>
+                              <td>{outputDateTime(item.deliveredAt)}</td>
+                            </tr>
+                          </table>
+                        </div>
+                        <div style={styles.tableContainer}>
+                          <p className="subTitle">User Details</p>
+                          <table>
+                            <tr>
+                              <th>Name</th>
+                              <td>{item.userData.userName}</td>
+                            </tr>
+                            <tr>
+                              <th>Phone</th>
+                              <td>{item.userData.phone}</td>
+                            </tr>
+                            <tr>
+                              <th>Email</th>
+                              <td>{item.userData.email}</td>
+                            </tr>
+                            <tr>
+                              <th>Delivery Address</th>
+                              <td>{item.userData.deliveryAddress}</td>
+                            </tr>
+                          </table>
+                        </div>
+                        <div class="table-container">
+                          <p className="subTitle">Store Details</p>
+                          <table>
+                            <tr>
+                              <th>Store Name</th>
+                              <td>{item.estoreInfo.estoreName}</td>
+                            </tr>
+                            <tr>
+                              <th>Owner Name</th>
+                              <td>{item.estoreInfo.ownerName}</td>
+                            </tr>
+                            <tr>
+                              <th>Owner Email</th>
+                              <td>{item.estoreInfo.ownerEmail}</td>
+                            </tr>
+                            <tr>
+                              <th>Store Contact</th>
+                              <td>{item.estoreInfo.estoreContact}</td>
+                            </tr>
+                          </table>
+                        </div>
+                        <div class="table-container">
+                          <p className="subTitle">Product Details</p>
+                          <table>
+                            <tr>
+                              <th>Product Name</th>
+                              <td>{item.product.productData.name}</td>
+                            </tr>
+                            <tr>
+                              <th>Product Description</th>
+                              <td>{item.product.productData.description}</td>
+                            </tr>
+                            <tr>
+                              <th>Weight</th>
+                              <td>{item.product.productData.weight}</td>
+                            </tr>
+                            <tr>
+                              <th>Size</th>
+                              <td>{item?.product?.productData?.size}</td>
+                            </tr>
 
-                        <tr>
-                          <th>Categories</th>
-                          {item?.product?.productData?.categories.map(
-                            (item, index) => (
-                              <td key={index}>{`${item}`} </td>
-                            )
-                          )}
-                        </tr>
-                      </table>
-                    </div>
-                    <div class="table-container">
-                      <h3>Driver Details</h3>
-                      <table>
-                        <tr>
-                          <th>Name</th>
-                          <td>{item.driver.name}</td>
-                        </tr>
-                      </table>
-                    </div>
-                    <div class="table-container">
-                      <h3>Pricing Details</h3>
-                      <table>
-                        <tr>
-                          <th>Price</th>
-                          <td>₹{item.product.productData.price}</td>
-                        </tr>
+                            <tr>
+                              <th>Categories</th>
 
-                        <tr>
-                          <th>Quantity</th>
-                          <td>{item.product.productData.quantity}</td>
-                        </tr>
+                              {item?.product?.productData?.categories.map(
+                                (item, index) => (
+                                  <td key={index}>{`${item}`} </td>
+                                )
+                              )}
+                            </tr>
+                          </table>
+                        </div>
+                        <div class="table-container">
+                          <p className="subTitle">Driver Details</p>
+                          <table>
+                            <tr>
+                              <th>Name</th>
+                              <td>{item.driver.name}</td>
+                            </tr>
+                          </table>
+                        </div>
+                        <div class="table-container">
+                          <p className="subTitle">Pricing Details</p>
+                          <table>
+                            <tr>
+                              <th>Price</th>
+                              <td>₹{item.product.productData.price}</td>
+                            </tr>
 
-                        <tr>
-                          <th>Subtotal</th>
-                          <td>₹{item.product.productData.subtotal}</td>
-                        </tr>
-                        <tr>
-                          <th>Tip</th>
-                          <td>₹{item.product.tip}</td>
-                        </tr>
-                        <tr>
-                          <th>Delivery Cost</th>
-                          <td>₹{item.product.deliveryCost}</td>
-                        </tr>
-                        <tr>
-                          <th>Total Payment</th>
-                          <td>
-                            ₹
-                            {item.product.deliveryCost +
-                              item.product.tip +
-                              item.product.productData.subtotal}
-                          </td>
-                        </tr>
-                      </table>
+                            <tr>
+                              <th>Quantity</th>
+                              <td>{item.product.productData.quantity}</td>
+                            </tr>
+
+                            <tr>
+                              <th>Subtotal</th>
+                              <td>₹{item.product.productData.subtotal}</td>
+                            </tr>
+                            <tr>
+                              <th>Tip</th>
+                              <td>₹{item.product.tip}</td>
+                            </tr>
+                            <tr>
+                              <th>Delivery Cost</th>
+                              <td>₹{item.product.deliveryCost}</td>
+                            </tr>
+                            <tr>
+                              <th>Total Payment</th>
+                              <td>
+                                ₹
+                                {item.product.deliveryCost +
+                                  item.product.tip +
+                                  item.product.productData.subtotal}
+                              </td>
+                            </tr>
+                          </table>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
               ))
             ) : (
               <p>No items found.</p>
             )}
+
+            <div style={{ textAlign: "center" }}>
+              {hasMore && (
+                <button
+                  onClick={fetchMoreItems}
+                  style={{ textAlign: "center", marginTop: "2rem" }}
+                >
+                  Load More
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </AdminLayout>
@@ -286,8 +376,6 @@ const styles = {
     marginBottom: "20px",
   },
   productGrid: {
-    display: "flex",
-    flexWrap: "wrap",
     gap: "20px",
     justifyContent: "center",
   },
@@ -302,11 +390,12 @@ const styles = {
 
   table: {
     width: "100%",
-    borderCollapse: "collapse",
+    borderCollapse: "",
   },
   tableContainerBox: {
-    display: "flex",
-    flexWrap: "wrap",
+    padding: "8px",
+    display: "grid",
+    gridTemplateColumns: "repeat(2, 1fr)",
     gap: "20px",
     justifyContent: "spaceBetween",
   },
@@ -332,10 +421,14 @@ const styles = {
     marginBottom: "10px",
   },
   image: {
-    width: "50%",
+    width: "200px",
     height: "auto",
     objectFit: "cover",
     marginBottom: "5px",
+
+    borderRadius: "10px",
+    display: "block",
+    margin: "0 auto 2rem",
   },
   categoriesContainer: {
     display: "flex",
@@ -369,5 +462,18 @@ const styles = {
     border: "none",
     borderRadius: "4px",
     cursor: "pointer",
+  },
+
+  subTitle: {
+    fontSize: "20px",
+    fontWeight: "bold",
+    color: "#333",
+    textAlign: "center",
+    padding: "10px 15px",
+    background:
+      "linear-gradient(90deg, #ff7e5f, #feb47b)" /* Gradient background */,
+    borderRadius: "8px",
+    display: "inline-block",
+    boxShadow: "2px 2px 10px rgba(0, 0, 0, 0.2)",
   },
 };

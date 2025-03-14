@@ -101,6 +101,7 @@ export default function MyOrders() {
     }
   };
 
+
   if (loading)
     return (
       <Driver>
@@ -216,7 +217,7 @@ export default function MyOrders() {
       }
 
       const targetDocRef = doc(db, "ordersHistory", order.id);
-      console.log("user id", user);
+   
 
       await runTransaction(db, async (transaction) => {
         transaction.set(targetDocRef, {

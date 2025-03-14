@@ -121,3 +121,19 @@ a {
     color-scheme: dark;
   }
 }
+
+.subTitle {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+  padding: 10px 15px;
+  background: linear-gradient(
+    90deg,
+    #ff7e5f,
+    #feb47b
+  ); /* Gradient background */
+  border-radius: 8px;
+  display: inline-block;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+}

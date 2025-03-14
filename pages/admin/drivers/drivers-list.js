@@ -84,14 +84,19 @@ export default function MyEstores() {
                     alt={driver.name}
                     style={styles.image}
                   />
+
                   <h3 style={styles.driverName}>{driver.driverName}</h3>
 
                   <p style={styles.driverDescription}>
                     Address: {driver.driverAddress}
                   </p>
                   <p style={styles.driverDescription}>
-                    Owner: {driver.ownerName}
+                    Contact: {driver.driverContact}
                   </p>
+                  <p style={styles.driverDescription}>
+                    Email: {driver.driverEmail}
+                  </p>
+
                   <button
                     style={styles.editButton}
                     onClick={() =>

@@ -12,6 +12,7 @@ import {
   updateDoc,
   getDoc,
   setDoc,
+  orderBy,
 } from "firebase/firestore";
 import {
   getStorage,
@@ -31,6 +32,7 @@ export default function MyOrders() {
   const { user, loading: userLoading } = useUser(); // Access the user context
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deliveryNote, setDeliveryNote] = useState({});
   const router = useRouter();
   const storage = getStorage();
 
@@ -44,7 +46,8 @@ export default function MyOrders() {
 
       try {
         const ordersQuery = query(
-          collection(db, "orders")
+          collection(db, "orders"),
+          orderBy("createdAt", "desc")
           // where("driverId", "==", user.uid) // Fetch products created by the logged-in user
         );
 
@@ -160,6 +163,62 @@ export default function MyOrders() {
     }
   };
 
+  const handleNoteChange = (id, value) => {
+    setDeliveryNote((prev) => ({
+      ...prev,
+      [id]: value, // Update only the specific item
+    }));
+  };
+
+  const addDeliveryNote = async (order, deliveryNote) => {
+    if (!order?.id) {
+      alert("Invalid order ID");
+      return;
+    }
+    if (!deliveryNote) {
+      alert("Please add a delivery note.");
+      return;
+    }
+
+    const newStatus = Object.values(deliveryNote)[0];
+
+    try {
+      const orderRef = doc(db, "orders", order.id);
+
+      // Get the current order data
+      const orderSnapshot = await getDoc(orderRef);
+      if (!orderSnapshot.exists()) {
+        alert("Order not found");
+        return;
+      }
+
+      await updateDoc(orderRef, { status: newStatus });
+      alert(`Order status updated to "${newStatus}" successfully!`);
+    } catch (error) {
+      console.error("Error updating order status:", error);
+      alert("Failed to update order status. Please try again.");
+    }
+  };
+
+  const outputDateTime = (time) => {
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: true,
+    };
+    const milliseconds = time.seconds * 1000 + time.nanoseconds / 1e6;
+
+    // Create a Date object
+    const date = new Date(milliseconds);
+    return date.toISOString(), date.toLocaleString("en-US", options);
+   
+  };
+
+
   return (
     <Admin>
       <AdminLayout>
@@ -168,132 +227,152 @@ export default function MyOrders() {
           <h1 style={styles.heading}>Current Orders</h1>
           <div style={styles.productGrid}>
             {orders.length > 0 ? (
-              orders.map((order, index) =>
-                order ? (
-                  <div
-                    key={index}
-                    style={{
-                      margin: "20px",
-                      padding: "20px",
-                      border: "1px solid #ccc",
-                      borderRadius: "10px",
-                      backgroundColor: "#f9f9f9",
-                    }}
-                  >
-                    <h2
-                      style={{
-                        textAlign: "center",
-                        marginBottom: "20px",
-                        color: "#333",
-                      }}
-                    >
-                      {index + 1}
-                    </h2>
-                    <table
-                      style={{ width: "100%", borderCollapse: "collapse" }}
-                    >
-                      <tbody>
-                        <tr>
-                          <td style={styles.label}>Order ID:</td>
-                          <td style={styles.value}>
-                            {order?.orderId || "Order ID Not Available"}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style={styles.label}>Name:</td>
-                          <td style={styles.value}>
-                            {order?.product?.userName ||
-                              "Customer Name Not Available"}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style={styles.label}>Contact:</td>
-                          <td style={styles.value}>
-                            {order?.product?.userContact ||
-                              "Customer Contact Not Available"}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style={styles.label}>Delivery Address:</td>
-                          <td style={styles.value}>
-                            {order?.userData?.deliveryAddress ||
-                              "Delivery Address Not Available"}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style={styles.label}>Product Name:</td>
-                          <td style={styles.value}>
-                            {order?.product?.productData?.name ||
-                              "Product Name Unavailable"}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style={styles.label}>Quantity:</td>
-                          <td style={styles.value}>
-                            {order?.product?.productData?.quantity ||
-                              "Quantity Unavailable"}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style={styles.label}>Amount:</td>
-                          <td style={styles.value}>
-                            {order?.product?.productData?.subtotal ||
-                              "Amount Not Available"}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    <div style={{ marginTop: "20px", textAlign: "center" }}>
-                      <label
-                        htmlFor={`status-${index}`}
-                        style={{ marginRight: "10px", fontWeight: "bold" }}
-                      >
-                        Update Status:
-                      </label>
-                      <select
-                        id={`status-${index}`}
-                        style={{
-                          padding: "10px",
-                          borderRadius: "5px",
-                          border: "1px solid #ccc",
-                          marginRight: "10px",
-                        }}
-                        defaultValue={order?.status || "pending"} // Pre-select current status
-                        onChange={(e) =>
-                          handleStatusChange(e.target.value, order)
-                        }
-                      >
-                        <option value="Delivering Today">
-                          Delivering Today
-                        </option>
-                        <option value="Out for Delivery">
-                          Out for Delivery
-                        </option>
+              orders.map((item, index) => (
+                <div key={item.id} style={styles.productCard}>
+                  <h3 style={{ textAlign: "center" }}>{index + 1}</h3>
+                  <img
+                    src={item.product.productData.images[0]} // Assuming first image is used for the card
+                    alt="image detail"
+                    style={styles.image}
+                  />
 
-                        <option value="completed">Completed</option>
-                        <option value="cancelled">Canceled</option>
-                      </select>
-                      <button
-                        style={{
-                          padding: "10px 20px",
-                          backgroundColor: "#007bff",
-                          color: "white",
-                          border: "none",
-                          borderRadius: "5px",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => updateOrderStatus(order)}
-                      >
-                        Submit
-                      </button>
+                  <div style={styles.tableContainerBox}>
+                    <div style={styles.tableContainer}>
+                      <p className="subTitle">Order Details</p>
+                      <table>
+                        <tr>
+                          <th>Order ID: </th>
+                          <td>{item.orderId}</td>
+                        </tr>
+                        <tr>
+                          <th>Status: </th>
+                          <td>{item.status}</td>
+                        </tr>
+                        <tr>
+                          <th>Ordered Date: </th>
+                          <td>{outputDateTime(item.createdAt)}</td>
+                        </tr>
+                        {/* <tr>
+                          <th>Date of Delivery</th>
+                          <td>{outputDateTime(item.deliveredAt)}</td>
+                        </tr> */}
+                      </table>
+                    </div>
+                    <div style={styles.tableContainer}>
+                      <p className="subTitle">User Details</p>
+                      <table>
+                        <tr>
+                          <th>Name: </th>
+                          <td>{item.userData.userName}</td>
+                        </tr>
+                        <tr>
+                          <th>Phone: </th>
+                          <td>{item.userData.phone}</td>
+                        </tr>
+                        <tr>
+                          <th>Email: </th>
+                          <td>{item.userData.email}</td>
+                        </tr>
+                        <tr>
+                          <th>Delivery Address: </th>
+                          <td>{item.userData.deliveryAddress}</td>
+                        </tr>
+                      </table>
+                    </div>
+                    <div class="table-container">
+                      <p className="subTitle">Store Details</p>
+                      <table>
+                        <tr>
+                          <th>Store Name: </th>
+                          <td>{item.estoreInfo.estoreName}</td>
+                        </tr>
+                        <tr>
+                          <th>Owner Name: </th>
+                          <td>{item.estoreInfo.ownerName}</td>
+                        </tr>
+                        <tr>
+                          <th>Owner Email: </th>
+                          <td>{item.estoreInfo.ownerEmail}</td>
+                        </tr>
+                        <tr>
+                          <th>Store Contact: </th>
+                          <td>{item.estoreInfo.estoreContact}</td>
+                        </tr>
+                      </table>
+                    </div>
+                    <div class="table-container">
+                      <p className="subTitle">Product Details</p>
+                      <table>
+                        <tr>
+                          <th>Product Name: </th>
+                          <td>{item.product.productData.name}</td>
+                        </tr>
+                        <tr>
+                          <th>Product Description: </th>
+                          <td>{item.product.productData.description}</td>
+                        </tr>
+                        <tr>
+                          <th>Weight: </th>
+                          <td>{item.product.productData.weight}</td>
+                        </tr>
+                        <tr>
+                          <th>Size: </th>
+                          <td>{item?.product?.productData?.size}</td>
+                        </tr>
+
+                        <tr>
+                          <th>Categories</th>
+
+                          {item?.product?.productData?.categories.map(
+                            (item, index) => (
+                              <td key={index}>{`${item}`} </td>
+                            )
+                          )}
+                        </tr>
+                      </table>
+                    </div>
+
+                    <div class="table-container">
+                      <p className="subTitle">Pricing Details</p>
+                      <table>
+                        <tr>
+                          <th>Price: </th>
+                          <td>₹{item.product.productData.price}</td>
+                        </tr>
+
+                        <tr>
+                          <th>Quantity: </th>
+                          <td>{item.product.productData.quantity}</td>
+                        </tr>
+
+                        <tr>
+                          <th>Subtotal: </th>
+                          <td>₹{item.product.productData.subtotal}</td>
+                        </tr>
+                        <tr>
+                          <th>Tip: </th>
+                          <td>₹{item.product.tip}</td>
+                        </tr>
+                        <tr>
+                          <th>Delivery Cost: </th>
+                          <td>₹{item.product.deliveryCost}</td>
+                        </tr>
+                        <tr>
+                          <th>Total Payment: </th>
+                          <td>
+                            ₹
+                            {item.product.deliveryCost +
+                              item.product.tip +
+                              item.product.productData.subtotal}
+                          </td>
+                        </tr>
+                      </table>
                     </div>
                   </div>
-                ) : (
-                  <p key={index} style={{ color: "black" }}></p>
-                )
-              )
+                </div>
+              ))
             ) : (
-              <p>No orders found.</p>
+              <p>No items found.</p>
             )}
           </div>
         </div>
@@ -334,10 +413,16 @@ const styles = {
     marginBottom: "10px",
   },
   image: {
-    width: "50%",
+    width: "200px",
     height: "auto",
     objectFit: "cover",
     marginBottom: "5px",
+    // margin: "0 auto",
+    // justifyContent: "center",
+    // textAlign: "center",
+    borderRadius: "10px",
+    display: "block",
+    margin: "0 auto 2rem",
   },
   categoriesContainer: {
     display: "flex",
@@ -384,6 +469,45 @@ const styles = {
     padding: "10px",
     textAlign: "left",
     backgroundColor: "#fff",
+    border: "1px solid #ddd",
+  },
+
+  productGrid: {
+    gap: "20px",
+    justifyContent: "center",
+  },
+  productCard: {
+    // width: "50%",
+    border: "1px solid #ddd",
+    borderRadius: "8px",
+    overflow: "hidden",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    // textAlign: "center",
+  },
+
+  table: {
+    width: "100%",
+    borderCollapse: "",
+  },
+  tableContainerBox: {
+    padding: "8px",
+    display: "grid",
+    gridTemplateColumns: "repeat(2, 1fr)",
+    gap: "20px",
+    justifyContent: "spaceBetween",
+  },
+  tableContainer: {
+    flex: "1",
+    minWidth: "300px",
+  },
+  td: {
+    padding: "8px",
+    border: "1px solid #ddd",
+  },
+  th: {
+    textAlign: "left",
+    padding: "10px",
+    backgroundColor: "#f4f4f4",
     border: "1px solid #ddd",
   },
 };
