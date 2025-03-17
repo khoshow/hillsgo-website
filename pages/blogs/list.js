@@ -27,7 +27,8 @@ const BlogList = () => {
     fetchBlogs();
   }, []);
 
-  if (loading) return <p>Loading blogs...</p>;
+  if (loading) return <p style={styles.loading}>Loading blogs...</p>;
+  if (!blogs) return <p style={styles.error}>Blogs not found.</p>;
 
   return (
     <>
@@ -104,6 +105,25 @@ const styles = {
   date: {
     fontSize: "14px",
     color: "#666",
+  },
+
+  loading: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+    textAlign: "center",
+    fontSize: "18px",
+    color: "#555",
+  },
+  error: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+    textAlign: "center",
+    fontSize: "18px",
+    color: "#555",
   },
 };
 

@@ -32,21 +32,22 @@ const BlogDetail = () => {
     fetchBlog();
   }, [id]);
 
-  if (loading) return <p style={styles.loading}>Loading...</p>;
-  if (!blog) return <p style={styles.error}>Blog not found.</p>;
+  if (loading) return <p style={styles2.loading}>Loading...</p>;
+  if (!blog) return <p style={styles2.error}>Blog not found.</p>;
 
   return (
     <>
       <Header />
-      <div style={styles.container}>
-        <h1 style={styles.title}>{blog.title}</h1>
-        <p style={styles.date}>
+      <div style={styles2.container}>
+        <h1 style={styles2.title}>{blog.title}</h1>
+        <p style={styles2.date}>
           {new Date(blog.createdAt.seconds * 1000).toDateString()}
         </p>
-        <img src={blog.imageUrl} alt={blog.title} style={styles.image} />
+        <img src={blog.imageUrl} alt={blog.title} style={styles2.image} />
         <div
-          style={styles.content}
+          style={styles2.content}
           dangerouslySetInnerHTML={{ __html: blog.content }}
+          className="content"
         ></div>
       </div>
       <Footer />
@@ -54,7 +55,7 @@ const BlogDetail = () => {
   );
 };
 
-const styles = {
+const styles2 = {
   container: {
     maxWidth: "800px",
     width: "90%",
@@ -86,11 +87,13 @@ const styles = {
     marginLeft: "auto",
     marginRight: "auto",
   },
+
   content: {
     fontSize: "18px",
     textAlign: "justify",
     color: "#444",
   },
+
   loading: {
     display: "flex",
     justifyContent: "center",
