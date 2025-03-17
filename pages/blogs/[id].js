@@ -32,8 +32,8 @@ const BlogDetail = () => {
     fetchBlog();
   }, [id]);
 
-  if (loading) return <p>Loading...</p>;
-  if (!blog) return <p>Blog not found.</p>;
+  if (loading) return <p style={styles.loading}>Loading...</p>;
+  if (!blog) return <p style={styles.error}>Blog not found.</p>;
 
   return (
     <>
@@ -57,15 +57,18 @@ const BlogDetail = () => {
 const styles = {
   container: {
     maxWidth: "800px",
+    width: "90%",
     margin: "40px auto",
     padding: "20px",
-    fontFamily: "Arial, sans-serif",
+    fontFamily: "'Arial', sans-serif",
+    lineHeight: "1.8",
   },
   title: {
-    fontSize: "28px",
+    fontSize: "32px",
     fontWeight: "bold",
     marginBottom: "10px",
     textAlign: "center",
+    color: "#333",
   },
   date: {
     fontSize: "14px",
@@ -75,12 +78,36 @@ const styles = {
   },
   image: {
     width: "100%",
+    maxWidth: "70vw",
+    height: "auto",
     borderRadius: "8px",
     marginBottom: "20px",
+    display: "block",
+    marginLeft: "auto",
+    marginRight: "auto",
   },
   content: {
-    fontSize: "16px",
-    lineHeight: "1.6",
+    fontSize: "18px",
+    textAlign: "justify",
+    color: "#444",
+  },
+  loading: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+    textAlign: "center",
+    fontSize: "18px",
+    color: "#555",
+  },
+  error: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100vh",
+    textAlign: "center",
+    fontSize: "18px",
+    color: "#555",
   },
 };
 
