@@ -149,7 +149,11 @@ const DriverLayout = ({ children }) => {
               Home Banner
             </Link>
           </li>
-
+          <li style={styles.sidebarItem}>
+            <Link href="/admin/blogs" style={styles.sidebarLink}>
+              Blogs
+            </Link>
+          </li>
           {/* Add more links as needed */}
         </ul>
       </nav>

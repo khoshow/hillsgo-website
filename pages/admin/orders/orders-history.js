@@ -138,7 +138,7 @@ export default function MyItems() {
       second: "numeric",
       hour12: true,
     };
-    const milliseconds = time.seconds * 1000 + time.nanoseconds / 1e6;
+    const milliseconds = time?.seconds * 1000 + time?.nanoseconds / 1e6;
 
     // Create a Date object
     const date = new Date(milliseconds);
@@ -260,6 +260,10 @@ export default function MyItems() {
                             <tr>
                               <th>Store Contact</th>
                               <td>{item.estoreInfo.estoreContact}</td>
+                            </tr>
+                            <tr>
+                              <th>Store Address</th>
+                              <td>{item.estoreInfo.estoreAddress}</td>
                             </tr>
                           </table>
                         </div>

@@ -31,50 +31,69 @@ export default function Home() {
       </Head>
 
       <Header />
-
-      <main className={styles.main}>
-        <section className={styles.hero}>
-          <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-            <h2 style={{ fontSize: "2rem", fontWeight: "bold" }}>HillsGO</h2>
-            {/* <p style={{ fontSize: "1rem", color: "#555" }}>
+      <div style={styles2.container}>
+        <main className={styles.main}>
+          <section className={styles.hero}>
+            <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+              <h2 style={{ fontSize: "2rem", fontWeight: "bold" }}>HillsGO</h2>
+              {/* <p style={{ fontSize: "1rem", color: "#555" }}>
               We bring you a little joy
             </p> */}
-          </div>
-          <p
-            style={{
-              color: "black",
-              fontSize: "1.2rem",
-              marginBottom: "1.5rem",
-              textAlign: "center",
-            }}
-          >
-            To revolutionize the local economy through innovative technology.{" "}
-          </p>
-
-          <div
-            style={{
-              color: "black",
-              fontSize: "1.2rem",
-              textAlign: "center",
-            }}
-          >
-            <p>Get the App on PlayStore</p>
-            <img
-              src="https://res.cloudinary.com/finer-blue/image/upload/v1739190431/HillsGo/qrcode-page2_rqnlmw.png"
-              alt="Download App"
-              width={300}
-              height={349}
-            />
-          </div>
-
-          <div style={{ textAlign: "center" }}>
-            <p style={{ fontSize: "1rem", color: "#777" }}>
-              contact@hillsgo.com
+            </div>
+            <p
+              style={{
+                color: "black",
+                fontSize: "1.2rem",
+                marginBottom: "1.5rem",
+                textAlign: "center",
+              }}
+            >
+              To revolutionize the local economy through innovative technology.{" "}
             </p>
-          </div>
-        </section>
-      </main>
+
+            <div
+              style={{
+                color: "black",
+                fontSize: "1.2rem",
+                textAlign: "center",
+              }}
+            >
+              <p>Get the App on PlayStore</p>
+              <img
+                src="https://res.cloudinary.com/finer-blue/image/upload/v1739190431/HillsGo/qrcode-page2_rqnlmw.png"
+                alt="Download App"
+                width={300}
+                height={349}
+              />
+            </div>
+            <div style={{ textAlign: "center" }}>
+              <a
+                href="https://play.google.com/store/apps/details?id=com.hillsgo.hillsgoapp"
+                style={{ color: "#0070f3" }}
+              >
+                Download Link
+              </a>
+            </div>
+            {/* 
+            <div style={{ textAlign: "center" }}>
+              <p style={{ fontSize: "1rem", color: "#777" }}>
+                contact@hillsgo.com
+              </p>
+            </div> */}
+          </section>
+        </main>
+      </div>
       <Footer />
     </>
   );
 }
+
+const styles2 = {
+  container: {
+    maxWidth: "900px",
+    margin: "0 auto",
+    padding: "20px",
+    fontFamily: "Arial, sans-serif",
+    flex: 1,
+  },
+};

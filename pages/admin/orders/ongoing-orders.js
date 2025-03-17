@@ -32,7 +32,7 @@ export default function MyOrders() {
   const { user, loading: userLoading } = useUser(); // Access the user context
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [deliveryNote, setDeliveryNote] = useState({});
+  const [deliveryNote, setDeliveryNote] = useState();
   const router = useRouter();
   const storage = getStorage();
 
@@ -215,9 +215,7 @@ export default function MyOrders() {
     // Create a Date object
     const date = new Date(milliseconds);
     return date.toISOString(), date.toLocaleString("en-US", options);
-   
   };
-
 
   return (
     <Admin>
@@ -367,6 +365,42 @@ export default function MyOrders() {
                           </td>
                         </tr>
                       </table>
+                    </div>
+                    <div style={{ marginTop: "20px", textAlign: "center" }}>
+                      {/* <label
+                        htmlFor={`status-${index}`}
+                        style={{ marginRight: "10px", fontWeight: "bold" }}
+                      >
+                        Delivery Note:
+                      </label> */}
+
+                      <label>
+                        <textarea
+                          value={deliveryNote}
+                          onChange={(e) => setDeliveryNote(e.target.value)}
+                          style={{
+                            padding: "10px",
+                            borderRadius: "5px",
+                            border: "1px solid #ccc",
+                            marginRight: "10px",
+                          }}
+                        />
+                      </label>
+                      <br></br>
+                      <button
+                        style={{
+                          padding: "10px 20px",
+                          backgroundColor: "#007bff",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "5px",
+                          cursor: "pointer",
+                          marginTop: "10px",
+                        }}
+                        onClick={() => addDeliveryNote(item, deliveryNote)}
+                      >
+                        Update Delivery Note
+                      </button>
                     </div>
                   </div>
                 </div>

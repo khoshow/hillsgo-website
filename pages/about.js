@@ -20,7 +20,7 @@ const AboutPage = () => {
             employment, support local entrepreneurs, and provide convenience to
             residents. We are committed to driving economic growth, fostering
             development, and building a sustainable ecosystem for the future of
-            Senapati and beyond. Coming soon...
+            Senapati and beyond.
           </p>
         </section>
 

@@ -51,7 +51,7 @@ const AdminAddDriver = () => {
     setError(null);
     setSuccess(null);
     setLoading(true);
-    console.log("passwor", formData.driverPassword);
+
     const {
       driverName,
       driverEmail,

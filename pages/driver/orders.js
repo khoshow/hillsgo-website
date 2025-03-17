@@ -33,8 +33,8 @@ export default function MyOrders() {
   const { user, loading: userLoading } = useUser(); // Access the user context
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [deliveryCode, setDeliveryCode] = useState("");
-  const [deliveryNote, setDeliveryNote] = useState("");
+  const [deliveryCode, setDeliveryCode] = useState({});
+  const [deliveryNote, setDeliveryNote] = useState({});
   const router = useRouter();
   const storage = getStorage();
 
@@ -101,7 +101,6 @@ export default function MyOrders() {
     }
   };
 
-
   if (loading)
     return (
       <Driver>
@@ -114,6 +113,20 @@ export default function MyOrders() {
 
   const handleStatusChange = (newStatus, order) => {
     order.status = newStatus; // Update status locally
+  };
+
+  const handleDeliveryNoteChange = (id, value) => {
+    setDeliveryNote((prev) => ({
+      ...prev,
+      [id]: value, // Update only the specific item
+    }));
+  };
+
+  const handleDeliveryCodeChange = (id, value) => {
+    setDeliveryCode((prev) => ({
+      ...prev,
+      [id]: value, // Update only the specific item
+    }));
   };
 
   // Update status in Firebase
@@ -170,11 +183,11 @@ export default function MyOrders() {
       alert("Invalid order ID");
       return;
     }
-    if (!deliveryNote) {
+    if (!deliveryNote[order.orderId]) {
       alert("Please add a delivery note.");
       return;
     }
-    const newStatus = deliveryNote;
+    const newStatus = deliveryNote[order.orderId];
     try {
       const orderRef = doc(db, "orders", order.id);
 
@@ -211,13 +224,12 @@ export default function MyOrders() {
 
       const orderData = orderSnapshot.data();
 
-      if (order.deliveryCode !== deliveryCode) {
+      if (Number(order.deliveryCode) !== Number(deliveryCode[order.orderId])) {
         alert("Wrong delivery code. Please try again.");
         return;
       }
 
       const targetDocRef = doc(db, "ordersHistory", order.id);
-   
 
       await runTransaction(db, async (transaction) => {
         transaction.set(targetDocRef, {
@@ -240,6 +252,23 @@ export default function MyOrders() {
     }
   };
 
+  const outputDateTime = (time) => {
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: true,
+    };
+    const milliseconds = time.seconds * 1000 + time.nanoseconds / 1e6;
+
+    // Create a Date object
+    const date = new Date(milliseconds);
+    return date.toISOString(), date.toLocaleString("en-US", options);
+  };
+
   return (
     <Driver>
       <DriverLayout>
@@ -253,8 +282,6 @@ export default function MyOrders() {
                   <div
                     key={index}
                     style={{
-                      margin: "20px",
-                      padding: "20px",
                       border: "1px solid #ccc",
                       borderRadius: "10px",
                       backgroundColor: "#f9f9f9",
@@ -269,60 +296,132 @@ export default function MyOrders() {
                     >
                       {index + 1}
                     </h2>
-                    <table
-                      style={{ width: "100%", borderCollapse: "collapse" }}
-                    >
-                      <tbody>
+
+                    <div style={styles.tableContainer}>
+                      <p className="subTitle">Order Details</p>
+                      <table>
                         <tr>
-                          <td style={styles.label}>Order ID:</td>
+                          <th style={styles.label}>Order ID: </th>
+                          <td style={styles.value}>{order.orderId}</td>
+                        </tr>
+                        <tr>
+                          <th style={styles.label}>Status: </th>
+                          <td style={styles.value}>{order.status}</td>
+                        </tr>
+                        <tr>
+                          <th style={styles.label}>Ordered Date: </th>
                           <td style={styles.value}>
-                            {order?.orderId || "Order ID Not Available"}
+                            {outputDateTime(order.createdAt)}
+                          </td>
+                        </tr>
+                        {/* <tr>
+                          <th>Date of Delivery</th>
+                          <td>{outputDateTime(item.deliveredAt)}</td>
+                        </tr> */}
+                      </table>
+                    </div>
+
+                    <div style={styles.tableContainer}>
+                      <p className="subTitle">User Details</p>
+                      <table>
+                        <tr>
+                          <th style={styles.label}>Name</th>
+                          <td style={styles.value}>
+                            {order.userData.userName}
                           </td>
                         </tr>
                         <tr>
-                          <td style={styles.label}>Name:</td>
+                          <th style={styles.label}>Phone</th>
+                          <td style={styles.value}>{order.userData.phone}</td>
+                        </tr>
+                        <tr>
+                          <th style={styles.label}>Email</th>
+                          <td style={styles.value}>{order.userData.email}</td>
+                        </tr>
+                        <tr>
+                          <th style={styles.label}>Delivery Address</th>
                           <td style={styles.value}>
-                            {order?.product?.userName ||
-                              "Customer Name Not Available"}
+                            {order.userData.deliveryAddress}
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+
+                    <div className="table-container">
+                      <p className="subTitle">Store Details</p>
+                      <table>
+                        <tr>
+                          <th style={styles.label}>Store Name: </th>
+                          <td style={styles.value}>
+                            {order.estoreInfo.estoreName}
                           </td>
                         </tr>
                         <tr>
-                          <td style={styles.label}>Contact:</td>
+                          <th style={styles.label}>Owner Name: </th>
                           <td style={styles.value}>
-                            {order?.product?.userContact ||
-                              "Customer Contact Not Available"}
+                            {order.estoreInfo.ownerName}
                           </td>
                         </tr>
                         <tr>
-                          <td style={styles.label}>Delivery Address:</td>
+                          <th style={styles.label}>Owner Email: </th>
                           <td style={styles.value}>
-                            {order?.userData?.deliveryAddress ||
-                              "Delivery Address Not Available"}
+                            {order.estoreInfo.ownerEmail}
                           </td>
                         </tr>
                         <tr>
-                          <td style={styles.label}>Product Name:</td>
+                          <th style={styles.label}>Store Contact: </th>
                           <td style={styles.value}>
-                            {order?.product?.productData?.name ||
-                              "Product Name Unavailable"}
+                            {order.estoreInfo.estoreContact}
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+
+                    <div className="table-container">
+                      <p className="subTitle">Pricing Details</p>
+                      <table>
+                        <tr>
+                          <th style={styles.label}>Price: </th>
+                          <td style={styles.value}>
+                            ₹{order.product.productData.price}
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th style={styles.label}>Quantity: </th>
+                          <td style={styles.value}>
+                            {order.product.productData.quantity}
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th style={styles.label}>Subtotal: </th>
+                          <td style={styles.value}>
+                            ₹{order.product.productData.subtotal}
                           </td>
                         </tr>
                         <tr>
-                          <td style={styles.label}>Quantity:</td>
+                          <th style={styles.label}>Tip: </th>
+                          <td style={styles.value}>₹{order.product.tip}</td>
+                        </tr>
+                        <tr>
+                          <th style={styles.label}>Delivery Cost: </th>
                           <td style={styles.value}>
-                            {order?.product?.productData?.quantity ||
-                              "Quantity Unavailable"}
+                            ₹{order.product.deliveryCost}
                           </td>
                         </tr>
                         <tr>
-                          <td style={styles.label}>Amount:</td>
+                          <th style={styles.label}>Total Payment: </th>
                           <td style={styles.value}>
-                            {order?.product?.productData?.subtotal ||
-                              "Amount Not Available"}
+                            ₹
+                            {order.product.deliveryCost +
+                              order.product.tip +
+                              order.product.productData.subtotal}
                           </td>
                         </tr>
-                      </tbody>
-                    </table>
+                      </table>
+                    </div>
+
                     <div style={{ marginTop: "20px", textAlign: "center" }}>
                       {/* <label
                         htmlFor={`status-${index}`}
@@ -380,8 +479,13 @@ export default function MyOrders() {
 
                       <label>
                         <textarea
-                          value={deliveryNote}
-                          onChange={(e) => setDeliveryNote(e.target.value)}
+                          value={deliveryNote[order.orderId] || ""}
+                          onChange={(e) =>
+                            handleDeliveryNoteChange(
+                              order.orderId,
+                              e.target.value
+                            )
+                          }
                           style={{
                             padding: "10px",
                             borderRadius: "5px",
@@ -417,9 +521,12 @@ export default function MyOrders() {
 
                       <input
                         type="number"
-                        value={deliveryCode}
+                        value={deliveryCode[order.orderId]}
                         onChange={(e) =>
-                          setDeliveryCode(Number(e.target.value))
+                          handleDeliveryCodeChange(
+                            order.orderId,
+                            e.target.value
+                          )
                         }
                         style={{
                           padding: "8px",
@@ -541,6 +648,32 @@ const styles = {
     padding: "10px",
     textAlign: "left",
     backgroundColor: "#fff",
+    border: "1px solid #ddd",
+  },
+
+  table: {
+    width: "100%",
+    borderCollapse: "",
+  },
+  tableContainerBox: {
+    padding: "8px",
+    display: "grid",
+    gridTemplateColumns: "repeat(2, 1fr)",
+    gap: "20px",
+    justifyContent: "spaceBetween",
+  },
+  tableContainer: {
+    flex: "1",
+    minWidth: "300px",
+  },
+  td: {
+    padding: "8px",
+    border: "1px solid #ddd",
+  },
+  th: {
+    textAlign: "left",
+    padding: "10px",
+    backgroundColor: "#f4f4f4",
     border: "1px solid #ddd",
   },
 };
