@@ -157,3 +157,9 @@ a {
   margin: 20px auto;
   border-radius: 8px;
 }
+
+.content p a {
+  color: #0056b3;
+  text-decoration: underline; /* Optional: Adds an underline */
+  font-weight: bold;
+}

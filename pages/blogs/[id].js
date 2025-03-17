@@ -65,7 +65,7 @@ const styles2 = {
     lineHeight: "1.8",
   },
   title: {
-    fontSize: "32px",
+    fontSize: "24px",
     fontWeight: "bold",
     marginBottom: "10px",
     textAlign: "center",
