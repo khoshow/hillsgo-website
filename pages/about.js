@@ -139,15 +139,14 @@ const AboutPage = () => {
                   </p>
                   <p>
                     Graduated in Software Engineering from Delhi College of
-                    Engineering, he has been a wanderer ever since. He worked at
-                    HPCL as a supplier in 2017-18 and later co-founded
-                    FinerBlue, a software and marketing service provider focused
-                    primarily on U.S. clients. He has developed various
-                    solutions, ranging from websites to web applications and
-                    inventory management systems, catering to both local and
-                    international clients. He wrote a novel titled, &quot;In
-                    search of a home.&quot; From a young age, he has been driven
-                    by a desire to bring positive change to the region.
+                    Engineering. He worked at HPCL as a supplier in 2017-18 and
+                    later co-founded FinerBlue, delivering software and
+                    marketing services to U.S and local clients. Experienced in
+                    developing websites, web applications, inventory management
+                    systems. Software developer for Naagaami Infratech Ltd.,
+                    Nagaland. He wrote a novel titled, &quot;In search of a
+                    home.&quot; From a young age, he has been driven by a desire
+                    to bring positive change to the region.
                   </p>
 
                   <p>A leader he greatly admires is Dr. APJ Abdul Kalam.</p>

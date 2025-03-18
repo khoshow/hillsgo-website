@@ -32,7 +32,7 @@ export default function MyOrders() {
   const { user, loading: userLoading } = useUser(); // Access the user context
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [deliveryNote, setDeliveryNote] = useState();
+  const [deliveryNote, setDeliveryNote] = useState({});
   const router = useRouter();
   const storage = getStorage();
 
@@ -180,7 +180,8 @@ export default function MyOrders() {
       return;
     }
 
-    const newStatus = Object.values(deliveryNote)[0];
+    const newStatus = deliveryNote[order.orderId];
+    console.log("status", newStatus);
 
     try {
       const orderRef = doc(db, "orders", order.id);
@@ -376,8 +377,10 @@ export default function MyOrders() {
 
                       <label>
                         <textarea
-                          value={deliveryNote}
-                          onChange={(e) => setDeliveryNote(e.target.value)}
+                          value={deliveryNote[item.orderId] || ""}
+                          onChange={(e) =>
+                            handleNoteChange(item.orderId, e.target.value)
+                          }
                           style={{
                             padding: "10px",
                             borderRadius: "5px",

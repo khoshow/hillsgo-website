@@ -125,6 +125,9 @@ export default function MyProducts() {
                   <p style={styles.productPrice}>
                     SP: ₹{product.price.toFixed(2)}
                   </p>
+                  <p style={styles.productPrice}>
+                    HillsGO Price: ₹{product.wholesalePrice.toFixed(2)}
+                  </p>
                   <p style={styles.productDescription}>
                     {product.description.length > 100
                       ? `${product.description.substring(0, 97)}...`
