@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { db } from "../../../firebase/firebase"; // Import your Firestore config
+import { db } from "../../firebase/firebase"; // Import your Firestore config
 import {
   collection,
   query,
@@ -16,18 +16,16 @@ import {
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
-import { useUser } from "../../../contexts/UserContext"; // Import your UserContext
+import { useUser } from "../../contexts/UserContext"; // Import your UserContext
 import Header from "@/components/Header";
-import AdminLayout from "@/components/layout/AdminLayout"; // Assuming you have a layout for Admin
-import Admin from "@/components/auth/Admin";
+import EstoreLayout from "@/components/layout/EstoreLayout"; // Assuming you have a layout for Estore
+import Estore from "@/components/auth/Estore";
 
-export default function MyProducts() {
+export default function CompletedOrders() {
   const { user, loading: userLoading } = useUser(); // Access the user context
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const router = useRouter();
-  const { id, ownerId } = router.query;
   const storage = getStorage();
 
   useEffect(() => {
@@ -41,7 +39,7 @@ export default function MyProducts() {
       try {
         const productsQuery = query(
           collection(db, "estoreProducts"),
-          where("ownerId", "==", id) // Fetch products created by the logged-in user
+          where("ownerId", "==", user.uid) // Fetch products created by the logged-in user
         );
 
         const querySnapshot = await getDocs(productsQuery);
@@ -93,17 +91,17 @@ export default function MyProducts() {
   };
   if (loading)
     return (
-      <Admin>
-        <AdminLayout>
+      <Estore>
+        <EstoreLayout>
           <Header />
           <p>Loading...</p>
-        </AdminLayout>
-      </Admin>
+        </EstoreLayout>
+      </Estore>
     );
 
   return (
-    <Admin>
-      <AdminLayout>
+    <Estore>
+      <EstoreLayout>
         <Header />
         <div style={styles.container}>
           <h1 style={styles.heading}>My Products</h1>
@@ -112,46 +110,24 @@ export default function MyProducts() {
               products.map((product) => (
                 <div key={product.id} style={styles.productCard}>
                   <img
-                    src={product.images[0] ? product.images[0] : "N/A"} // Assuming first image is used for the card
-                    alt={product.name ? product.name : "N/A"}
+                    src={product.images[0]} // Assuming first image is used for the card
+                    alt={product.name}
                     style={styles.image}
                   />
-                  <h3 style={styles.productName}>
-                    {product.name ? product.name : "N/A"}
-                  </h3>
+                  <h3 style={styles.productName}>{product.name}</h3>
+                  <p style={styles.productPrice}>MRP: ₹{product.mrp}</p>
                   <p style={styles.productPrice}>
-                    MRP: ₹{product.mrp ? product.mrp : "N/A"}
-                  </p>
-                  <p style={styles.productPrice}>
-                    Discount: ₹
-                    {product.discountPrice ? product.discountPrice : "N/A"}
-                  </p>
-                  <p style={styles.productPrice}>
-                    SP: ₹{product.price ? product.price.toFixed(2) : "N/A"}
-                  </p>
-                  <p style={styles.productPrice}>
-                    HillsGO Price: ₹
-                    {product.wholesalePrice
-                      ? product.wholesalePrice.toFixed(2)
-                      : "N/A"}
+                    Wholesale Price: ₹{product.wholesalePrice}
                   </p>
                   <p style={styles.productDescription}>
                     {product.description.length > 100
-                      ? `${
-                          product.description
-                            ? product.description.substring(0, 97)
-                            : "N/A"
-                        }...`
-                      : product.description
-                      ? product.description
-                      : "N/A"}
+                      ? `${product.description.substring(0, 97)}...`
+                      : product.description}
                   </p>
                   <button
                     style={styles.editButton}
                     onClick={() =>
-                      router.push(
-                        `/admin/estores/edit-product?id=${product.id}`
-                      )
+                      router.push(`/estore/edit-product?id=${product.id}`)
                     }
                   >
                     Edit
@@ -169,8 +145,8 @@ export default function MyProducts() {
             )}
           </div>
         </div>
-      </AdminLayout>
-    </Admin>
+      </EstoreLayout>
+    </Estore>
   );
 }
 

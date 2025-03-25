@@ -1,107 +1,101 @@
+// pages/login.js
 import { useState } from "react";
-import Head from "next/head";
-// import { signInWithEmailAndPassword } from "firebase/auth";
-import Header from "../../components/Header";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "next/router";
-// import { auth, db } from "../../firebase/firebase";
-// import { collection, query, where, getDocs } from "firebase/firestore";
-import { setCookie } from "nookies";
-import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import { auth, db } from "../../firebase/firebase";
+import { useUser } from "../../contexts/UserContext";
 
-export default function Home() {
+const API = process.env.NEXT_PUBLIC_API_DOMAIN_SERVER;
+
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
+  const { setUser } = useUser();
+  const [roleOption, setRoleOption] = useState("");
+  const [roleDisplay, setRoleDisplay] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+  const allowedEmails = [
+    "khoshow.developer@gmail.com",
+    "afinerblue@gmail.com",
+    "creativekalo1@gmail.com",
+    "roziiveinaihillsgo@gmail.com",
+    "contact@hillsgo.com",
+  ];
 
-  const handleStoreOwnerLogin = async (e) => {
-    console.log("hUI");
-    // e.preventDefault();
-    // setError(null);
-    // if (email === "khoshow.developer@gmail.com") {
-    //   try {
-    //     // Authenticate the user
-    //     const userCredential = await signInWithEmailAndPassword(
-    //       auth,
-    //       email,
-    //       password
-    //     );
-    //     const user = userCredential.user;
-    //     console.log("owner ", userCredential);
+  const handleAdminLogin = async (e) => {
+    e.preventDefault();
+    setError(null);
+    try {
+      if (allowedEmails.includes(email)) {
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        const idToken = await userCredential.user.getIdToken();
 
-    //     // Check if the user exists in the 'estore' collection
-    //     const estoreRef = collection(db, "user"); // Reference the collection
-    //     const estoreQuery = query(estoreRef, where("user", "==", user.uid));
-    //     const querySnapshot = await getDocs(estoreQuery);
-
-    //     if (!querySnapshot.empty) {
-    //       // Get the store owner details
-
-    //       // Redirect to the dashboard after successful login and cookie setting
-    //       router.push("/admin/dashboard");
-    //     } else {
-    //       throw new Error("You are not registered as a store owner.");
-    //     }
-    //   } catch (error) {
-    //     setError(error.message);
-    //   }
-    // } else {
-    //   alert("Hi");
-    // }
+        // Set the user in context
+        setUser({
+          email: userCredential.user.email,
+          token: idToken,
+          role: "admin",
+        });
+        router.push("/admin/dashboard"); // Redirect after successful login
+      } else {
+        return alert("Hi user");
+      }
+    } catch (error) {
+      setError(error.message);
+    }
   };
 
   return (
     <>
-      <Head>
-        <title>HillsGo || Admin Dashboard </title>
-        <meta name="description" content="HillsGo || JJJJJ Page" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/logo.png" />
-      </Head>
-
       <Header />
       <div style={styles.container}>
-        <main className={styles.main}>
-          <section className={styles.hero}>
-            <p
-              style={{
-                color: "black",
-                fontSize: "1.2rem",
-                marginBottom: "1.5rem",
-              }}
-            >
-              Admin
-            </p>
+        <h3 className="subTitle">Admin</h3>
+        <form onSubmit={handleAdminLogin} style={styles.form}>
+          <div style={styles.inputGroup}>
+            <label>Email </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              style={styles.input}
+              required
+            />
+          </div>
+          <div style={styles.inputGroup}>
+            <label>Password</label>
+            <input
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              style={styles.input}
+              required
+            />
 
-            <form onSubmit={handleStoreOwnerLogin} style={styles.form}>
-              <div style={styles.inputGroup}>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  style={styles.input}
-                  required
-                />
-              </div>
-              <div style={styles.inputGroup}>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  style={styles.input}
-                  required
-                />
-              </div>
-              <button type="submit" style={styles.button}>
-                Login
-              </button>
-              {error && <p style={styles.error}>{error}</p>}
-            </form>
-          </section>
-        </main>
+            <label style={styles.showPassword}>
+              <input
+                type="checkbox"
+                checked={showPassword}
+                onChange={() => setShowPassword(!showPassword)}
+              />
+              Show Password
+            </label>
+          </div>
+          <button type="submit" style={styles.button}>
+            Login
+            {loading ? "Loading..." : ""}
+          </button>
+          {error && <p style={styles.error}>{error}</p>}
+        </form>
       </div>
-      <Footer />
     </>
   );
 }
@@ -113,7 +107,6 @@ const styles = {
     margin: "0 auto",
     padding: "20px",
     textAlign: "center",
-    height: "80vh",
   },
 
   headerContainer: {

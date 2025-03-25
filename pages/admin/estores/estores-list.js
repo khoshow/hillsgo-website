@@ -58,7 +58,6 @@ export default function MyEstores() {
 
     fetchEstores();
   }, [user, router]);
-  console.log("Prod", estores);
 
   if (loading)
     return (
@@ -96,9 +95,7 @@ export default function MyEstores() {
                   <button
                     style={styles.editButton}
                     onClick={() =>
-                      router.push(
-                        `/admin/estores/edit-estore?id=${estore.ownerId}`
-                      )
+                      router.push(`/admin/estores/edit-estore?id=${estore.id}`)
                     }
                   >
                     Edit

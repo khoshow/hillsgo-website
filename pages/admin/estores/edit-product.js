@@ -78,7 +78,6 @@ export default function EditProduct() {
   // Submit updated product to Firebase
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("idggg", id);
 
     if (!user) return;
 

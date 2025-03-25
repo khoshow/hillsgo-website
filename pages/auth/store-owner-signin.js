@@ -19,6 +19,7 @@ const API = process.env.NEXT_PUBLIC_API_DOMAIN_SERVER;
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const { setUser } = useUser();
@@ -77,6 +78,7 @@ export default function Login() {
     <>
       <Header />
       <div style={styles.container}>
+        <h3 className="subTitle">Store Owner</h3>
         <form onSubmit={handleStoreOwnerLogin} style={styles.form}>
           <div style={styles.inputGroup}>
             <label>Email of Store Owner</label>
@@ -91,12 +93,20 @@ export default function Login() {
           <div style={styles.inputGroup}>
             <label>Password</label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               style={styles.input}
               required
             />
+            <label style={styles.showPassword}>
+              <input
+                type="checkbox"
+                checked={showPassword}
+                onChange={() => setShowPassword(!showPassword)}
+              />
+              Show Password
+            </label>
           </div>
           <button type="submit" style={styles.button} disabled={loading}>
             {loading ? "Loading..." : "Login"}
