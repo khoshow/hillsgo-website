@@ -25,7 +25,35 @@ export default function AdminDashboard() {
     <Admin>
       <AdminLayout>
         <Header />
-        <p>Admin Dashboard</p>
+        <div style={styles.container}>
+          <h1 style={styles.heading}>Ongoing Orders Management</h1>
+          <div style={styles.productGrid}>
+            <div style={styles.productCard}>
+              <button
+                style={styles.editButton}
+                onClick={() => router.push(`/admin/orders/ongoing-orders`)}
+              >
+                Estores Orders
+              </button>
+            </div>
+            <div style={styles.productCard}>
+              <button
+                style={styles.editButton}
+                onClick={() => router.push(`/admin/workers/ongoing`)}
+              >
+                Hire Skills
+              </button>
+            </div>
+            <div style={styles.productCard}>
+              <button
+                style={styles.editButton}
+                onClick={() => router.push(`/admin/pick-drop/ongoing`)}
+              >
+                Pick Drop
+              </button>
+            </div>
+          </div>
+        </div>
       </AdminLayout>
     </Admin>
   );
@@ -34,55 +62,53 @@ export default function AdminDashboard() {
 // Styles
 const styles = {
   container: {
-    maxWidth: "400px",
+    maxWidth: "1200px",
     margin: "0 auto",
     padding: "20px",
-    textAlign: "center",
-  },
-
-  headerContainer: {
-    textAlign: "center",
-    marginBottom: "20px",
+    // textAlign: "center",
   },
   heading: {
-    fontSize: "24px",
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: "10px",
+    fontSize: "25px",
+    marginBottom: "20px",
   },
-  prompt: {
-    fontSize: "18px",
-    color: "#666",
+  productGrid: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+    gap: "20px",
   },
-  highlight: {
-    fontWeight: "bold",
-    color: "#0070f3", // Blue highlight for roles
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px",
-  },
-  inputGroup: {
-    marginBottom: "15px",
-    textAlign: "left",
-  },
-  input: {
+
+  image: {
     width: "100%",
-    padding: "8px",
-    borderRadius: "4px",
-    border: "1px solid #ccc",
+    height: "auto",
+    borderRadius: "8px",
   },
-  button: {
-    padding: "10px",
-    backgroundColor: "#0070f3",
-    color: "#fff",
+  productName: {
+    fontSize: "1.5em",
+    margin: "10px 0",
+  },
+  productPrice: {
+    fontSize: "1.2em",
+    color: "#e67e22",
+  },
+  productDescription: {
+    fontSize: "0.9em",
+    color: "#7f8c8d",
+  },
+  editButton: {
+    marginRight: "10px",
+    backgroundColor: "#3498db",
+    color: "white",
     border: "none",
-    borderRadius: "4px",
+    padding: "10px 15px",
+    borderRadius: "5px",
     cursor: "pointer",
   },
-  error: {
-    color: "red",
-    marginTop: "10px",
+  deleteButton: {
+    backgroundColor: "#e74c3c",
+    color: "white",
+    border: "none",
+    padding: "10px 15px",
+    borderRadius: "5px",
+    cursor: "pointer",
   },
 };

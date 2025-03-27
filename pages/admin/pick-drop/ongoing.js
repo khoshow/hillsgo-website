@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import { db } from "../../firebase/firebase"; // Import your Firestore config
+import { db } from "../../../firebase/firebase"; // Import your Firestore config
 import {
   collection,
   query,
@@ -14,6 +14,7 @@ import {
   setDoc,
   runTransaction,
   serverTimestamp,
+  orderBy,
 } from "firebase/firestore";
 import {
   getStorage,
@@ -23,13 +24,12 @@ import {
   deleteObject,
 } from "firebase/storage";
 import { colors } from "@/data/colors";
-import ImageSlider from "../../components/sliders/ImageSliders";
-import { useUser } from "../../contexts/UserContext"; // Import your UserContext
+import { useUser } from "../../../contexts/UserContext"; // Import your UserContext
 import Header from "@/components/Header";
-import DriverLayout from "@/components/layout/DriverLayout"; // Assuming you have a layout for Estore
-import Driver from "@/components/auth/Driver";
+import Admin from "@/components/auth/Admin";
+import AdminLayout from "@/components/layout/AdminLayout";
 
-export default function MyOrders() {
+export default function PickDropOrders() {
   const { user, loading: userLoading } = useUser(); // Access the user context
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -48,7 +48,7 @@ export default function MyOrders() {
 
       try {
         const ordersQuery = query(
-          collection(db, "orders"),
+          collection(db, "ongoingPickDrop"),
           orderBy("createdAt", "desc")
           // where("driverId", "==", user.uid) // Fetch products created by the logged-in user
         );
@@ -58,6 +58,7 @@ export default function MyOrders() {
           id: doc.id,
           ...doc.data(),
         }));
+        console.log("or", ordersList);
 
         setOrders(ordersList); // Update state with fetched products
       } catch (error) {
@@ -69,6 +70,8 @@ export default function MyOrders() {
 
     fetchOrders();
   }, [user, router]);
+
+  console.log("orderss", orders);
 
   const handleDelete = async (postId, imageUrls) => {
     const confirmed = confirm("Are you sure you want to delete this post?");
@@ -104,12 +107,12 @@ export default function MyOrders() {
 
   if (loading)
     return (
-      <Driver>
-        <DriverLayout>
+      <Admin>
+        <AdminLayout>
           <Header />
           <p>Loading...</p>
-        </DriverLayout>
-      </Driver>
+        </AdminLayout>
+      </Admin>
     );
 
   const handleStatusChange = (newStatus, order) => {
@@ -271,8 +274,8 @@ export default function MyOrders() {
   };
 
   return (
-    <Driver>
-      <DriverLayout>
+    <Admin>
+      <AdminLayout>
         <Header />
         <div style={styles.container}>
           <h1 style={styles.heading}>Current Orders</h1>
@@ -280,14 +283,7 @@ export default function MyOrders() {
             {orders.length > 0 ? (
               orders.map((order, index) =>
                 order ? (
-                  <div
-                    key={index}
-                    style={{
-                      border: "1px solid #ccc",
-                      borderRadius: "10px",
-                      backgroundColor: "#f9f9f9",
-                    }}
-                  >
+                  <div key={index} style={styles.productCard}>
                     <h2
                       style={{
                         textAlign: "center",
@@ -297,260 +293,211 @@ export default function MyOrders() {
                     >
                       {index + 1}
                     </h2>
-
-                    <div style={styles.tableContainer}>
-                      <p className="subTitle">Order Details</p>
-                      <table>
-                        <tr>
-                          <th style={styles.label}>Order ID: </th>
-                          <td style={styles.value}>{order.orderId}</td>
-                        </tr>
-                        <tr>
-                          <th style={styles.label}>Status: </th>
-                          <td style={styles.value}>{order.status}</td>
-                        </tr>
-                        <tr>
-                          <th style={styles.label}>Ordered Date: </th>
-                          <td style={styles.value}>
-                            {outputDateTime(order.createdAt)}
-                          </td>
-                        </tr>
-                        {/* <tr>
+                    <div style={styles.tableContainerBox}>
+                      <div style={styles.tableContainer}>
+                        <p className="subTitle">Order Details</p>
+                        <table>
+                          <tr>
+                            <th style={styles.label}>Order ID: </th>
+                            <td style={styles.value}>{order.id}</td>
+                          </tr>
+                          <tr>
+                            <th style={styles.label}>Status: </th>
+                            <td style={styles.value}>{order.status}</td>
+                          </tr>
+                          <tr>
+                            <th style={styles.label}>Ordered Date: </th>
+                            <td style={styles.value}>
+                              {outputDateTime(order.createdAt)}
+                            </td>
+                          </tr>
+                          {/* <tr>
                           <th>Date of Delivery</th>
                           <td>{outputDateTime(item.deliveredAt)}</td>
                         </tr> */}
-                      </table>
+                        </table>
+                      </div>
+
+                      <div style={styles.tableContainer}>
+                        <p className="subTitle">Sender Details</p>
+                        <table>
+                          <tr>
+                            <th style={styles.label}>Name</th>
+                            <td style={styles.value}>{order.senderName}</td>
+                          </tr>
+                          <tr>
+                            <th style={styles.label}>Phone</th>
+                            <td style={styles.value}>{order.senderPhone}</td>
+                          </tr>
+                          <tr>
+                            <th style={styles.label}>Location</th>
+                            <td style={styles.value}>{order.senderLocation}</td>
+                          </tr>
+                        </table>
+                      </div>
+
+                      <div style={styles.tableContainer}>
+                        <p className="subTitle">Receiver Details</p>
+                        <table>
+                          <tr>
+                            <th style={styles.label}>Name</th>
+                            <td style={styles.value}>{order.receiverName}</td>
+                          </tr>
+                          <tr>
+                            <th style={styles.label}>Phone</th>
+                            <td style={styles.value}>{order.receiverPhone}</td>
+                          </tr>
+                          <tr>
+                            <th style={styles.label}>Location</th>
+                            <td style={styles.value}>
+                              {order.receiverLocation}
+                            </td>
+                          </tr>
+                        </table>
+                      </div>
+
+                      <div style={styles.tableContainer}>
+                        <p className="subTitle">Item Details</p>
+                        <table>
+                          <tr>
+                            <th style={styles.label}>Item Details</th>
+                            <td style={styles.value}>{order.itemDetail}</td>
+                          </tr>
+                          <tr>
+                            <th style={styles.label}>Size</th>
+                            <td style={styles.value}>{order.itemSize}</td>
+                          </tr>
+                          <tr>
+                            <th style={styles.label}>Weight</th>
+                            <td style={styles.value}>{order.itemWeight}</td>
+                          </tr>
+                        </table>
+                      </div>
+
+                      <div style={styles.tableContainer}>
+                        <p className="subTitle">Instruction</p>
+                        <table>
+                          <tr>
+                            <td style={styles.value}>{order.instruction}</td>
+                          </tr>
+                        </table>
+                      </div>
                     </div>
-
-                    <div style={styles.tableContainer}>
-                      <p className="subTitle">User Details</p>
-                      <table>
-                        <tr>
-                          <th style={styles.label}>Name</th>
-                          <td style={styles.value}>
-                            {order.userData.userName}
-                          </td>
-                        </tr>
-                        <tr>
-                          <th style={styles.label}>Phone</th>
-                          <td style={styles.value}>{order.userData.phone}</td>
-                        </tr>
-                        <tr>
-                          <th style={styles.label}>Email</th>
-                          <td style={styles.value}>{order.userData.email}</td>
-                        </tr>
-                        <tr>
-                          <th style={styles.label}>Delivery Address</th>
-                          <td style={styles.value}>
-                            {order.userData.deliveryAddress}
-                          </td>
-                        </tr>
-                      </table>
-                    </div>
-
-                    <div className="table-container">
-                      <p className="subTitle">Store Details</p>
-                      <table>
-                        <tr>
-                          <th style={styles.label}>Store Name: </th>
-                          <td style={styles.value}>
-                            {order.estoreInfo.estoreName}
-                          </td>
-                        </tr>
-                        <tr>
-                          <th style={styles.label}>Owner Name: </th>
-                          <td style={styles.value}>
-                            {order.estoreInfo.ownerName}
-                          </td>
-                        </tr>
-                        <tr>
-                          <th style={styles.label}>Owner Email: </th>
-                          <td style={styles.value}>
-                            {order.estoreInfo.ownerEmail}
-                          </td>
-                        </tr>
-                        <tr>
-                          <th style={styles.label}>Store Contact: </th>
-                          <td style={styles.value}>
-                            {order.estoreInfo.estoreContact}
-                          </td>
-                        </tr>
-                      </table>
-                    </div>
-
-                    <div className="table-container">
-                      <p className="subTitle">Pricing Details</p>
-                      <table>
-                        <tr>
-                          <th style={styles.label}>Price: </th>
-                          <td style={styles.value}>
-                            ₹{order.product.productData.price}
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <th style={styles.label}>Quantity: </th>
-                          <td style={styles.value}>
-                            {order.product.productData.quantity}
-                          </td>
-                        </tr>
-
-                        <tr>
-                          <th style={styles.label}>Subtotal: </th>
-                          <td style={styles.value}>
-                            ₹{order.product.productData.subtotal}
-                          </td>
-                        </tr>
-                        <tr>
-                          <th style={styles.label}>Tip: </th>
-                          <td style={styles.value}>₹{order.product.tip}</td>
-                        </tr>
-                        <tr>
-                          <th style={styles.label}>Delivery Cost: </th>
-                          <td style={styles.value}>
-                            ₹{order.product.deliveryCost}
-                          </td>
-                        </tr>
-                        <tr>
-                          <th style={styles.label}>Total Payment: </th>
-                          <td style={styles.value}>
-                            ₹
-                            {order.product.deliveryCost +
-                              order.product.tip +
-                              order.product.productData.subtotal}
-                          </td>
-                        </tr>
-                      </table>
-                    </div>
-
-                    <div style={{ marginTop: "20px", textAlign: "center" }}>
-                      {/* <label
-                        htmlFor={`status-${index}`}
-                        style={{ marginRight: "10px", fontWeight: "bold" }}
-                      >
-                        Update Status:
-                      </label> */}
-                      <select
-                        id={`status-${index}`}
-                        style={{
-                          padding: "10px",
-                          borderRadius: "5px",
-                          border: "1px solid #ccc",
-                          marginRight: "10px",
-                        }}
-                        defaultValue={order?.status || "Pending"} // Pre-select current status
-                        onChange={(e) =>
-                          handleStatusChange(e.target.value, order)
-                        }
-                      >
-                        <option value="Pending">Pending</option>
-                        <option value="Delivering Today">
-                          Delivering Today
-                        </option>
-                        <option value="Out for Delivery">
-                          Out for Delivery
-                        </option>
-
-                        <option value="cancelled">Canceled</option>
-                      </select>
-                      <br></br>
-                      <button
-                        style={{
-                          padding: "10px 20px",
-                          backgroundColor: "#007bff",
-                          color: "white",
-                          border: "none",
-                          borderRadius: "5px",
-                          cursor: "pointer",
-                          marginTop: "10px",
-                        }}
-                        onClick={() => updateOrderStatus(order)}
-                      >
-                        Update Status
-                      </button>
-                    </div>
-
-                    <div style={{ marginTop: "20px", textAlign: "center" }}>
-                      {/* <label
-                        htmlFor={`status-${index}`}
-                        style={{ marginRight: "10px", fontWeight: "bold" }}
-                      >
-                        Delivery Note:
-                      </label> */}
-
-                      <label>
-                        <textarea
-                          value={deliveryNote[order.orderId] || ""}
-                          onChange={(e) =>
-                            handleDeliveryNoteChange(
-                              order.orderId,
-                              e.target.value
-                            )
-                          }
+                    <div>
+                      <div style={{ marginTop: "20px", textAlign: "center" }}>
+                        <select
+                          id={`status-${index}`}
                           style={{
                             padding: "10px",
                             borderRadius: "5px",
                             border: "1px solid #ccc",
                             marginRight: "10px",
                           }}
-                        />
-                      </label>
-                      <br></br>
-                      <button
-                        style={{
-                          padding: "10px 20px",
-                          backgroundColor: "#007bff",
-                          color: "white",
-                          border: "none",
-                          borderRadius: "5px",
-                          cursor: "pointer",
-                          marginTop: "10px",
-                        }}
-                        onClick={() => addDeliveryNote(order, deliveryNote)}
-                      >
-                        Update Delivery Note
-                      </button>
-                    </div>
+                          defaultValue={order?.status || "Pending"} // Pre-select current status
+                          onChange={(e) =>
+                            handleStatusChange(e.target.value, order)
+                          }
+                        >
+                          <option value="Pending">Pending</option>
+                          <option value="Delivering Today">
+                            Delivering Today
+                          </option>
+                          <option value="Out for Delivery">
+                            Out for Delivery
+                          </option>
 
-                    <div style={{ marginTop: "20px", textAlign: "center" }}>
-                      {/* <label
+                          <option value="cancelled">Canceled</option>
+                        </select>
+                        <br></br>
+                        <button
+                          style={{
+                            padding: "10px 20px",
+                            backgroundColor: "#007bff",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                            marginTop: "10px",
+                          }}
+                          onClick={() => updateOrderStatus(order)}
+                        >
+                          Update Status
+                        </button>
+                      </div>
+                      <div style={{ marginTop: "20px", textAlign: "center" }}>
+                        <label>
+                          <textarea
+                            value={deliveryNote[order.orderId] || ""}
+                            onChange={(e) =>
+                              handleDeliveryNoteChange(
+                                order.orderId,
+                                e.target.value
+                              )
+                            }
+                            style={{
+                              padding: "10px",
+                              borderRadius: "5px",
+                              border: "1px solid #ccc",
+                              marginRight: "10px",
+                            }}
+                          />
+                        </label>
+                        <br></br>
+                        <button
+                          style={{
+                            padding: "10px 20px",
+                            backgroundColor: "#007bff",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                            marginTop: "10px",
+                          }}
+                          onClick={() => addDeliveryNote(order, deliveryNote)}
+                        >
+                          Update Delivery Note
+                        </button>
+                      </div>
+                      <div style={{ marginTop: "20px", textAlign: "center" }}>
+                        {/* <label
                         htmlFor={`status-${index}`}
                         style={{ marginRight: "10px", fontWeight: "bold" }}
                       >
                         Delivery Code:
                       </label> */}
 
-                      <input
-                        type="number"
-                        value={deliveryCode[order.orderId]}
-                        onChange={(e) =>
-                          handleDeliveryCodeChange(
-                            order.orderId,
-                            e.target.value
-                          )
-                        }
-                        style={{
-                          padding: "8px",
-                          borderRadius: "5px",
-                          border: "1px solid #ccc",
-                          marginRight: "10px",
-                        }}
-                      />
-                      <br></br>
-                      <button
-                        style={{
-                          padding: "10px 20px",
-                          backgroundColor: "#007bff",
-                          color: "white",
-                          border: "none",
-                          borderRadius: "5px",
-                          cursor: "pointer",
-                          marginTop: "10px",
-                        }}
-                        onClick={() => completeOrder(order, deliveryCode)}
-                      >
-                        Complete Delivery
-                      </button>
+                        <input
+                          type="number"
+                          value={deliveryCode[order.orderId]}
+                          onChange={(e) =>
+                            handleDeliveryCodeChange(
+                              order.orderId,
+                              e.target.value
+                            )
+                          }
+                          style={{
+                            padding: "8px",
+                            borderRadius: "5px",
+                            border: "1px solid #ccc",
+                            marginRight: "10px",
+                          }}
+                        />
+                        <br></br>
+                        <button
+                          style={{
+                            padding: "10px 20px",
+                            backgroundColor: "#007bff",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                            marginTop: "10px",
+                          }}
+                          onClick={() => completeOrder(order, deliveryCode)}
+                        >
+                          Complete Delivery
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ) : (
@@ -562,8 +509,8 @@ export default function MyOrders() {
             )}
           </div>
         </div>
-      </DriverLayout>
-    </Driver>
+      </AdminLayout>
+    </Admin>
   );
 }
 
@@ -577,13 +524,7 @@ const styles = {
     textAlign: "center",
     marginBottom: "20px",
   },
-  productGrid: {
-    // display: "flex",
-    flexWrap: "wrap",
-    gap: "20px",
-    justifyContent: "center",
-    colors: "black",
-  },
+
   productCard: {
     width: "100%",
     border: "1px solid #ddd",
@@ -599,10 +540,16 @@ const styles = {
     marginBottom: "10px",
   },
   image: {
-    width: "50%",
+    width: "200px",
     height: "auto",
     objectFit: "cover",
     marginBottom: "5px",
+    // margin: "0 auto",
+    // justifyContent: "center",
+    // textAlign: "center",
+    borderRadius: "10px",
+    display: "block",
+    margin: "0 auto 2rem",
   },
   categoriesContainer: {
     display: "flex",
@@ -650,6 +597,19 @@ const styles = {
     textAlign: "left",
     backgroundColor: "#fff",
     border: "1px solid #ddd",
+  },
+
+  productGrid: {
+    gap: "20px",
+    justifyContent: "center",
+  },
+  productCard: {
+    // width: "50%",
+    border: "1px solid #ddd",
+    borderRadius: "8px",
+    overflow: "hidden",
+    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+    // textAlign: "center",
   },
 
   table: {
