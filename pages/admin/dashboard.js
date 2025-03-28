@@ -39,7 +39,7 @@ export default function AdminDashboard() {
             <div style={styles.productCard}>
               <button
                 style={styles.editButton}
-                onClick={() => router.push(`/admin/workers/ongoing`)}
+                onClick={() => router.push(`/admin/hire-skills/ongoing`)}
               >
                 Hire Skills
               </button>
