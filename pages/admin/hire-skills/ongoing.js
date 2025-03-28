@@ -47,7 +47,7 @@ export default function PickDropOrders() {
 
     try {
       const ordersQuery = query(
-        collection(db, "pickDropOngoing"),
+        collection(db, "hireSkillsOngoing"),
         orderBy("createdAt", "desc")
         // where("driverId", "==", user.uid) // Fetch products created by the logged-in user
       );
@@ -70,37 +70,7 @@ export default function PickDropOrders() {
     fetchOrders();
   }, [user, router]);
 
-  const handleDelete = async (postId, imageUrls) => {
-    const confirmed = confirm("Are you sure you want to delete this post?");
-    if (!confirmed) return;
 
-    try {
-      // Delete product document from Firestore
-      await deleteDoc(doc(db, "driversOrders", postId));
-      // Delete each image from Firebase Storage
-      if (imageUrls) {
-        const deletePromises = imageUrls.map(async (url) => {
-          const imageName = decodeURIComponent(
-            url.substring(url.lastIndexOf("/") + 1, url.indexOf("?"))
-          );
-
-          const imageRef = ref(storage, `${imageName}`);
-          await deleteObject(imageRef);
-        });
-        await Promise.all(deletePromises);
-      }
-
-      // Update local state to remove deleted product
-      setOrders((prevOrders) =>
-        prevOrders.filter((post) => post.id !== postId)
-      );
-
-      alert("Post deleted successfully!");
-    } catch (error) {
-      console.error("Error deleting post:", error);
-      alert("Failed to delete the post.");
-    }
-  };
 
   if (loading)
     return (
@@ -140,7 +110,8 @@ export default function PickDropOrders() {
       }
 
       // Reference to the Firestore document
-      const orderRef = doc(db, "pickDropOngoing", order.id);
+      const orderRef = doc(db, "hireSkillsOngoing", order.id);
+     
 
       if (newStatus === "Completed" || newStatus === "Cancelled") {
         // Get the current order data
@@ -154,7 +125,9 @@ export default function PickDropOrders() {
 
         // Determine the target collection
         const targetCollection =
-          newStatus === "completed" ? "pickDropHistory" : "pickDropCancelled";
+          newStatus === "completed"
+            ? "hireSkillsHistory"
+            : "hireSkillsCancelled";
 
         // Add the order to the target collection
         const targetDocRef = doc(db, targetCollection, order.id);
@@ -192,7 +165,7 @@ export default function PickDropOrders() {
     }
     const newStatus = deliveryNote[order.id];
     try {
-      const orderRef = doc(db, "pickDropOngoing", order.id);
+      const orderRef = doc(db, "hireSkillsOngoing", order.id);
 
       // Get the current order data
       const orderSnapshot = await getDoc(orderRef);
@@ -218,7 +191,7 @@ export default function PickDropOrders() {
     }
 
     try {
-      const orderRef = doc(db, "pickDropOngoing", order.id);
+      const orderRef = doc(db, "hireSkillsOngoing", order.id);
 
       // Get the current order data
       const orderSnapshot = await getDoc(orderRef);
@@ -229,22 +202,13 @@ export default function PickDropOrders() {
 
       const orderData = orderSnapshot.data();
 
-      // if (Number(order.deliveryCode) !== Number(deliveryCode[order.orderId])) {
-      //   alert("Wrong delivery code. Please try again.");
-      //   return;
-      // }
-
-      const targetDocRef = doc(db, "pickDropHistory", order.id);
+      const targetDocRef = doc(db, "hireSkillsHistory", order.id);
 
       await runTransaction(db, async (transaction) => {
         transaction.set(targetDocRef, {
           ...orderData,
           status: "completed",
-          driver: {
-            name: user?.name || "Unknown",
-            image: user?.image || "",
-            driverId: user?.uid || "",
-          },
+
           deliveredAt: serverTimestamp(),
         });
         transaction.delete(orderRef);
@@ -282,7 +246,7 @@ export default function PickDropOrders() {
         <Header />
         <div className="container">
           <div style={styles.container}>
-            <h1 style={styles.heading}>Current Orders</h1>
+            <h1 style={styles.heading}>Hire Skills Requests</h1>
             <div style={styles.productGrid}>
               {orders.length > 0 ? (
                 orders.map((order, index) =>
@@ -304,7 +268,7 @@ export default function PickDropOrders() {
                           <tbody>
                             {/* Order Details */}
                             <tr>
-                              <th style={styles.label}>Order ID:</th>
+                              <th style={styles.label}>Request ID:</th>
                               <td style={styles.value}>{order.id}</td>
                               <th style={styles.label}>Status:</th>
                               <td style={styles.value}>{order.status}</td>
@@ -314,70 +278,47 @@ export default function PickDropOrders() {
                               <td style={styles.value}>
                                 {outputDateTime(order.createdAt)}
                               </td>
-                              <th style={styles.label}>Instruction:</th>
-                              <td style={styles.value}>
-                                {order.instruction || "N/A"}
-                              </td>
                             </tr>
 
                             {/* Sender Details */}
                             <tr>
                               <th colSpan="4" style={styles.sectionHeader}>
-                                Sender Details
+                                User Details
                               </th>
                             </tr>
                             <tr>
                               <th style={styles.label}>Name:</th>
-                              <td style={styles.value}>{order.senderName}</td>
+                              <td style={styles.value}>{order.name}</td>
                               <th style={styles.label}>Phone:</th>
-                              <td style={styles.value}>{order.senderPhone}</td>
+                              <td style={styles.value}>{order.phone}</td>
                             </tr>
                             <tr>
                               <th style={styles.label}>Location:</th>
                               <td colSpan="3" style={styles.value}>
-                                {order.senderLocation}
+                                {order.location}
                               </td>
                             </tr>
 
                             {/* Receiver Details */}
                             <tr>
                               <th colSpan="4" style={styles.sectionHeader}>
-                                Receiver Details
+                                Work Details
                               </th>
                             </tr>
                             <tr>
-                              <th style={styles.label}>Name:</th>
-                              <td style={styles.value}>{order.receiverName}</td>
-                              <th style={styles.label}>Phone:</th>
-                              <td style={styles.value}>
-                                {order.receiverPhone}
-                              </td>
+                              <th style={styles.label}>Service:</th>
+                              <td style={styles.value}>{order.service}</td>
+                              <th style={styles.label}>Details:</th>
+                              <td style={styles.value}>{order.description}</td>
                             </tr>
                             <tr>
-                              <th style={styles.label}>Location:</th>
-                              <td colSpan="3" style={styles.value}>
-                                {order.receiverLocation}
+                              <th style={styles.label}>Needed On:</th>
+                              <td colSpan="3" style={styles.value2}>
+                                {order.date}
                               </td>
                             </tr>
 
                             {/* Item Details */}
-                            <tr>
-                              <th colSpan="4" style={styles.sectionHeader}>
-                                Item Details
-                              </th>
-                            </tr>
-                            <tr>
-                              <th style={styles.label}>Item:</th>
-                              <td style={styles.value}>{order.itemDetail}</td>
-                              <th style={styles.label}>Size:</th>
-                              <td style={styles.value}>{order.itemSize}</td>
-                            </tr>
-                            <tr>
-                              <th style={styles.label}>Weight:</th>
-                              <td style={styles.value}>{order.itemWeight}</td>
-                              <th></th>
-                              <td></td>
-                            </tr>
                           </tbody>
                         </table>
                       </div>
@@ -393,12 +334,10 @@ export default function PickDropOrders() {
                             }
                           >
                             <option value="Pending">Pending</option>
-                            <option value="Delivering Today">
-                              Delivering Today
+                            <option value=" Worker Coming Today">
+                              Worker Coming Today
                             </option>
-                            <option value="Out for Delivery">
-                              Out for Delivery
-                            </option>
+
                             <option value="Cancelled">Cancelled</option>
                           </select>
                           <button
@@ -433,7 +372,7 @@ export default function PickDropOrders() {
                             style={styles.completeButton}
                             onClick={() => setShowModal(true)}
                           >
-                            Complete Delivery
+                            Skilled Workers Delivered
                           </button>
                         </div>
 
@@ -534,6 +473,14 @@ const styles = {
     textAlign: "left",
     backgroundColor: "#fff",
     border: "1px solid #ddd",
+  },
+
+  value2: {
+    padding: "10px",
+    textAlign: "left",
+    backgroundColor: "#fff",
+    border: "1px solid #ddd",
+    fontWeight: "bold",
   },
 
   productGrid: {

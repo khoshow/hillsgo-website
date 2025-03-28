@@ -133,6 +133,17 @@ const DriverLayout = ({ children }) => {
             </Link>
           </li>
           <li style={styles.sidebarItem}>
+            <Link href="/admin/pick-drop" style={styles.sidebarLink}>
+              Pick & Drop
+            </Link>
+          </li>
+
+          <li style={styles.sidebarItem}>
+            <Link href="/admin/hire-skills" style={styles.sidebarLink}>
+              Hire Skills
+            </Link>
+          </li>
+          <li style={styles.sidebarItem}>
             <Link href="/admin/drivers" style={styles.sidebarLink}>
               Drivers
             </Link>
