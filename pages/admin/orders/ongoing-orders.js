@@ -33,6 +33,8 @@ export default function MyOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deliveryNote, setDeliveryNote] = useState({});
+  const [orderDetail1, setOrderDetail1] = useState({});
+  const [copied, setCopied] = useState(false);
   const router = useRouter();
   const storage = getStorage();
 
@@ -67,6 +69,70 @@ export default function MyOrders() {
 
     fetchOrders();
   }, [user, router]);
+
+  const copyText = (item) => {
+    const copyItem = () => {
+      return `*HILLSGO - Order Confirmation*
+
+*Dear ${item.userData.userName},*
+Thank you for placing your order with HILLSGO! Your order has been successfully received and is being processed.
+
+Details: 
+${item.product.productData.name} , 
+Quantity – ${item.product.productData.quantity}
+Order ID: *${item.orderId}*
+
+Amount payable: *₹${
+        item.product.deliveryCost +
+        item.product.tip +
+        item.product.productData.subtotal
+      }*
+Delivery Address: ${item.userData.deliveryAddress}
+
+
+We'll send another update when it ships. If you have any questions, feel free to contact our support team.
+We appreciate your trust in us and look forward to serving you further!
+
+*Team HILLSGO* 
+
+_Contact : +91-690-985-6940_
+_www.hillsgo.com_
+`;
+    };
+    navigator.clipboard.writeText(copyItem()).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+    });
+  };
+
+  const copyTextWhatsapp = (item) => {
+    return `*HILLSGO - Order Confirmation*
+
+*Dear ${item.userData.userName},*
+Thank you for placing your order with HILLSGO! Your order has been successfully received and is being processed.
+
+Details: 
+${item.product.productData.name} , 
+Quantity – ${item.product.productData.quantity}
+Order ID: *${item.orderId}*
+
+Amount payable: *₹${
+      item.product.deliveryCost +
+      item.product.tip +
+      item.product.productData.subtotal
+    }*
+Delivery Address: ${item.userData.deliveryAddress}
+
+
+We'll send another update when it ships. If you have any questions, feel free to contact our support team.
+We appreciate your trust in us and look forward to serving you further!
+
+*Team HILLSGO* 
+
+_Contact : +91-690-985-6940_
+_www.hillsgo.com_
+`;
+  };
 
   const handleDelete = async (postId, imageUrls) => {
     const confirmed = confirm("Are you sure you want to delete this post?");
@@ -367,7 +433,7 @@ export default function MyOrders() {
                         </tr>
                       </table>
                     </div>
-                    <div style={{ marginTop: "20px", textAlign: "center" }}>
+                    <div style={{ marginTop: "20px", textAlign: "left" }}>
                       {/* <label
                         htmlFor={`status-${index}`}
                         style={{ marginRight: "10px", fontWeight: "bold" }}
@@ -404,6 +470,64 @@ export default function MyOrders() {
                       >
                         Update Delivery Note
                       </button>
+
+                      <div>
+                        {/* <input
+                          type="text"
+                          value={text}
+                          onChange={(e) => setText(e.target.value)}
+                        /> */}
+                        <button
+                          style={{
+                            padding: "10px 20px",
+                            backgroundColor: "#ff9f68",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                            marginTop: "10px",
+                          }}
+                          onClick={() => copyText(item)}
+                        >
+                          Copy Order confirmation message
+                        </button>
+                        {copied && (
+                          <span style={{ marginLeft: "10px", color: "green" }}>
+                            Copied!
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        {/* <input
+                          type="text"
+                          value={text}
+                          onChange={(e) => setText(e.target.value)}
+                        /> */}
+                        <button
+                          style={{
+                            padding: "10px 20px",
+                            backgroundColor: "#107a8b",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                            marginTop: "10px",
+                          }}
+                          onClick={() => {
+                            const phoneNumber = item.userData.phone; // Ensure it's in the correct format
+                            const message = encodeURIComponent(
+                              copyTextWhatsapp(item)
+                            );
+
+                            window.open(
+                              `https://wa.me/${phoneNumber}?text=${message}`,
+                              "_blank"
+                            );
+                          }}
+                        >
+                          Whatsapp Order Confirmation
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>

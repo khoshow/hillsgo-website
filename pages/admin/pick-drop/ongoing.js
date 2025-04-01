@@ -36,6 +36,7 @@ export default function PickDropOrders() {
   const [deliveryCode, setDeliveryCode] = useState({});
   const [deliveryNote, setDeliveryNote] = useState({});
   const [showModal, setShowModal] = useState(false);
+  const [copied, setCopied] = useState(false);
   const router = useRouter();
   const storage = getStorage();
 
@@ -69,6 +70,57 @@ export default function PickDropOrders() {
     if (userLoading) return;
     fetchOrders();
   }, [user, router]);
+
+  const copyThankYouText = (order) => {
+    console.log("order", order);
+
+    const copyItem = () => {
+      return `
+
+*Dear ${order.receiverName},*
+Thank you for placing a Pick & Drop order through HillsGO. Your order has been successfully delivered.
+
+Details: 
+Order Id: ${order.id}
+Pick Location: ${order.senderLocation}
+Drop Location:${order.receiverLocation}
+
+We appreciate your trust in us and look forward to serving you further!
+
+*Team HILLSGO* 
+
+_Contact : +91-690-985-6940_
+_www.hillsgo.com_
+`;
+    };
+    navigator.clipboard.writeText(copyItem()).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+    });
+  };
+
+  const copyTextWhatsapp = (order) => {
+    console.log("order", order);
+
+    return `
+*Dear ${order.receiverName},*
+Thank you for placing a Pick & Drop order through HillsGO. 
+
+Your order has been successfully delivered.
+
+Details: 
+Order Id: ${order.id}
+Pick Location: ${order.senderLocation}
+Drop Location:${order.receiverLocation}
+
+We appreciate your trust in us and look forward to serving you further!
+
+*Team HILLSGO* 
+
+_Contact : +91-690-985-6940_
+_www.hillsgo.com_
+`;
+  };
 
   const handleDelete = async (postId, imageUrls) => {
     const confirmed = confirm("Are you sure you want to delete this post?");
@@ -494,6 +546,66 @@ export default function PickDropOrders() {
                             </div>
                           </div>
                         )}
+
+                        <div>
+                          {/* <input
+                          type="text"
+                          value={text}
+                          onChange={(e) => setText(e.target.value)}
+                        /> */}
+                          <button
+                            style={{
+                              padding: "10px 20px",
+                              backgroundColor: "#ff9f68",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "5px",
+                              cursor: "pointer",
+                              marginTop: "10px",
+                            }}
+                            onClick={() => copyThankYouText(order)}
+                          >
+                            Copy Thank You message
+                          </button>
+                          {copied && (
+                            <span
+                              style={{ marginLeft: "10px", color: "green" }}
+                            >
+                              Copied!
+                            </span>
+                          )}
+                        </div>
+                        <div>
+                          {/* <input
+                          type="text"
+                          value={text}
+                          onChange={(e) => setText(e.target.value)}
+                        /> */}
+                          <button
+                            style={{
+                              padding: "10px 20px",
+                              backgroundColor: "#107a8b",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "5px",
+                              cursor: "pointer",
+                              marginTop: "10px",
+                            }}
+                            onClick={() => {
+                              const phoneNumber = order.receiverPhone; // Ensure it's in the correct format
+                              const message = encodeURIComponent(
+                                copyTextWhatsapp(order)
+                              );
+
+                              window.open(
+                                `https://wa.me/${phoneNumber}?text=${message}`,
+                                "_blank"
+                              );
+                            }}
+                          >
+                            Whatsapp Thank you message
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ) : (
