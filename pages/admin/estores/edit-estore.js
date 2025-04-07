@@ -27,6 +27,7 @@ import { useUser } from "../../../contexts/UserContext"; // Import your UserCont
 const ProfileEditEstore = () => {
   const router = useRouter();
   const { id } = router.query;
+  const estoreId = id;
   const { user, loading: userLoading } = useUser(); // Access the user context
   const [formData, setFormData] = useState({
     estoreName: "",
@@ -44,7 +45,7 @@ const ProfileEditEstore = () => {
     role: "estore",
     categories: [],
   });
-  const [estoreId, setEstoreId] = useState();
+
   const [imageFile, setImageFile] = useState(null); // Separate state for the image file
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -66,7 +67,8 @@ const ProfileEditEstore = () => {
 
         if (estoreDoc.exists()) {
           setFormData(estoreDoc.data());
-          setEstoreId(estoreDoc.data().estoreId);
+
+          // setEstoreId(id);
         } else {
           alert("Product not found!");
           router.push("/estores-list"); // Redirect if product not found
@@ -139,22 +141,14 @@ const ProfileEditEstore = () => {
       //     imageUrl: formData.imageUrl,
       //   }));
     }
-
+    const estoreRef = doc(db, "estores", estoreId);
+    const estoreSnap = await getDoc(estoreRef);
     try {
       // Query the document where estoreId matches
-      const profileQuery = query(
-        collection(db, "estores"),
-        where("estoreId", "==", estoreId)
-      );
 
-      const querySnapshot = await getDocs(profileQuery);
-
-      if (!querySnapshot.empty) {
-        // Get the document ID
-        const docId = querySnapshot.docs[0].id;
-
+      if (estoreSnap.exists()) {
         // Update the document
-        await updateDoc(doc(db, "estores", docId), {
+        await updateDoc(doc(db, "estores", estoreId), {
           estoreName,
           imageUrl: firebaseImageUrl,
           estoreContact,
@@ -169,53 +163,40 @@ const ProfileEditEstore = () => {
           role,
           editedAt: new Date(),
         });
+
+        try {
+          const ownerId = estoreSnap.data().ownerId;
+          const userQuery = query(
+            collection(db, "users"),
+            where("id", "==", ownerId)
+          );
+          const userSnapshot = await getDocs(userQuery);
+          if (userSnapshot.empty) {
+            console.log(
+              "No matching user document found for the given estoreId."
+            );
+            return;
+          }
+          // Update the user document with the provided data
+          const userDoc = userSnapshot.docs[0];
+          await updateDoc(doc(db, "users", userDoc.id), {
+            city: estoreCity,
+            name: estoreName,
+            phone: estoreContact,
+            district: estoreDistrict,
+            state: estoreState,
+            role,
+            editedAt: new Date(),
+          });
+        } catch (error) {
+          console.error("Error updating user details:", error);
+        }
       } else {
         console.log("No document found for this estoreId.");
       }
     } catch (error) {
       alert("Error updating e-store:", error);
       console.error("Error updating e-store:", error);
-    }
-
-    try {
-      // Query the estore document where estoreId matches user.uid
-      const estoreQuery = query(
-        collection(db, "estores"),
-        where("estoreId", "==", estoreId)
-      );
-      const estoreSnapshot = await getDocs(estoreQuery);
-
-      if (estoreSnapshot.empty) {
-        console.log("No document found for this estoreId.");
-        return;
-      }
-
-      // Get the estore's document ID
-      const estoreDocId = estoreSnapshot.docs[0].data().estoreId;
-
-      // Query the user document where id matches estoreDocId
-      const userQuery = query(
-        collection(db, "users"),
-        where("id", "==", estoreDocId)
-      );
-      const userSnapshot = await getDocs(userQuery);
-      if (userSnapshot.empty) {
-        console.log("No matching user document found for the given estoreId.");
-        return;
-      }
-      // Update the user document with the provided data
-      const userDoc = userSnapshot.docs[0];
-      await updateDoc(doc(db, "users", userDoc.id), {
-        city: estoreCity,
-        name: estoreName,
-        phone: estoreContact,
-        district: estoreDistrict,
-        state: estoreState,
-        role,
-        editedAt: new Date(),
-      });
-    } catch (error) {
-      console.error("Error updating user details:", error);
     }
 
     const { estorePassword: _, ...formDataWithoutPassword } = formData;
