@@ -52,7 +52,6 @@ const ProfileEditEstore = () => {
 
   const estoreCategories = category;
 
-
   useEffect(() => {
     if (userLoading) return;
     const fetchProfile = async () => {
@@ -126,7 +125,6 @@ const ProfileEditEstore = () => {
       const storage = getStorage();
       const uniqueFilename = `estores/${Date.now()}_${imageFile.name}`;
       const imageRef = ref(storage, uniqueFilename);
-
       // Upload image to Firebase Storage
       await uploadBytes(imageRef, imageFile);
       firebaseImageUrl = await getDownloadURL(imageRef);
@@ -175,6 +173,7 @@ const ProfileEditEstore = () => {
         console.log("No document found for this estoreId.");
       }
     } catch (error) {
+      alert("Error updating e-store:", error);
       console.error("Error updating e-store:", error);
     }
 
@@ -336,7 +335,7 @@ const ProfileEditEstore = () => {
             ))}
 
             <div style={styles.formGroup}>
-              <label style={styles.label}>A short note about you:</label>
+              <label style={styles.label}>A short note about the estore:</label>
               <textarea
                 type="text"
                 name="estoreDescription"
