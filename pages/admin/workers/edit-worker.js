@@ -43,6 +43,9 @@ const ProfileEditWorker = () => {
     workerDescription: "",
     role: "worker",
   });
+  const [keywordInput, setKeywordInput] = useState("");
+  const [keywords, setKeywords] = useState([]);
+
   const [workerId, setWorkerId] = useState();
   const [imageFile, setImageFile] = useState(null); // Separate state for the image file
   const [error, setError] = useState(null);
@@ -66,6 +69,7 @@ const ProfileEditWorker = () => {
         if (workerDoc.exists()) {
           setFormData(workerDoc.data());
           setWorkerId(workerDoc.data().workerId);
+          setKeywords(workerDoc.data().keywords);
         } else {
           alert("Product not found!");
           router.push("/workers-list"); // Redirect if product not found
@@ -163,6 +167,7 @@ const ProfileEditWorker = () => {
           workerState,
           categories,
           workerDescription,
+          keywords,
           role,
           editedAt: new Date(),
         });
@@ -240,8 +245,10 @@ const ProfileEditWorker = () => {
       workerCity: "",
       workerDescription: "",
       categories: [],
+
       role: "worker",
     });
+    setKeywords([]);
     setImageFile(null); // Reset the image file
   };
 
@@ -305,6 +312,40 @@ const ProfileEditWorker = () => {
         ? [...prevData.categories, value]
         : prevData.categories.filter((categoryId) => categoryId !== value),
     }));
+  };
+
+  const handleAddKeyword = () => {
+    const trimmed = keywordInput.trim().toLowerCase();
+
+    if (!trimmed) return;
+
+    if (keywords?.length >= 8) {
+      alert("You can only add up to 8 keywords.");
+      return;
+    }
+
+    if (trimmed && trimmed.length > 0) {
+      setKeywords((prev) => {
+        const updated = prev || []; // fallback if prev is undefined
+        if (!updated.includes(trimmed)) {
+          return [...updated, trimmed];
+        }
+        return updated;
+      });
+    }
+
+    setKeywordInput("");
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent default Enter behavior
+      handleAddKeyword();
+    }
+  };
+
+  const handleRemoveKeyword = (wordToRemove) => {
+    setKeywords((prev) => prev.filter((kw) => kw !== wordToRemove));
   };
 
   return (
@@ -374,7 +415,51 @@ const ProfileEditWorker = () => {
                 </label>
               ))}
             </div>
+            <div style={{ marginBottom: "1rem" }}>
+              <div style={{ display: "flex", gap: "0.5rem" }}>
+                <input
+                  type="text"
+                  value={keywordInput}
+                  onChange={(e) => setKeywordInput(e.target.value)}
+                  onKeyDown={handleKeyPress}
+                  placeholder="Type a keyword and press Enter"
+                  style={{ padding: "0.5rem", flex: 1 }}
+                />
+                <button
+                  onClick={handleAddKeyword}
+                  type="button"
+                  style={{ padding: "0.5rem 1rem" }}
+                >
+                  Add
+                </button>
+              </div>
 
+              <div
+                style={{
+                  marginTop: "0.5rem",
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "0.5rem",
+                }}
+              >
+                {keywords?.map((kw, idx) => (
+                  <span
+                    key={idx}
+                    style={{
+                      backgroundColor: "#eee",
+                      padding: "0.4rem 0.7rem",
+                      borderRadius: "20px",
+                      fontSize: "0.9rem",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handleRemoveKeyword(kw)}
+                    title="Click to remove"
+                  >
+                    {kw} ✕
+                  </span>
+                ))}
+              </div>
+            </div>
             <button type="submit" style={styles.button} disabled={loading}>
               {loading ? "Submitting..." : "Update Profile"}
             </button>

@@ -51,6 +51,9 @@ const ProfileEditEstore = () => {
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const [keywordInput, setKeywordInput] = useState("");
+  const [keywords, setKeywords] = useState([]);
+
   const estoreCategories = category;
 
   useEffect(() => {
@@ -67,7 +70,7 @@ const ProfileEditEstore = () => {
 
         if (estoreDoc.exists()) {
           setFormData(estoreDoc.data());
-
+          setKeywords(estoreDoc.data().keywords);
           // setEstoreId(id);
         } else {
           alert("Product not found!");
@@ -145,7 +148,11 @@ const ProfileEditEstore = () => {
     const estoreSnap = await getDoc(estoreRef);
     try {
       // Query the document where estoreId matches
-
+      const enhancedKeywords = [
+        ...new Set([
+          ...keywords, // existing user input
+        ]),
+      ];
       if (estoreSnap.exists()) {
         // Update the document
         await updateDoc(doc(db, "estores", estoreId), {
@@ -159,6 +166,7 @@ const ProfileEditEstore = () => {
           estoreDistrict,
           estoreState,
           categories,
+          keywords: enhancedKeywords,
           estoreDescription,
           role,
           editedAt: new Date(),
@@ -292,6 +300,40 @@ const ProfileEditEstore = () => {
     }));
   };
 
+  const handleAddKeyword = () => {
+    const trimmed = keywordInput.trim().toLowerCase();
+
+    if (!trimmed) return;
+
+    if (keywords?.length >= 8) {
+      alert("You can only add up to 8 keywords.");
+      return;
+    }
+
+    if (trimmed && trimmed.length > 0) {
+      setKeywords((prev) => {
+        const updated = prev || []; // fallback if prev is undefined
+        if (!updated.includes(trimmed)) {
+          return [...updated, trimmed];
+        }
+        return updated;
+      });
+    }
+
+    setKeywordInput("");
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent default Enter behavior
+      handleAddKeyword();
+    }
+  };
+
+  const handleRemoveKeyword = (wordToRemove) => {
+    setKeywords((prev) => prev.filter((kw) => kw !== wordToRemove));
+  };
+
   return (
     <Admin>
       <AdminLayout>
@@ -358,6 +400,52 @@ const ProfileEditEstore = () => {
                   {category.name}
                 </label>
               ))}
+            </div>
+
+            <div style={{ marginBottom: "1rem" }}>
+              <div style={{ display: "flex", gap: "0.5rem" }}>
+                <input
+                  type="text"
+                  value={keywordInput}
+                  onChange={(e) => setKeywordInput(e.target.value)}
+                  onKeyDown={handleKeyPress}
+                  placeholder="Type a keyword and press Enter"
+                  style={{ padding: "0.5rem", flex: 1 }}
+                />
+                <button
+                  onClick={handleAddKeyword}
+                  type="button"
+                  style={{ padding: "0.5rem 1rem" }}
+                >
+                  Add
+                </button>
+              </div>
+
+              <div
+                style={{
+                  marginTop: "0.5rem",
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "0.5rem",
+                }}
+              >
+                {keywords?.map((kw, idx) => (
+                  <span
+                    key={idx}
+                    style={{
+                      backgroundColor: "#eee",
+                      padding: "0.4rem 0.7rem",
+                      borderRadius: "20px",
+                      fontSize: "0.9rem",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handleRemoveKeyword(kw)}
+                    title="Click to remove"
+                  >
+                    {kw} ✕
+                  </span>
+                ))}
+              </div>
             </div>
 
             <button type="submit" style={styles.button} disabled={loading}>

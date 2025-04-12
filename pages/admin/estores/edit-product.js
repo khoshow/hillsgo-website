@@ -31,6 +31,10 @@ export default function EditProduct() {
     description: "",
     images: [],
   });
+
+  const [keywordInput, setKeywordInput] = useState("");
+  const [keywords, setKeywords] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [images, setImages] = useState([]);
   const [submitting, setSubmitting] = useState(false);
@@ -46,6 +50,7 @@ export default function EditProduct() {
 
         if (productDoc.exists()) {
           setProductData(productDoc.data());
+          setKeywords(productDoc.data().keywords);
         } else {
           alert("Product not found!");
           router.push("/my-products"); // Redirect if product not found
@@ -92,6 +97,7 @@ export default function EditProduct() {
           return await getDownloadURL(imageRef);
         })
       );
+
       // Update product data in Firestore
       await updateDoc(doc(db, "estoreProducts", id), {
         ...productData,
@@ -99,6 +105,7 @@ export default function EditProduct() {
         price: calculatePrice(),
         wholesalePrice: parseFloat(productData.wholesalePrice),
         discountPrice: parseFloat(productData.discountPrice),
+        keywords,
         images: [...productData.images, ...imageUrls], // Append new image URLs,
       });
 
@@ -114,6 +121,7 @@ export default function EditProduct() {
         categories: [],
         description: "",
       });
+      setKeywords([]);
     } catch (error) {
       console.error("Error updating product:", error);
       alert("Failed to update product.");
@@ -156,6 +164,40 @@ export default function EditProduct() {
       console.error("Error deleting image:", error); // Check the error message
       alert("Failed to delete image.");
     }
+  };
+
+  const handleAddKeyword = () => {
+    const trimmed = keywordInput.trim().toLowerCase();
+
+    if (!trimmed) return;
+
+    if (keywords.length >= 8) {
+      alert("You can only add up to 8 keywords.");
+      return;
+    }
+
+    if (trimmed && trimmed.length > 0) {
+      setKeywords((prev) => {
+        const updated = prev || []; // fallback if prev is undefined
+        if (!updated.includes(trimmed)) {
+          return [...updated, trimmed];
+        }
+        return updated;
+      });
+    }
+
+    setKeywordInput("");
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent default Enter behavior
+      handleAddKeyword();
+    }
+  };
+
+  const handleRemoveKeyword = (wordToRemove) => {
+    setKeywords((prev) => prev.filter((kw) => kw !== wordToRemove));
   };
 
   if (loading)
@@ -250,6 +292,51 @@ export default function EditProduct() {
                 style={styles.textarea}
               />
             </label>
+            <div style={{ marginBottom: "1rem" }}>
+              <div style={{ display: "flex", gap: "0.5rem" }}>
+                <input
+                  type="text"
+                  value={keywordInput}
+                  onChange={(e) => setKeywordInput(e.target.value)}
+                  onKeyDown={handleKeyPress}
+                  placeholder="Type a keyword and press Enter"
+                  style={{ padding: "0.5rem", flex: 1 }}
+                />
+                <button
+                  onClick={handleAddKeyword}
+                  type="button"
+                  style={{ padding: "0.5rem 1rem" }}
+                >
+                  Add
+                </button>
+              </div>
+
+              <div
+                style={{
+                  marginTop: "0.5rem",
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "0.5rem",
+                }}
+              >
+                {keywords.map((kw, idx) => (
+                  <span
+                    key={idx}
+                    style={{
+                      backgroundColor: "#eee",
+                      padding: "0.4rem 0.7rem",
+                      borderRadius: "20px",
+                      fontSize: "0.9rem",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handleRemoveKeyword(kw)}
+                    title="Click to remove"
+                  >
+                    {kw} ✕
+                  </span>
+                ))}
+              </div>
+            </div>
             <label style={styles.label}>
               Images:
               <input

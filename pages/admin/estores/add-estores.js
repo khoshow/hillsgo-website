@@ -29,6 +29,9 @@ const AdminAddEstore = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  const [keywordInput, setKeywordInput] = useState("");
+  const [keywords, setKeywords] = useState([]);
+
   const estoreCategories = category;
 
   const handleChange = (e) => {
@@ -89,7 +92,13 @@ const AdminAddEstore = () => {
           imageUrl: firebaseImageUrl,
         }));
       }
-
+      const enhancedKeywords = [
+        ...new Set([
+          ...keywords, // existing user input
+          estoreName.toLowerCase(), // additional keyword based on name
+          ...estoreName.toLowerCase().split(" "),
+        ]),
+      ];
       const estoreRef = await addDoc(collection(db, "estores"), {
         estoreName,
         imageUrl: firebaseImageUrl,
@@ -103,6 +112,7 @@ const AdminAddEstore = () => {
         estoreState,
         estoreCity,
         role,
+        keywords: enhancedKeywords,
         views: 0,
         reviews: 0,
         categories,
@@ -146,8 +156,10 @@ const AdminAddEstore = () => {
         estoreCity: "",
         estoreState: "",
         role: "estore",
+
         categories: [],
       });
+      setKeywords([]);
       setImageFile(null); // Reset the image file
     } catch (error) {
       setError(error.message);
@@ -184,6 +196,35 @@ const AdminAddEstore = () => {
         : prevData.categories.filter((categoryId) => categoryId !== value),
     }));
   };
+
+  const handleAddKeyword = () => {
+    const trimmed = keywordInput.trim().toLowerCase();
+
+    if (!trimmed) return;
+
+    if (keywords.length >= 8) {
+      alert("You can only add up to 8 keywords.");
+      return;
+    }
+
+    if (!keywords.includes(trimmed)) {
+      setKeywords((prev) => [...prev, trimmed]);
+    }
+
+    setKeywordInput("");
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent default Enter behavior
+      handleAddKeyword();
+    }
+  };
+
+  const handleRemoveKeyword = (wordToRemove) => {
+    setKeywords((prev) => prev.filter((kw) => kw !== wordToRemove));
+  };
+  console.log("Keywords", keywords);
 
   return (
     <Admin>
@@ -271,6 +312,52 @@ const AdminAddEstore = () => {
                   {category.name}
                 </label>
               ))}
+            </div>
+
+            <div style={{ marginBottom: "1rem" }}>
+              <div style={{ display: "flex", gap: "0.5rem" }}>
+                <input
+                  type="text"
+                  value={keywordInput}
+                  onChange={(e) => setKeywordInput(e.target.value)}
+                  onKeyDown={handleKeyPress}
+                  placeholder="Type a keyword and press Enter"
+                  style={{ padding: "0.5rem", flex: 1 }}
+                />
+                <button
+                  onClick={handleAddKeyword}
+                  type="button"
+                  style={{ padding: "0.5rem 1rem" }}
+                >
+                  Add
+                </button>
+              </div>
+
+              <div
+                style={{
+                  marginTop: "0.5rem",
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "0.5rem",
+                }}
+              >
+                {keywords.map((kw, idx) => (
+                  <span
+                    key={idx}
+                    style={{
+                      backgroundColor: "#eee",
+                      padding: "0.4rem 0.7rem",
+                      borderRadius: "20px",
+                      fontSize: "0.9rem",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handleRemoveKeyword(kw)}
+                    title="Click to remove"
+                  >
+                    {kw} ✕
+                  </span>
+                ))}
+              </div>
             </div>
 
             <button type="submit" style={styles.button} disabled={loading}>

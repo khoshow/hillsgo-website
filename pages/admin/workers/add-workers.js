@@ -23,6 +23,9 @@ const AdminAddWorker = () => {
     categories: [],
     role: "worker",
   });
+  const [keywordInput, setKeywordInput] = useState("");
+  const [keywords, setKeywords] = useState([]);
+
   const [imageFile, setImageFile] = useState(null); // Separate state for the image file
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -89,6 +92,13 @@ const AdminAddWorker = () => {
         }));
       }
 
+      const enhancedKeywords = [
+        ...new Set([
+          ...keywords, // existing user input
+          workerName.toLowerCase(), // additional keyword based on name
+          ...workerName.toLowerCase().split(" "),
+        ]),
+      ];
       const workerRef = await addDoc(collection(db, "workers"), {
         workerName,
         imageUrl: firebaseImageUrl,
@@ -104,6 +114,7 @@ const AdminAddWorker = () => {
         categories,
         views: 0,
         reviews: 0,
+        keywords: enhancedKeywords,
         role,
 
         createdAt: new Date(),
@@ -146,6 +157,7 @@ const AdminAddWorker = () => {
         categories: [],
         role: "worker",
       });
+      setKeywords([]);
       setImageFile(null); // Reset the image file state after submission
     } catch (error) {
       setError(error.message);
@@ -181,6 +193,34 @@ const AdminAddWorker = () => {
         ? [...prevData.categories, value]
         : prevData.categories.filter((categoryId) => categoryId !== value),
     }));
+  };
+
+  const handleAddKeyword = () => {
+    const trimmed = keywordInput.trim().toLowerCase();
+
+    if (!trimmed) return;
+
+    if (keywords.length >= 8) {
+      alert("You can only add up to 8 keywords.");
+      return;
+    }
+
+    if (!keywords.includes(trimmed)) {
+      setKeywords((prev) => [...prev, trimmed]);
+    }
+
+    setKeywordInput("");
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent default Enter behavior
+      handleAddKeyword();
+    }
+  };
+
+  const handleRemoveKeyword = (wordToRemove) => {
+    setKeywords((prev) => prev.filter((kw) => kw !== wordToRemove));
   };
 
   return (
@@ -269,6 +309,52 @@ const AdminAddWorker = () => {
                   {category.name}
                 </label>
               ))}
+            </div>
+
+            <div style={{ marginBottom: "1rem" }}>
+              <div style={{ display: "flex", gap: "0.5rem" }}>
+                <input
+                  type="text"
+                  value={keywordInput}
+                  onChange={(e) => setKeywordInput(e.target.value)}
+                  onKeyDown={handleKeyPress}
+                  placeholder="Type a keyword and press Enter"
+                  style={{ padding: "0.5rem", flex: 1 }}
+                />
+                <button
+                  onClick={handleAddKeyword}
+                  type="button"
+                  style={{ padding: "0.5rem 1rem" }}
+                >
+                  Add
+                </button>
+              </div>
+
+              <div
+                style={{
+                  marginTop: "0.5rem",
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "0.5rem",
+                }}
+              >
+                {keywords.map((kw, idx) => (
+                  <span
+                    key={idx}
+                    style={{
+                      backgroundColor: "#eee",
+                      padding: "0.4rem 0.7rem",
+                      borderRadius: "20px",
+                      fontSize: "0.9rem",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handleRemoveKeyword(kw)}
+                    title="Click to remove"
+                  >
+                    {kw} ✕
+                  </span>
+                ))}
+              </div>
             </div>
 
             <button type="submit" style={styles.button} disabled={loading}>
