@@ -123,6 +123,9 @@ export default function AddProduct() {
         ownerName: user.name,
         estoreName: user.estoreName,
         estoreContact: user.estoreContact,
+        priority: 1,
+        purchase: 0,
+        reviews: 0,
         keywords: enhancedKeywords,
       });
 

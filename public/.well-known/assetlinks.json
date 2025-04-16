@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.hillsgo.hillsgoapp",
+      "sha256_cert_fingerprints": [
+        "BA:B6:5B:66:56:52:B7:B7:A1:8A:E8:8C:CC:74:29:C7:F0:B7:2E:DC:F5:05:3E:E6:A1:BD:85:A6:32:04:E4:AE"
+      ]
+    }
+  }
+]

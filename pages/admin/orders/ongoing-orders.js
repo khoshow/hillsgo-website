@@ -13,6 +13,8 @@ import {
   getDoc,
   setDoc,
   orderBy,
+  runTransaction,
+  serverTimestamp 
 } from "firebase/firestore";
 import {
   getStorage,
@@ -37,6 +39,8 @@ export default function MyOrders() {
   const [copied, setCopied] = useState(false);
   const router = useRouter();
   const storage = getStorage();
+
+  const [deliveryCode, setDeliveryCode] = useState({});
 
   useEffect(() => {
     if (userLoading) return;
@@ -176,6 +180,59 @@ _www.hillsgo.com_
       </Admin>
     );
 
+  const handleDeliveryCodeChange = (id, value) => {
+    setDeliveryCode((prev) => ({
+      ...prev,
+      [id]: value, // Update only the specific item
+    }));
+  };
+
+  const completeOrder = async (order, deliveryCode) => {
+    if (!order?.id) {
+      alert("Invalid order ID");
+      return;
+    }
+
+    try {
+      const orderRef = doc(db, "orders", order.id);
+
+      // Get the current order data
+      const orderSnapshot = await getDoc(orderRef);
+      if (!orderSnapshot.exists()) {
+        alert("Order not found");
+        return;
+      }
+
+      const orderData = orderSnapshot.data();
+
+      if (Number(order.deliveryCode) !== Number(deliveryCode[order.orderId])) {
+        alert("Wrong delivery code. Please try again.");
+        return;
+      }
+
+      const targetDocRef = doc(db, "ordersHistory", order.id);
+
+      await runTransaction(db, async (transaction) => {
+        transaction.set(targetDocRef, {
+          ...orderData,
+          status: "completed",
+          driver: {
+            name: "Admin",
+            image: "",
+            driverId: "",
+          },
+          deliveredAt: serverTimestamp(),
+        });
+        transaction.delete(orderRef);
+      });
+
+      alert("Order completed successfully!");
+    } catch (error) {
+      console.error("Error updating order status:", error);
+      alert("Failed to update order status. Please try again.");
+    }
+  };
+
   const handleStatusChange = (newStatus, order) => {
     order.status = newStatus; // Update status locally
   };
@@ -308,6 +365,10 @@ _www.hillsgo.com_
                         <tr>
                           <th>Order ID: </th>
                           <td>{item.orderId}</td>
+                        </tr>
+                        <tr>
+                          <th>Delivery Code: </th>
+                          <td>{item.deliveryCode}</td>
                         </tr>
                         <tr>
                           <th>Status: </th>
@@ -470,6 +531,47 @@ _www.hillsgo.com_
                       >
                         Update Delivery Note
                       </button>
+
+                      <div style={{ marginTop: "20px" }}>
+                        {/* <label
+                        htmlFor={`status-${index}`}
+                        style={{ marginRight: "10px", fontWeight: "bold" }}
+                      >
+                        Delivery Code:
+                      </label> */}
+
+                        <input
+                          type="number"
+                          value={deliveryCode[item.orderId]}
+                          onChange={(e) =>
+                            handleDeliveryCodeChange(
+                              item.orderId,
+                              e.target.value
+                            )
+                          }
+                          style={{
+                            padding: "8px",
+                            borderRadius: "5px",
+                            border: "1px solid #ccc",
+                            marginRight: "10px",
+                          }}
+                        />
+                        <br></br>
+                        <button
+                          style={{
+                            padding: "10px 20px",
+                            backgroundColor: "#007bff",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                            marginTop: "10px",
+                          }}
+                          onClick={() => completeOrder(item, deliveryCode)}
+                        >
+                          Complete Delivery
+                        </button>
+                      </div>
 
                       <div>
                         {/* <input
