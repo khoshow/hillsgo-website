@@ -109,19 +109,21 @@ export default function Home() {
   }
   return (
     <>
-      <Head>
-        <title>{`HillsGo || ${productData?.name || "Product"}`}</title>
-        <meta
-          name="description"
-          content={`HillsGo || ${
-            productData?.description || "Discover amazing products"
-          }`}
-        />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {productData?.images?.[0] && (
-          <link rel="icon" href={productData.images[0]} />
-        )}
-      </Head>
+      {productData && (
+        <Head>
+          <title>{`HillsGo || ${productData?.name || "Product"}`}</title>
+          <meta
+            name="description"
+            content={`HillsGo || ${
+              productData?.description || "Discover amazing products"
+            }`}
+          />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          {productData?.images?.[0] && (
+            <link rel="icon" href={productData.images[0]} />
+          )}
+        </Head>
+      )}
       <Header />
       {productData && (
         <div style={styles.container}>
