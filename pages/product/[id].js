@@ -1,9 +1,50 @@
+import { useEffect } from "react";
 import Head from "next/head";
 // import styles from "../../styles/Home.module.css";
 import Header from "../../components/Header";
 import Footer from "@/components/Footer";
 
 export default function Home() {
+  useEffect(() => {
+    const path = window.location.pathname; // e.g. /product/234
+    const productId = path.split("/")[2];
+
+    if (!productId) {
+      console.error("Product ID is missing in the URL path.");
+      return;
+    }
+
+    const appLink = `hillsgo://product/${productId}`;
+    const fallbackLink = `https://www.hillsgo.com/product/${productId}`;
+
+    const now = Date.now();
+
+    // Attempt to open the app
+    window.location.href = appLink;
+
+    const timeout = setTimeout(() => {
+      const elapsed = Date.now() - now;
+      if (elapsed < 1600) {
+        // App probably didn't open, fallback to website
+        window.location.href = fallbackLink;
+      }
+    }, 1500);
+
+    // Clear timeout if app opened and browser is hidden
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        clearTimeout(timeout);
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      clearTimeout(timeout);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
   return (
     <>
       <Head>
