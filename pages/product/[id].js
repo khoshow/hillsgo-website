@@ -105,76 +105,61 @@ export default function ProductPage({ productData }) {
       </Head>
 
       <Header />
-      <div>
-        <div style={styles.container}>
-          <div>
-            <div className="table-container">
+
+      <div style={styles.container}>
+        <div>
+          <div className="table-container">
+            <div style={styles.titleBox}>
               <p className="subTitle" style={styles.productTitle}>
                 Product Details
               </p>
-              <div>
-                <img
-                  src={productData?.images[0]} // Assuming first image is used for the card
-                  alt="image detail"
-                  style={styles.image}
-                />
-              </div>
 
-              <table>
-                <tbody>
-                  <tr>
-                    <th>Product Name: </th>
-                    <td>{productData?.name}</td>
-                  </tr>
-                  <tr>
-                    <th>Price: </th>
-                    <td>₹{productData?.price}</td>
-                  </tr>
-                  <tr>
-                    <th>Product Description: </th>
-                    <td>{productData?.description}</td>
-                  </tr>
-                  <tr>
-                    <th>Weight: </th>
-                    <td>{productData?.weight}</td>
-                  </tr>
-                  <tr>
-                    <th>Size: </th>
-                    <td>{productData?.size}</td>
-                  </tr>
-
-                  <tr>
-                    <th>Categories</th>
-
-                    {productData?.categories.map((item, index) => (
-                      <td key={index}>{`${item}`} </td>
-                    ))}
-                  </tr>
-                </tbody>
-              </table>
+              <img
+                src={productData?.images[0]} // Assuming first image is used for the card
+                alt="image detail"
+                style={styles.image}
+              />
             </div>
-            <div style={styles.card}>
-              {/* <img
+
+            <table>
+              <tbody>
+                <tr>
+                  <th>Product Name: </th>
+                  <td>{productData?.name}</td>
+                </tr>
+                <tr>
+                  <th>Price: </th>
+                  <td>₹{productData?.price}</td>
+                </tr>
+                <tr>
+                  <th>Description: </th>
+                  <td>{productData?.description}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style={styles.card}>
+            {/* <img
                 src="https://res.cloudinary.com/finer-blue/image/upload/v1742214843/HillsGo/logo-circle_ia1anw.png"
                 alt="HillsGo Logo"
                 style={styles.image}
               /> */}
 
-              <p style={styles.text}>
-                This product is currently available for purchase only on our
-                mobile app. Please download the HillsGo App to view and buy it.
-              </p>
-              <a
-                href="https://play.google.com/store/apps/details?id=com.hillsgo.hillsgoapp"
-                target="_blank"
-                style={styles.button}
-              >
-                Download HillsGO
-              </a>
-            </div>
+            <p style={styles.infoText}>
+              This product is currently available for purchase only on our
+              mobile app. Please download the HillsGo App to view and buy it.
+            </p>
+            <a
+              href="https://play.google.com/store/apps/details?id=com.hillsgo.hillsgoapp"
+              target="_blank"
+              style={styles.button}
+            >
+              Download HillsGO
+            </a>
           </div>
         </div>
       </div>
+
       <Footer />
     </>
   );
@@ -406,10 +391,15 @@ const styles = {
     fontWeight: "600",
     color: "#333",
   },
-  text: {
-    color: "#555",
-    marginBottom: "1.5rem",
-    fontSize: "1rem",
+  infoText: {
+    backgroundColor: "#f0f4ff",
+    borderLeft: "4px solid #3b82f6",
+    padding: "1rem",
+    margin: "1.5rem 0",
+    fontSize: "16px",
+    lineHeight: "1.6",
+    borderRadius: "8px",
+    color: "#1e3a8a",
   },
   button: {
     display: "inline-block",
@@ -446,5 +436,9 @@ const styles = {
   productTitle: {
     justifyContent: "center",
     marginLeft: "auto",
+    marginRight: "auto",
+  },
+  titleBox: {
+    marginBottom: "1.5rem",
   },
 };
