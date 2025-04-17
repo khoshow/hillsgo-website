@@ -109,12 +109,12 @@ export default function Home() {
   }
   return (
     <>
-      {productData && (
+      {!loading && productData?.name && productData?.images[0] && (
         <Head>
-          <title>{`HillsGo || ${productData?.name || "Product"}`}</title>
+          <title>{`${productData?.name || "Product"}`}</title>
           <meta
             name="description"
-            content={`HillsGo || ${
+            content={`${
               productData?.description || "Discover amazing products"
             }`}
           />
