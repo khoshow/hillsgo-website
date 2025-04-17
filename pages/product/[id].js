@@ -6,32 +6,49 @@ import Footer from "@/components/Footer";
 import { db, storage } from "../../firebase/firebase"; // Import your Firestore and Storage
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 
-export default function Home() {
-  const [loading, setLoading] = useState(false);
-  const [productId, setProductId] = useState();
-  const [productData, setProductData] = useState();
-  let prodId;
+export async function getServerSideProps(context) {
+  const { id } = context.params;
+
+  let productData = null;
+
+  try {
+    const productRef = doc(db, "estoreProducts", id);
+    const productSnap = await getDoc(productRef);
+
+    if (productSnap.exists()) {
+      const data = productSnap.data();
+
+      productData = {
+        ...data,
+        id,
+        createdAt: data.createdAt?.toDate().toISOString() || null, // 🧠 convert Firestore Timestamp to string
+        updatedAt: data.updatedAt?.toDate().toISOString() || null,
+      };
+    }
+  } catch (error) {
+    console.error("Error fetching product:", error);
+  }
+
+  return {
+    props: {
+      productData,
+    },
+  };
+}
+
+export default function ProductPage({ productData }) {
   useEffect(() => {
-    const path = window.location.pathname;
-    const idFromPath = path.split("/")[2];
-    if (!idFromPath) return;
+    if (!productData?.id) return;
 
-    setProductId(idFromPath);
-    fetchProduct(idFromPath);
-
-    // Only try opening the app if we haven’t tried recently
     const hasTried = sessionStorage.getItem("hillsgo_deep_link_tried");
     if (hasTried) return;
 
-    // Set the flag so we don't try again this session
     sessionStorage.setItem("hillsgo_deep_link_tried", "true");
 
-    const appLink = `hillsgo://product/${idFromPath}`;
-    const fallbackLink = `https://www.hillsgo.com/product/${idFromPath}`;
-    // const fallbackLink = `http://localhost:3000/product/${idFromPath}`;
+    const appLink = `hillsgo://product/${productData.id}`;
+    const fallbackLink = `https://www.hillsgo.com/product/${productData.id}`;
     const now = Date.now();
 
-    // Attempt to open the app
     window.location.href = appLink;
 
     const timeout = setTimeout(() => {
@@ -48,96 +65,50 @@ export default function Home() {
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
-
     return () => {
       clearTimeout(timeout);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, []);
+  }, [productData]);
 
-  const fetchProduct = async (prodId) => {
-    setLoading(true);
-    try {
-      const productRef = doc(db, "estoreProducts", prodId);
-      const productDoc = await getDoc(productRef);
-
-      if (productDoc.exists()) {
-        setProductData(productDoc.data());
-      } else {
-        alert("Product not found!");
-        router.push("/"); // Redirect if product not found
-      }
-    } catch (error) {
-      console.error("Error fetching product:", error);
-      alert("Failed to fetch product details.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
+  if (!productData) {
     return (
       <>
-        {/* <Head>
-          <title>{`HillsGo || ${productData?.name || "Product"}`}</title>
-          <meta
-            name="description"
-            content={`HillsGo || ${
-              productData?.description || "Discover amazing products"
-            }`}
-          />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          {productData?.images?.[0] && (
-            <link rel="icon" href={productData.images[0]} />
-          )}
-        </Head> */}
         <Header />
-        <div style={styles.container}>
-          <div style={styles.card}>
-            <img
-              src="https://res.cloudinary.com/finer-blue/image/upload/v1742214843/HillsGo/logo-circle_ia1anw.png"
-              alt="HillsGo Logo"
-              style={styles.imageLogo}
-            />
-            <h2 style={styles.heading}>Welcome to HillsGo</h2>
-            <p style={styles.text}>Loading...</p>
-          </div>
-        </div>
+        <p style={{ textAlign: "center", marginTop: "2rem" }}>
+          Product not found.
+        </p>
         <Footer />
       </>
     );
   }
+
   return (
     <>
-      {!loading && productData?.name && productData?.images[0] && (
-        <Head>
-          <title>{`${productData?.name || "Product"}`}</title>
-          <meta
-            name="description"
-            content={`${
-              productData?.description || "Discover amazing products"
-            }`}
-          />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <meta property="og:title" content={productData?.name || "Product"} />
-          <meta
-            property="og:description"
-            content={productData?.description || "Discover amazing products"}
-          />
-          <meta property="og:image" content={productData?.images?.[0]} />
-          <meta property="og:url" content={window.location.href} />
+      <Head>
+        <title>{`HillsGo || ${productData?.name}`}</title>
+        <meta
+          name="description"
+          content={productData?.description || "Discover amazing products"}
+        />
+        <meta property="og:title" content={productData?.name} />
+        <meta property="og:description" content={productData?.description} />
+        <meta property="og:image" content={productData?.images?.[0]} />
+        <meta
+          property="og:url"
+          content={`https://www.hillsgo.com/product/${productData.id}`}
+        />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {productData?.images?.[0] && (
+          <link rel="icon" href={productData.images[0]} />
+        )}
+      </Head>
 
-          {/* Favicon */}
-          {productData?.images?.[0] && (
-            <link rel="icon" href={productData.images[0]} />
-          )}
-        </Head>
-      )}
       <Header />
-      {productData && (
+      <div>
         <div style={styles.container}>
           <div>
-            <div class="table-container">
+            <div className="table-container">
               <p className="subTitle" style={styles.productTitle}>
                 Product Details
               </p>
@@ -150,34 +121,36 @@ export default function Home() {
               </div>
 
               <table>
-                <tr>
-                  <th>Product Name: </th>
-                  <td>{productData?.name}</td>
-                </tr>
-                <tr>
-                  <th>Price: </th>
-                  <td>₹{productData?.price}</td>
-                </tr>
-                <tr>
-                  <th>Product Description: </th>
-                  <td>{productData?.description}</td>
-                </tr>
-                <tr>
-                  <th>Weight: </th>
-                  <td>{productData?.weight}</td>
-                </tr>
-                <tr>
-                  <th>Size: </th>
-                  <td>{productData?.size}</td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <th>Product Name: </th>
+                    <td>{productData?.name}</td>
+                  </tr>
+                  <tr>
+                    <th>Price: </th>
+                    <td>₹{productData?.price}</td>
+                  </tr>
+                  <tr>
+                    <th>Product Description: </th>
+                    <td>{productData?.description}</td>
+                  </tr>
+                  <tr>
+                    <th>Weight: </th>
+                    <td>{productData?.weight}</td>
+                  </tr>
+                  <tr>
+                    <th>Size: </th>
+                    <td>{productData?.size}</td>
+                  </tr>
 
-                <tr>
-                  <th>Categories</th>
+                  <tr>
+                    <th>Categories</th>
 
-                  {productData?.categories.map((item, index) => (
-                    <td key={index}>{`${item}`} </td>
-                  ))}
-                </tr>
+                    {productData?.categories.map((item, index) => (
+                      <td key={index}>{`${item}`} </td>
+                    ))}
+                  </tr>
+                </tbody>
               </table>
             </div>
             <div style={styles.card}>
@@ -201,11 +174,212 @@ export default function Home() {
             </div>
           </div>
         </div>
-      )}
+      </div>
       <Footer />
     </>
   );
 }
+
+// export default function Home() {
+//   const [loading, setLoading] = useState(false);
+//   const [productId, setProductId] = useState();
+//   const [productData, setProductData] = useState();
+//   let prodId;
+//   useEffect(() => {
+//     const path = window.location.pathname;
+//     const idFromPath = path.split("/")[2];
+//     if (!idFromPath) return;
+
+//     setProductId(idFromPath);
+//     fetchProduct(idFromPath);
+
+//     // Only try opening the app if we haven’t tried recently
+//     const hasTried = sessionStorage.getItem("hillsgo_deep_link_tried");
+//     if (hasTried) return;
+
+//     // Set the flag so we don't try again this session
+//     sessionStorage.setItem("hillsgo_deep_link_tried", "true");
+
+//     const appLink = `hillsgo://product/${idFromPath}`;
+//     const fallbackLink = `https://www.hillsgo.com/product/${idFromPath}`;
+//     // const fallbackLink = `http://localhost:3000/product/${idFromPath}`;
+//     const now = Date.now();
+
+//     // Attempt to open the app
+//     window.location.href = appLink;
+
+//     const timeout = setTimeout(() => {
+//       const elapsed = Date.now() - now;
+//       if (elapsed < 1600) {
+//         window.location.href = fallbackLink;
+//       }
+//     }, 1500);
+
+//     const handleVisibilityChange = () => {
+//       if (document.hidden) {
+//         clearTimeout(timeout);
+//       }
+//     };
+
+//     document.addEventListener("visibilitychange", handleVisibilityChange);
+
+//     return () => {
+//       clearTimeout(timeout);
+//       document.removeEventListener("visibilitychange", handleVisibilityChange);
+//     };
+//   }, []);
+
+//   const fetchProduct = async (prodId) => {
+//     setLoading(true);
+//     try {
+//       const productRef = doc(db, "estoreProducts", prodId);
+//       const productDoc = await getDoc(productRef);
+
+//       if (productDoc.exists()) {
+//         setProductData(productDoc.data());
+//       } else {
+//         alert("Product not found!");
+//         router.push("/"); // Redirect if product not found
+//       }
+//     } catch (error) {
+//       console.error("Error fetching product:", error);
+//       alert("Failed to fetch product details.");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   if (loading) {
+//     return (
+//       <>
+//         {/* <Head>
+//           <title>{`HillsGo || ${productData?.name || "Product"}`}</title>
+//           <meta
+//             name="description"
+//             content={`HillsGo || ${
+//               productData?.description || "Discover amazing products"
+//             }`}
+//           />
+//           <meta name="viewport" content="width=device-width, initial-scale=1" />
+//           {productData?.images?.[0] && (
+//             <link rel="icon" href={productData.images[0]} />
+//           )}
+//         </Head> */}
+//         <Header />
+//         <div style={styles.container}>
+//           <div style={styles.card}>
+//             <img
+//               src="https://res.cloudinary.com/finer-blue/image/upload/v1742214843/HillsGo/logo-circle_ia1anw.png"
+//               alt="HillsGo Logo"
+//               style={styles.imageLogo}
+//             />
+//             <h2 style={styles.heading}>Welcome to HillsGo</h2>
+//             <p style={styles.text}>Loading...</p>
+//           </div>
+//         </div>
+//         <Footer />
+//       </>
+//     );
+//   }
+//   return (
+//     <>
+//       {!loading && productData?.name && productData?.images[0] && (
+//         <Head>
+//           <title>{`${productData?.name || "Product"}`}</title>
+//           <meta
+//             name="description"
+//             content={`${
+//               productData?.description || "Discover amazing products"
+//             }`}
+//           />
+//           <meta name="viewport" content="width=device-width, initial-scale=1" />
+//           <meta property="og:title" content={productData?.name || "Product"} />
+//           <meta
+//             property="og:description"
+//             content={productData?.description || "Discover amazing products"}
+//           />
+//           <meta property="og:image" content={productData?.images?.[0]} />
+//           <meta property="og:url" content={window.location.href} />
+
+//           {/* Favicon */}
+//           {productData?.images?.[0] && (
+//             <link rel="icon" href={productData.images[0]} />
+//           )}
+//         </Head>
+//       )}
+//       <Header />
+//       {productData && (
+//         <div style={styles.container}>
+//           <div>
+//             <div className="table-container">
+//               <p classNameName="subTitle" style={styles.productTitle}>
+//                 Product Details
+//               </p>
+//               <div>
+//                 <img
+//                   src={productData?.images[0]} // Assuming first image is used for the card
+//                   alt="image detail"
+//                   style={styles.image}
+//                 />
+//               </div>
+
+//               <table>
+//                 <tr>
+//                   <th>Product Name: </th>
+//                   <td>{productData?.name}</td>
+//                 </tr>
+//                 <tr>
+//                   <th>Price: </th>
+//                   <td>₹{productData?.price}</td>
+//                 </tr>
+//                 <tr>
+//                   <th>Product Description: </th>
+//                   <td>{productData?.description}</td>
+//                 </tr>
+//                 <tr>
+//                   <th>Weight: </th>
+//                   <td>{productData?.weight}</td>
+//                 </tr>
+//                 <tr>
+//                   <th>Size: </th>
+//                   <td>{productData?.size}</td>
+//                 </tr>
+
+//                 <tr>
+//                   <th>Categories</th>
+
+//                   {productData?.categories.map((item, index) => (
+//                     <td key={index}>{`${item}`} </td>
+//                   ))}
+//                 </tr>
+//               </table>
+//             </div>
+//             <div style={styles.card}>
+//               {/* <img
+//                 src="https://res.cloudinary.com/finer-blue/image/upload/v1742214843/HillsGo/logo-circle_ia1anw.png"
+//                 alt="HillsGo Logo"
+//                 style={styles.image}
+//               /> */}
+
+//               <p style={styles.text}>
+//                 This product is currently available for purchase only on our
+//                 mobile app. Please download the HillsGo App to view and buy it.
+//               </p>
+//               <a
+//                 href="https://play.google.com/store/apps/details?id=com.hillsgo.hillsgoapp"
+//                 target="_blank"
+//                 style={styles.button}
+//               >
+//                 Download HillsGO
+//               </a>
+//             </div>
+//           </div>
+//         </div>
+//       )}
+//       <Footer />
+//     </>
+//   );
+// }
 
 const styles = {
   container: {
