@@ -119,6 +119,15 @@ export default function Home() {
             }`}
           />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <meta property="og:title" content={productData?.name || "Product"} />
+          <meta
+            property="og:description"
+            content={productData?.description || "Discover amazing products"}
+          />
+          <meta property="og:image" content={productData?.images?.[0]} />
+          <meta property="og:url" content={window.location.href} />
+
+          {/* Favicon */}
           {productData?.images?.[0] && (
             <link rel="icon" href={productData.images[0]} />
           )}
