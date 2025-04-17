@@ -78,7 +78,7 @@ export default function Home() {
   if (loading) {
     return (
       <>
-        <Head>
+        {/* <Head>
           <title>{`HillsGo || ${productData?.name || "Product"}`}</title>
           <meta
             name="description"
@@ -90,7 +90,7 @@ export default function Home() {
           {productData?.images?.[0] && (
             <link rel="icon" href={productData.images[0]} />
           )}
-        </Head>
+        </Head> */}
         <Header />
         <div style={styles.container}>
           <div style={styles.card}>
