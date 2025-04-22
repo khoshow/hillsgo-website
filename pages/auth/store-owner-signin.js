@@ -62,7 +62,7 @@ export default function Login() {
           uid: estoreData.ownerId,
         });
 
-        router.push("/estore/dashboard"); // Redirect after successful login
+        router.push("/my-estore/dashboard"); // Redirect after successful login
       } else {
         alert("You are not authorized to access this section.");
         auth.signOut();

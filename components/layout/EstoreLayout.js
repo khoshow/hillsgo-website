@@ -113,22 +113,22 @@ const EstoreLayout = ({ children }) => {
         <h2 style={styles.sidebarHeader}>Dashboard</h2>
         <ul style={styles.sidebarList}>
           <li style={styles.sidebarItem}>
-            <Link href="/estore/dashboard" style={styles.sidebarLink}>
+            <Link href="/my-estore/dashboard" style={styles.sidebarLink}>
               Dashboard Home
             </Link>
           </li>
           <li style={styles.sidebarItem}>
-            <Link href="/estore/add-product" style={styles.sidebarLink}>
+            <Link href="/my-estore/add-product" style={styles.sidebarLink}>
               Add Product
             </Link>
           </li>
           <li style={styles.sidebarItem}>
-            <Link href="/estore/my-products" style={styles.sidebarLink}>
+            <Link href="/my-estore/my-products" style={styles.sidebarLink}>
               My Products
             </Link>
           </li>
           <li style={styles.sidebarItem}>
-            <Link href="/estore/profile-edit" style={styles.sidebarLink}>
+            <Link href="/my-estore/profile-edit" style={styles.sidebarLink}>
               Profile
             </Link>
           </li>
