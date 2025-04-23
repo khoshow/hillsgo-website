@@ -127,7 +127,7 @@ export default function MyProducts() {
                   <button
                     style={styles.editButton}
                     onClick={() =>
-                      router.push(`/estore/edit-product?id=${product.id}`)
+                      router.push(`/my-estore/edit-product?id=${product.id}`)
                     }
                   >
                     Edit

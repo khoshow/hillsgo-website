@@ -319,7 +319,7 @@ export default function EditProduct() {
                   gap: "0.5rem",
                 }}
               >
-                {keywords.map((kw, idx) => (
+                {keywords?.map((kw, idx) => (
                   <span
                     key={idx}
                     style={{

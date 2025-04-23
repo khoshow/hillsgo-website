@@ -224,7 +224,7 @@ const AdminAddEstore = () => {
   const handleRemoveKeyword = (wordToRemove) => {
     setKeywords((prev) => prev.filter((kw) => kw !== wordToRemove));
   };
-  console.log("Keywords", keywords);
+
 
   return (
     <Admin>
