@@ -171,7 +171,7 @@ export default function EditProduct() {
 
     if (!trimmed) return;
 
-    if (keywords.length >= 8) {
+    if (keywords?.length >= 8) {
       alert("You can only add up to 8 keywords.");
       return;
     }
@@ -235,7 +235,6 @@ export default function EditProduct() {
                 name="discountPrice"
                 value={productData.discountPrice}
                 onChange={handleInputChange}
-                required
                 style={{ ...styles.input, ...styles.discountLabel }}
               />
             </label>
@@ -257,7 +256,6 @@ export default function EditProduct() {
                 name="wholesalePrice"
                 value={productData.wholesalePrice}
                 onChange={handleInputChange}
-                required
                 style={styles.input}
               />
             </label>
@@ -288,11 +286,13 @@ export default function EditProduct() {
                 name="description"
                 value={productData.description}
                 onChange={handleInputChange}
-                required
                 style={styles.textarea}
               />
             </label>
             <div style={{ marginBottom: "1rem" }}>
+              <label style={styles.label}>
+                Add up to 8 keywords to help people find the product
+              </label>
               <div style={{ display: "flex", gap: "0.5rem" }}>
                 <input
                   type="text"

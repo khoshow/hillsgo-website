@@ -278,6 +278,9 @@ export default function EditProduct() {
               />
             </label>
             <div style={{ marginBottom: "1rem" }}>
+              <label style={styles.label}>
+                Add up to 8 keywords to help people find your product
+              </label>
               <div style={{ display: "flex", gap: "0.5rem" }}>
                 <input
                   type="text"

@@ -378,7 +378,6 @@ const ProfileEditWorker = () => {
                 name="workerDescription"
                 value={formData.workerDescription}
                 onChange={handleChange}
-                required
                 style={styles.input}
               />
             </div>
@@ -416,6 +415,9 @@ const ProfileEditWorker = () => {
               ))}
             </div>
             <div style={{ marginBottom: "1rem" }}>
+              <label style={styles.label}>
+                Add up to 8 keywords to help people find the worker
+              </label>
               <div style={{ display: "flex", gap: "0.5rem" }}>
                 <input
                   type="text"
