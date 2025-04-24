@@ -66,6 +66,8 @@ export default function EditProduct() {
     fetchProduct();
   }, [user, id]);
 
+  console.log("producr", productData);
+
   // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -78,7 +80,12 @@ export default function EditProduct() {
     setImages(files);
   };
   const calculatePrice = () => {
-    return parseFloat(productData.mrp) - parseFloat(productData.discountPrice);
+    const mrp = parseFloat(productData.mrp) || 0;
+
+    const discountRaw = productData.discountPrice;
+    const discount = discountRaw === "N/A" ? 0 : parseFloat(discountRaw);
+
+    return mrp - (isNaN(discount) ? 0 : discount);
   };
   // Submit updated product to Firebase
   const handleSubmit = async (e) => {

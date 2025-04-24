@@ -60,6 +60,9 @@ export default function MyProducts() {
 
     fetchProducts();
   }, [user, router]);
+
+  console.log("products", products);
+
   const handleDelete = async (productId, imageUrls) => {
     const confirmed = confirm("Are you sure you want to delete this product?");
     if (!confirmed) return;
