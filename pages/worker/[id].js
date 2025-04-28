@@ -86,21 +86,21 @@ export default function WorkerPage({ workerData }) {
   return (
     <>
       <Head>
-        <title>{`HillsGo || ${workerData?.name}`}</title>
+        <title>{`HillsGo || ${workerData?.workerName}`}</title>
         <meta
           name="description"
-          content={workerData?.description || "Discover amazing workers"}
+          content={workerData?.description || "Hire skilled worker at HillsGO"}
         />
-        <meta property="og:title" content={workerData?.name} />
+        <meta property="og:title" content={workerData?.workerName} />
         <meta property="og:description" content={workerData?.description} />
-        <meta property="og:image" content={workerData?.images?.[0]} />
+        <meta property="og:image" content={workerData?.imageUrl} />
         <meta
           property="og:url"
           content={`https://www.hillsgo.com/worker/${workerData.id}`}
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {workerData?.images?.[0] && (
-          <link rel="icon" href={workerData.images[0]} />
+          <link rel="icon" href={workerData.imageUrl} />
         )}
       </Head>
 

@@ -86,21 +86,24 @@ export default function EstorePage({ estoreData }) {
   return (
     <>
       <Head>
-        <title>{`HillsGo || ${estoreData?.name}`}</title>
+        <title>{`HillsGo || ${estoreData?.estoreName}`}</title>
         <meta
           name="description"
-          content={estoreData?.description || "Discover amazing estores"}
+          content={estoreData?.estoreDescription || "Discover amazing estores"}
         />
-        <meta property="og:title" content={estoreData?.name} />
-        <meta property="og:description" content={estoreData?.description} />
-        <meta property="og:image" content={estoreData?.images?.[0]} />
+        <meta property="og:title" content={estoreData?.estoreName} />
+        <meta
+          property="og:description"
+          content={estoreData?.estoreDescription}
+        />
+        <meta property="og:image" content={estoreData?.imageUrl} />
         <meta
           property="og:url"
           content={`https://www.hillsgo.com/estore/${estoreData.id}`}
         />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {estoreData?.images?.[0] && (
-          <link rel="icon" href={estoreData.images[0]} />
+          <link rel="icon" href={estoreData.imageUrl} />
         )}
       </Head>
 
