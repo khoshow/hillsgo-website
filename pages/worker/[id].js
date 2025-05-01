@@ -174,7 +174,6 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: "90vh",
     backgroundColor: "#f8f9fa", // Light grey background
     padding: "20px",
   },

@@ -41,7 +41,7 @@ const ProfileEditEstore = () => {
     estoreDistrict: "",
     estoreState: "",
     estoreDescription: "",
-    estoreRate: "",
+
     role: "estore",
     categories: [],
   });
@@ -119,7 +119,6 @@ const ProfileEditEstore = () => {
       estoreDistrict,
       estoreState,
       estoreDescription,
-      estoreRate,
       role,
       categories,
     } = formData;
@@ -159,7 +158,6 @@ const ProfileEditEstore = () => {
           estoreName,
           imageUrl: firebaseImageUrl,
           estoreContact,
-          estoreRate,
           estoreAddress,
           estoreLocation,
           estoreCity,
