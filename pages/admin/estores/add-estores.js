@@ -176,7 +176,7 @@ const AdminAddEstore = () => {
           await setDoc(categoryRef, { createdAt: new Date() });
         }
 
-        const estoreRef = doc(categoryRef, "stores", estoreId);
+        const estoreRef = doc(categoryRef, "estores", estoreId);
         const estoreDoc = await getDoc(estoreRef);
         if (!estoreDoc.exists()) {
           await setDoc(estoreRef, estoreData);
@@ -224,7 +224,6 @@ const AdminAddEstore = () => {
   const handleRemoveKeyword = (wordToRemove) => {
     setKeywords((prev) => prev.filter((kw) => kw !== wordToRemove));
   };
-
 
   return (
     <Admin>

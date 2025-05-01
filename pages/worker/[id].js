@@ -46,6 +46,7 @@ export default function WorkerPage({ workerData }) {
     sessionStorage.setItem("hillsgo_deep_link_tried", "true");
 
     const appLink = `hillsgo://worker/${workerData.id}`;
+
     const fallbackLink = `https://www.hillsgo.com/worker/${workerData.id}`;
     const now = Date.now();
 

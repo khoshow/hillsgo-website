@@ -364,7 +364,6 @@ const ProfileEditEstore = () => {
                 name="estoreDescription"
                 value={formData.estoreDescription}
                 onChange={handleChange}
-                required
                 style={styles.input}
               />
             </div>
@@ -460,7 +459,6 @@ const ProfileEditEstore = () => {
 
 const formFields = [
   { label: "Estore Name", name: "estoreName", type: "text" },
-  { label: "Estore Rate", name: "estoreRate", type: "text" },
   { label: "Estore Contact", name: "estoreContact", type: "text" },
   { label: "Estore Address", name: "estoreAddress", type: "text" },
   { label: "Estore Village/Town", name: "estoreLocation", type: "text" },

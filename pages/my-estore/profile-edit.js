@@ -388,7 +388,6 @@ const ProfileEditEstore = () => {
 const formFields = [
   { label: "Estore Name", name: "estoreName", type: "text" },
   { label: "Owner Name", name: "ownerName", type: "text" },
-
   { label: "Estore Contact", name: "estoreContact", type: "text" },
   { label: "Estore Address", name: "estoreAddress", type: "text" },
   { label: "Estore Village/Town", name: "estoreLocation", type: "text" },
