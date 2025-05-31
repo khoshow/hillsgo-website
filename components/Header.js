@@ -10,6 +10,8 @@ const Header = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter(); // Initialize router
   const { user, setUser } = useUser();
+  console.log("user", user);
+
   useEffect(() => {
     // Listen for authentication state changes
     const unsubscribe = auth.onAuthStateChanged((user) => {

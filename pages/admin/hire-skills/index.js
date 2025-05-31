@@ -29,6 +29,14 @@ export default function Estores() {
             <div style={styles.productCard}>
               <button
                 style={styles.editButton}
+                onClick={() => router.push(`/admin/hire-skills/create-new`)}
+              >
+                New Hire Skills
+              </button>
+            </div>
+            <div style={styles.productCard}>
+              <button
+                style={styles.editButton}
                 onClick={() => router.push(`/admin/hire-skills/ongoing`)}
               >
                 Ongoing Orders

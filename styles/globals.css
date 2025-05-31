@@ -165,3 +165,21 @@ a {
   text-decoration: underline; /* Optional: Adds an underline */
   font-weight: bold;
 }
+
+p {
+  margin-bottom: 0;
+}
+
+.section {
+  margin: 5rem 0 5rem;
+}
+
+.calendar {
+  width: 400px;
+}
+.react-calendar__navigation {
+  text-align: center;
+}
+.calendar button {
+  padding: 5px;
+}

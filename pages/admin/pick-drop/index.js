@@ -29,6 +29,14 @@ export default function Estores() {
             <div style={styles.productCard}>
               <button
                 style={styles.editButton}
+                onClick={() => router.push(`/admin/pick-drop/create-new`)}
+              >
+                Create New Pick & Drop
+              </button>
+            </div>
+            <div style={styles.productCard}>
+              <button
+                style={styles.editButton}
                 onClick={() => router.push(`/admin/pick-drop/ongoing`)}
               >
                 Ongoing Orders
