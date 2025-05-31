@@ -235,7 +235,7 @@ export default function AdminDashboard() {
       sevenDaysAgo.setDate(today.getDate() - 7);
 
       const q = query(
-        collection(db, "estoresHistory"),
+        collection(db, "ordersHistory"),
         where("createdAt", ">=", Timestamp.fromDate(sevenDaysAgo))
       );
 
