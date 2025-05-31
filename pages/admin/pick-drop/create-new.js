@@ -237,7 +237,7 @@ const PickDropRequestForm = () => {
                   value={receiverName}
                   onChange={(e) => setReceiverName(e.target.value)}
                 />
-                <p style={styles.label}>Receiver's contact *</p>
+                <p style={styles.label}>Receiver&apos;s contact *</p>
                 <input
                   style={styles.input}
                   placeholder="Enter receiver's phone number"
@@ -245,7 +245,7 @@ const PickDropRequestForm = () => {
                   value={receiverPhone}
                   onChange={(e) => setReceiverPhone(e.target.value)}
                 />
-                <p style={styles.label}>Receiver's location *</p>
+                <p style={styles.label}>Receiver&apos;s location *</p>
                 <input
                   style={styles.input}
                   placeholder="Enter receiver's address"

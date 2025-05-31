@@ -504,7 +504,7 @@ export default function AdminDashboard() {
                   Trips taken today: <b>{dataPickDrop[6].trip}</b>
                 </p>
                 <p>
-                  Earning from today's Pick & Drop:{" "}
+                  Earning from today&apos;s Pick & Drop:{" "}
                   <b>₹{dataPickDrop[6].trip * 50}</b>
                 </p>
                 <br></br>
@@ -553,7 +553,7 @@ export default function AdminDashboard() {
                   No. of requests today: <b>{dataHireSkills[6].request}</b>
                 </p>
                 <p>
-                  Earning from today's Hire Skills:{" "}
+                  Earning from today&apos;s Hire Skills:{" "}
                   <b>₹{dataHireSkills[6].request * 50}</b>
                 </p>
                 <br></br>
