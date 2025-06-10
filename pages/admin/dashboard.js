@@ -25,6 +25,27 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+import {
+  ordersHistoryPickDrop,
+  ordersHistoryPickDropCount,
+  ongoingOrdersPickDrop,
+  ordersOngoingPickDropCount,
+} from "../../lib/actions/admins/pickDrop/general";
+
+import {
+  ordersHistoryEstores,
+  ordersHistoryEstoresCount,
+  ongoingOrdersEstore,
+  ordersOngoingEstoresCount,
+} from "../../lib/actions/admins/estores/general";
+
+import {
+  ordersHistoryHireSkills,
+  ordersHistoryHireSkillsCount,
+  ongoingOrdersHireSkills,
+  ordersOngoingHireSkillsCount,
+} from "../../lib/actions/admins/hireSkills/general";
+
 const API = process.env.API_DOMAIN_SERVER;
 
 export default function AdminDashboard() {
@@ -38,586 +59,545 @@ export default function AdminDashboard() {
   const { user, setUser } = useUser();
   const router = useRouter();
 
-  const [pickDropData, setPickDropData] = useState([]);
-  const [last30DaysCount, setPickDropLast30DaysCount] = useState(0);
+  const [pickDropDataHistory, setPickDropDataHistory] = useState([]);
+  const [pickDropDataHistoryCount, setPickDropDataHistoryCount] = useState(0);
+  const [pickDropDataOngoingCount, setPickDropDataOngoingCount] = useState(0);
+  const [pickDropDataOngoing, setPickDropDataOngoing] = useState(0);
 
-  const [hireSkillsData, setHireSkillsData] = useState([]);
-  const [hireSkillsLast30DaysCount, setHireSkillsLast30DaysCount] = useState(0);
+  const [estoresDataHistory, setEstoresDataHistory] = useState([]);
+  const [estoresDataHistoryCount, setEstoresDataHistoryCount] = useState(0);
+  const [estoresDataOngoingCount, setEstoresDataOngoingCount] = useState(0);
+  const [estoresDataOngoing, setEstoresDataOngoing] = useState(0);
 
-  const [estoresData, setEstoresData] = useState([]);
-  const [estoresLast30DaysCount, setEstoresLast30DaysCount] = useState(0);
+  const [hireSkillsDataHistory, setHireSkillsDataHistory] = useState([]);
+  const [hireSkillsDataHistoryCount, setHireSkillsDataHistoryCount] =
+    useState(0);
+  const [hireSkillsDataOngoingCount, setHireSkillsDataOngoingCount] =
+    useState(0);
+  const [hireSkillsDataOngoing, setHireSkillsDataOngoing] = useState(0);
 
-  useEffect(() => {
-    const fetchLast7DaysData = async () => {
-      const today = new Date();
-      const sevenDaysAgo = new Date(today);
-      sevenDaysAgo.setDate(today.getDate() - 7);
+  const [activeTab, setActiveTab] = useState("eStore");
 
-      const q = query(
-        collection(db, "pickDropHistory"),
-        where("createdAt", ">=", Timestamp.fromDate(sevenDaysAgo))
-      );
-      const querySnapshot = await getDocs(q);
-      const results = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setPickDropData(results);
-    };
-
-    fetchLast7DaysData();
-  }, []);
-
-  useEffect(() => {
-    const fetchLast30DaysCount = async () => {
-      const today = new Date();
-      const thirtyDaysAgo = new Date(today);
-      thirtyDaysAgo.setDate(today.getDate() - 30);
-
-      const q = query(
-        collection(db, "pickDropHistory"),
-        where("createdAt", ">=", Timestamp.fromDate(thirtyDaysAgo))
-      );
-
-      const querySnapshot = await getDocs(q);
-      const results = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setPickDropLast30DaysCount(results.length); // 👈 Only count
-    };
-
-    fetchLast30DaysCount();
-  }, []);
-
-  const formatDateToWords = (isoDateStr) => {
-    const date = new Date(isoDateStr);
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = date.toLocaleString("default", { month: "long" });
-    const year = date.getFullYear();
-    return `${day} ${month} ${year}`;
-  };
-
-  const getDateString = (timestamp) => {
-    const date = timestamp.toDate();
-    return date.toISOString().split("T")[0]; // "YYYY-MM-DD"
-  };
-
-  // Step 1: Prepare last 7 days
-  const today = new Date();
-  const dateKeys = [];
-
-  for (let i = 0; i < 7; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() - i);
-    const key = date.toISOString().split("T")[0]; // "YYYY-MM-DD"
-    dateKeys.push({ key, count: 0 });
-  }
-
-  // Step 2: Count entries per day
-  pickDropData.forEach((item) => {
-    if (!item.createdAt) return;
-
-    const dateStr = getDateString(item.createdAt);
-    const match = dateKeys.find((entry) => entry.key === dateStr);
-    if (match) {
-      match.count++;
-    }
-  });
-
-  // Step 3: Convert to desired array format
-  const resultArray = dateKeys.map((entry, index) => ({
-    id: index + 1,
-    date: formatDateToWords(entry.key),
-    count: entry.count,
-  }));
-
-  // Hire Skills
-
-  useEffect(() => {
-    const fetchHireSkillsLast7DaysData = async () => {
-      const today = new Date();
-      const sevenDaysAgo = new Date(today);
-      sevenDaysAgo.setDate(today.getDate() - 7);
-
-      const q = query(
-        collection(db, "hireSkillsHistory"),
-        where("createdAt", ">=", Timestamp.fromDate(sevenDaysAgo))
-      );
-
-      const querySnapshot = await getDocs(q);
-      const results = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setHireSkillsData(results);
-    };
-
-    fetchHireSkillsLast7DaysData();
-  }, []);
-
-  useEffect(() => {
-    const fetchHireSkillsLast30DaysCount = async () => {
-      const today = new Date();
-      const thirtyDaysAgo = new Date(today);
-      thirtyDaysAgo.setDate(today.getDate() - 30);
-
-      const q = query(
-        collection(db, "pickDropHistory"),
-        where("createdAt", ">=", Timestamp.fromDate(thirtyDaysAgo))
-      );
-
-      const querySnapshot = await getDocs(q);
-      const results = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setHireSkillsLast30DaysCount(results.length); // 👈 Only count
-    };
-
-    fetchHireSkillsLast30DaysCount();
-  }, []);
-
-  const hireSkillsFormatDateToWords = (isoDateStr) => {
-    const date = new Date(isoDateStr);
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = date.toLocaleString("default", { month: "long" });
-    const year = date.getFullYear();
-    return `${day} ${month} ${year}`;
-  };
-
-  const hireSkillsGetDateString = (timestamp) => {
-    const date = timestamp.toDate();
-    return date.toISOString().split("T")[0]; // "YYYY-MM-DD"
-  };
-
-  // Step 1: Prepare last 7 days
-
-  const hireSkillsDateKeys = [];
-
-  for (let i = 0; i < 7; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() - i);
-    const key = date.toISOString().split("T")[0]; // "YYYY-MM-DD"
-    hireSkillsDateKeys.push({ key, count: 0 });
-  }
-
-  // Step 2: Count entries per day
-  hireSkillsData.forEach((item) => {
-    if (!item.createdAt) return;
-
-    const dateStr = hireSkillsGetDateString(item.createdAt);
-    const match = hireSkillsDateKeys.find((entry) => entry.key === dateStr);
-    if (match) {
-      match.count++;
-    }
-  });
-
-  // Step 3: Convert to desired array format
-  const hireSkillsResultArray = hireSkillsDateKeys.map((entry, index) => ({
-    id: index + 1,
-    date: hireSkillsFormatDateToWords(entry.key),
-    count: entry.count,
-  }));
-
-  // Hire Skills
-
-  // Estores
-
-  useEffect(() => {
-    const fetchEstoresLast7DaysData = async () => {
-      const today = new Date();
-      const sevenDaysAgo = new Date(today);
-      sevenDaysAgo.setDate(today.getDate() - 7);
-
-      const q = query(
-        collection(db, "ordersHistory"),
-        where("createdAt", ">=", Timestamp.fromDate(sevenDaysAgo))
-      );
-
-      const querySnapshot = await getDocs(q);
-      const results = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setEstoresData(results);
-    };
-
-    fetchEstoresLast7DaysData();
-  }, []);
-
-  useEffect(() => {
-    const fetchEstoresLast30DaysCount = async () => {
-      const today = new Date();
-      const thirtyDaysAgo = new Date(today);
-      thirtyDaysAgo.setDate(today.getDate() - 30);
-
-      const q = query(
-        collection(db, "ordersHistory"),
-        where("createdAt", ">=", Timestamp.fromDate(thirtyDaysAgo))
-      );
-
-      const querySnapshot = await getDocs(q);
-      const results = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-
-      setEstoresLast30DaysCount(results.length); // 👈 Only count
-    };
-
-    fetchEstoresLast30DaysCount();
-  }, []);
-
-  const estoresFormatDateToWords = (isoDateStr) => {
-    const date = new Date(isoDateStr);
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = date.toLocaleString("default", { month: "long" });
-    const year = date.getFullYear();
-    return `${day} ${month} ${year}`;
-  };
-
-  const estoresGetDateString = (timestamp) => {
-    const date = timestamp.toDate();
-    return date.toISOString().split("T")[0]; // "YYYY-MM-DD"
-  };
-
-  // Step 1: Prepare last 7 days
-
-  const estoresDateKeys = [];
-
-  for (let i = 0; i < 7; i++) {
-    const date = new Date(today);
-    date.setDate(today.getDate() - i);
-    const key = date.toISOString().split("T")[0]; // "YYYY-MM-DD"
-    estoresDateKeys.push({ key, count: 0 });
-  }
-
-  // Step 2: Count entries per day
-  estoresData.forEach((item) => {
-    if (!item.createdAt) return;
-
-    const dateStr = estoresGetDateString(item.createdAt);
-    const match = estoresDateKeys.find((entry) => entry.key === dateStr);
-    if (match) {
-      match.count++;
-    }
-  });
-
-  // Step 3: Convert to desired array format
-  const estoresResultArray = estoresDateKeys.map((entry, index) => ({
-    id: index + 1,
-    date: estoresFormatDateToWords(entry.key),
-    count: entry.count,
-  }));
-
-  // Estores
-
-  const dataPickDrop = [
-    {
-      name: "6 days ago",
-      trip: resultArray[6].count,
-      amt: resultArray[6].count * 50,
-    },
-    {
-      name: "5",
-      trip: resultArray[5].count,
-      amt: resultArray[5].count * 50,
-    },
-    {
-      name: "4",
-      trip: resultArray[4].count,
-      amt: resultArray[4].count * 50,
-    },
-    {
-      name: "3",
-      trip: resultArray[3].count,
-      amt: resultArray[3].count * 50,
-    },
-    {
-      name: "2 Days Ago",
-      trip: resultArray[2].count,
-      amt: resultArray[2].count * 50,
-    },
-    {
-      name: "Yesterday",
-      trip: resultArray[1].count,
-      amt: resultArray[1].count * 50,
-    },
-    {
-      name: "Today",
-      trip: resultArray[0].count,
-      amt: resultArray[0].count * 50,
-    },
+  const tabs = [
+    { id: "eStore", label: "E-Store", color: "#2196F3" }, // Green
+    { id: "hireSkills", label: "Hire Skills", color: "#2196F3" }, // Blue
+    { id: "pickDrop", label: "Pick & Drop", color: "#2196F3" }, // Red
   ];
 
-  const dataHireSkills = [
-    {
-      name: "6 days ago",
-      request: hireSkillsResultArray[6].count,
-      amt: hireSkillsResultArray[6].count * 50,
-    },
-    {
-      name: "5",
-      request: hireSkillsResultArray[5].count,
-      amt: hireSkillsResultArray[5].count * 50,
-    },
-    {
-      name: "4",
-      request: hireSkillsResultArray[4].count,
-      amt: hireSkillsResultArray[4].count * 50,
-    },
-    {
-      name: "3",
-      request: hireSkillsResultArray[3].count,
-      amt: hireSkillsResultArray[3].count * 50,
-    },
-    {
-      name: "2 Days Ago",
-      request: hireSkillsResultArray[2].count,
-      amt: hireSkillsResultArray[2].count * 50,
-    },
-    {
-      name: "Yesterday",
-      request: hireSkillsResultArray[1].count,
-      amt: hireSkillsResultArray[1].count * 50,
-    },
-    {
-      name: "Today",
-      request: hireSkillsResultArray[0].count,
-      amt: hireSkillsResultArray[0].count * 50,
-    },
-  ];
+  const [
+    ordersHistoryPickDropLast7loading,
+    setOrdersHistoryPickDropLast7loading,
+  ] = useState();
 
-  const dataEstores = [
-    {
-      name: "6 days ago",
-      order: estoresResultArray[6].count,
-      amt: estoresResultArray[6].count * 50,
-    },
-    {
-      name: "5",
-      order: estoresResultArray[5].count,
-      amt: estoresResultArray[5].count * 50,
-    },
-    {
-      name: "4",
-      order: estoresResultArray[4].count,
-      amt: estoresResultArray[4].count * 50,
-    },
-    {
-      name: "3",
-      order: estoresResultArray[3].count,
-      amt: estoresResultArray[3].count * 50,
-    },
-    {
-      name: "2 Days Ago",
-      order: estoresResultArray[2].count,
-      amt: estoresResultArray[2].count * 50,
-    },
-    {
-      name: "Yesterday",
-      order: estoresResultArray[1].count,
-      amt: estoresResultArray[1].count * 50,
-    },
-    {
-      name: "Today",
-      order: estoresResultArray[0].count,
-      amt: estoresResultArray[0].count * 50,
-    },
-  ];
+  useEffect(() => {
+    fetchDataEstoresHistory();
+    fetchDataEstoresCountHistory();
+  }, []);
+
+  //
+
+  const fetchDataEstoresHistory = async () => {
+    try {
+      setLoading(true);
+      const valueHistory = await ordersHistoryEstores();
+      const valueOngoing = await ongoingOrdersEstore();
+      console.log("estore history", valueHistory);
+
+      setEstoresDataHistory(valueHistory);
+      setEstoresDataOngoing(valueOngoing);
+    } catch (error) {
+      console.error("Error fetching estores history:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchDataEstoresCountHistory = async () => {
+    try {
+      setLoading(true);
+      const valueHistory = await ordersHistoryEstoresCount();
+      const valueOngoing = await ordersOngoingEstoresCount();
+      setEstoresDataHistoryCount(valueHistory);
+      setEstoresDataOngoingCount(valueOngoing);
+    } catch (error) {
+      console.error("Error fetching estores history:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchDataPickDropHistory = async () => {
+    try {
+      setOrdersHistoryPickDropLast7loading(true); // optional
+      const valueHistory = await ordersHistoryPickDrop();
+      const valueOngoing = await ongoingOrdersPickDrop();
+
+      setPickDropDataHistory(valueHistory);
+      setPickDropDataOngoing(valueOngoing);
+    } catch (error) {
+      console.error("Error fetching pick/drop history:", error);
+    } finally {
+      setOrdersHistoryPickDropLast7loading(false); // optional
+    }
+  };
+
+  const fetchDataPickDropCountHistory = async () => {
+    try {
+      setLoading(true);
+      const valueHistory = await ordersHistoryPickDropCount();
+      const valueOngoing = await ordersOngoingPickDropCount();
+      setPickDropDataHistoryCount(valueHistory);
+      setPickDropDataOngoingCount(valueOngoing);
+    } catch (error) {
+      console.error("Error fetching pick/drop history:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchDataHireSkillsHistory = async () => {
+    try {
+      setLoading(true);
+      const valueHistory = await ordersHistoryHireSkills();
+      const valueOngoing = await ongoingOrdersHireSkills();
+
+      setHireSkillsDataHistory(valueHistory);
+      setHireSkillsDataOngoing(valueOngoing);
+    } catch (error) {
+      console.error("Error fetching Hire Skills history:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchDataHireSkillsCountHistory = async () => {
+    try {
+      setLoading(true);
+      const valueHistory = await ordersHistoryHireSkillsCount();
+      const valueOngoing = await ordersOngoingHireSkillsCount();
+      setHireSkillsDataHistoryCount(valueHistory);
+
+      setHireSkillsDataOngoingCount(valueOngoing);
+    } catch (error) {
+      console.error("Error fetching Hire Skills history:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length > 0) {
+      const data = payload[0].payload; // all fields in the hovered data point
+
+      return (
+        <div
+          style={{
+            background: "#fff",
+            padding: "10px",
+            border: "1px solid #ccc",
+          }}
+        >
+          <p>
+            <strong>{label} days ago</strong>
+          </p>
+          <p>Orders: {data.order}</p>
+          <p>Amount: ₹{data.amt}</p>
+          <p>Date: {data.date}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+  const CustomTooltipSkillsOngoing = ({ active, payload, label }) => {
+    if (active && payload && payload.length > 0) {
+      const data = payload[0].payload; // all fields in the hovered data point
+
+      return (
+        <div
+          style={{
+            background: "#fff",
+            padding: "10px",
+            border: "1px solid #ccc",
+          }}
+        >
+          <p>
+            <strong>{label} days ago</strong>
+          </p>
+          <p>Request: {data.request}</p>
+          <p>Requested on: {data.date}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const CustomTooltipSkills = ({ active, payload, label }) => {
+    if (active && payload && payload.length > 0) {
+      const data = payload[0].payload; // all fields in the hovered data point
+
+      return (
+        <div
+          style={{
+            background: "#fff",
+            padding: "10px",
+            border: "1px solid #ccc",
+          }}
+        >
+          <p>
+            <strong>{label} days ago</strong>
+          </p>
+          <p>Completed: {data.completed}</p>
+          <p>Completed on: {data.date}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const CustomTooltipPickDropOngoing = ({ active, payload, label }) => {
+    if (active && payload && payload.length > 0) {
+      const data = payload[0].payload; // all fields in the hovered data point
+
+      return (
+        <div
+          style={{
+            background: "#fff",
+            padding: "10px",
+            border: "1px solid #ccc",
+          }}
+        >
+          <p>
+            <strong>{label} days ago</strong>
+          </p>
+          <p>Total: {data.request}</p>
+          <p>Requested on: {data.date}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const CustomTooltipPickDropCompleted = ({ active, payload, label }) => {
+    if (active && payload && payload.length > 0) {
+      const data = payload[0].payload; // all fields in the hovered data point
+
+      return (
+        <div
+          style={{
+            background: "#fff",
+            padding: "10px",
+            border: "1px solid #ccc",
+          }}
+        >
+          <p>
+            <strong>{label} days ago</strong>
+          </p>
+          <p>Completed: {data.completed}</p>
+          <p>Completed on: {data.date}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const tabChange = (id) => {
+    setActiveTab(id);
+    if (id == "eStores") {
+    } else if (id == "hireSkills") {
+      fetchDataHireSkillsHistory();
+      fetchDataHireSkillsCountHistory();
+    } else if ((id = "pickDrop")) {
+      fetchDataPickDropHistory();
+      fetchDataPickDropCountHistory();
+    } else {
+      return windows.alert("Please select a tab");
+    }
+  };
 
   return (
     <Admin>
       <AdminLayout>
         <Header />
-        <div style={styles.container} className="container">
-          <h1 style={styles.heading}>Ongoing Orders Management</h1>
-          <div style={styles.productGrid}>
-            <div style={styles.productCard}>
-              <button
-                style={styles.editButton}
-                onClick={() => router.push(`/admin/orders/ongoing-orders`)}
-              >
-                Estores Orders
-              </button>
-            </div>
-            <div style={styles.productCard}>
-              <button
-                style={styles.editButton}
-                onClick={() => router.push(`/admin/hire-skills/ongoing`)}
-              >
-                Hire Skills
-              </button>
-            </div>
-            <div style={styles.productCard}>
-              <button
-                style={styles.editButton}
-                onClick={() => router.push(`/admin/pick-drop/ongoing`)}
-              >
-                Pick Drop
-              </button>
-            </div>
-          </div>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginBottom: "20px",
+          }}
+        >
+          {tabs.map((tab, index) => (
+            <button
+              key={tab.id}
+              onClick={() => tabChange(tab.id)}
+              style={{
+                padding: "10px 20px",
+                border: "none",
+                borderRadius:
+                  index === 0
+                    ? "8px 0 0 8px"
+                    : index === tabs.length - 1
+                    ? "0 8px 8px 0"
+                    : "0",
+                backgroundColor: tab.color,
+                color: "white",
+                fontWeight: activeTab === tab.id ? "bold" : "normal",
+                opacity: activeTab === tab.id ? 1 : 0.6,
+                cursor: "pointer",
+                margin: 0, // ensure no spacing
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
+
         <div className="container " style={styles.container}>
-          <h2 className="subTitle">Visual Charts of Orders</h2>
-        </div>
-        <div className="container " style={styles.container}>
-          <div>
-            <h2 className="subTitle">Pick & Drop</h2>
-            <div className=" d-flex">
-              <div>
-                <LineChart
-                  width={600}
-                  height={250}
-                  data={dataPickDrop}
-                  margin={{
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey="trip"
-                    stroke="#8884d8"
-                    activeDot={{ r: 8 }}
-                  />
-                  {/* <Line type="monotone" dataKey="uv" stroke="#82ca9d" /> */}
-                </LineChart>
+          {activeTab === "eStore" ? (
+            <div>
+              <div className="text-center">
+                <h2 className="subTitle text-center">E-Stores</h2>
               </div>
 
-              <div>
-                <p>
-                  Trips taken today: <b>{dataPickDrop[6].trip}</b>
-                </p>
-                <p>
-                  Earning from today&apos;s Pick & Drop:{" "}
-                  <b>₹{dataPickDrop[6].trip * 50}</b>
-                </p>
-                <br></br>
-                <p>
-                  Trips taken in last 30 days: <b>{last30DaysCount}</b>
-                </p>
-                <p>
-                  Total Earning from last 30 days:{" "}
-                  <b>₹{last30DaysCount * 50}</b>
-                </p>
-              </div>
-            </div>
-          </div>
-          <div>
-            <h2 className="subTitle">Hire Skills</h2>
-            <div className="d-flex">
-              <div>
-                <LineChart
-                  width={600}
-                  height={250}
-                  data={dataHireSkills}
-                  margin={{
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey="request"
-                    stroke="#8884d8"
-                    activeDot={{ r: 8 }}
-                  />
-                  {/* <Line type="monotone" dataKey="uv" stroke="#82ca9d" /> */}
-                </LineChart>
+              <h4 className="">Ongoing Orders</h4>
+              <div className="d-flex">
+                <div>
+                  <LineChart
+                    width={1000}
+                    height={300}
+                    data={estoresDataOngoing}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="order"
+                      stroke="#8884d8"
+                      activeDot={{ r: 8 }}
+                    />
+                  </LineChart>
+                </div>
+
+                <div>
+                  <p>
+                    Orders today: <b>{estoresDataOngoing[30]?.order}</b>
+                  </p>
+                  <br />
+                  <p>
+                    Orders in last 30 days: <b>{estoresDataOngoingCount}</b>
+                  </p>
+                </div>
               </div>
 
-              <div>
-                <p>
-                  No. of requests today: <b>{dataHireSkills[6].request}</b>
-                </p>
-                <p>
-                  Earning from today&apos;s Hire Skills:{" "}
-                  <b>₹{dataHireSkills[6].request * 50}</b>
-                </p>
-                <br></br>
-                <p>
-                  Hire Skills requests in last 30 days:{" "}
-                  <b>{hireSkillsLast30DaysCount}</b>
-                </p>
-                <p>
-                  Total Earning from hire skilles in last 30 days:{" "}
-                  <b>₹{hireSkillsLast30DaysCount * 50}</b>
-                </p>
+              <h4 className="">Delivered Orders</h4>
+              <div className="d-flex">
+                <div>
+                  <LineChart
+                    width={1000}
+                    height={300}
+                    data={estoresDataHistory}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="order"
+                      stroke="#8884d8"
+                      activeDot={{ r: 8 }}
+                    />
+                  </LineChart>
+                </div>
+
+                <div>
+                  <p>
+                    Orders delivered today:{" "}
+                    <b>{estoresDataHistory[30]?.order}</b>
+                  </p>
+                  <br />
+                  <p>
+                    Successful deliveries in last 30 days:{" "}
+                    <b>{estoresDataHistoryCount}</b>
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-          <div>
-            <h2 className="subTitle">E-Stores</h2>
-            <div className="d-flex">
-              <div>
-                <LineChart
-                  width={600}
-                  height={250}
-                  data={dataEstores}
-                  margin={{
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
-                  }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey="order"
-                    stroke="#8884d8"
-                    activeDot={{ r: 8 }}
-                  />
-                  {/* <Line type="monotone" dataKey="uv" stroke="#82ca9d" /> */}
-                </LineChart>
+          ) : activeTab === "hireSkills" ? (
+            <div>
+              <div className="text-center">
+                <h2 className="subTitle text-center">Hire Skills</h2>
               </div>
 
-              <div>
-                <p>
-                  No. of orders from estores today:{" "}
-                  <b>{dataPickDrop[6].order}</b>
-                </p>
-                {/* <p>
-                  Earning from today's estores sales:{" "}
-                  <b>₹{dataPickDrop[6].trip * 50}</b>
-                </p> */}
-                <br></br>
-                <p>
-                  Total orders in last 30 days: <b>{estoresLast30DaysCount}</b>
-                </p>
-                {/* <p>
-                  Total Earning from last 30 days:{" "}
-                  <b>₹{estoresLast30DaysCount * 50}</b>
-                </p> */}
+              <h4 className="">Ongoing Requests</h4>
+              <div className="d-flex">
+                <div>
+                  <LineChart
+                    width={1000}
+                    height={300}
+                    data={hireSkillsDataOngoing}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip content={<CustomTooltipSkillsOngoing />} />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="request"
+                      stroke="#8884d8"
+                      activeDot={{ r: 8 }}
+                    />
+                  </LineChart>
+                </div>
+
+                <div>
+                  <p>
+                    Requests today: <b>{hireSkillsDataOngoing[30]?.request}</b>
+                  </p>
+                  {/* <p>
+                    Earning from today&apos;s Hire Skills:{" "}
+                    <b>₹{hireSkillsData[6]?.request * 50}</b>
+                  </p> */}
+                  <br />
+                  <p>
+                    Requests in last 30 days:{" "}
+                    <b>{hireSkillsDataOngoingCount}</b>
+                  </p>
+                  {/* <p>
+                    Total Earning from hire skills in last 30 days:{" "}
+                    <b>₹{hireSkillsLast30DaysCount * 50}</b>
+                  </p> */}
+                </div>
+              </div>
+              <h4 className="">Completed Orders</h4>
+              <div className="d-flex">
+                <div>
+                  <LineChart
+                    width={1000}
+                    height={250}
+                    data={hireSkillsDataHistory}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip content={<CustomTooltipSkills />} />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="completed"
+                      stroke="#8884d8"
+                      activeDot={{ r: 8 }}
+                    />
+                  </LineChart>
+                </div>
+
+                <div>
+                  <p>
+                    Projects completed today:{" "}
+                    <b>{hireSkillsDataHistory[30]?.completed}</b>
+                  </p>
+                  <br />
+                  <p>
+                    Project completed in last 30 days:{" "}
+                    <b>{hireSkillsDataHistoryCount}</b>
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
+          ) : activeTab === "pickDrop" ? (
+            <div>
+              <div className="text-center">
+                <h2 className="subTitle text-center">Pick Drop</h2>
+              </div>
+
+              <h4 className="">Ongoing Requests</h4>
+              <div className="d-flex">
+                <div>
+                  <LineChart
+                    width={1000}
+                    height={300}
+                    data={pickDropDataOngoing}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip content={<CustomTooltipPickDropOngoing />} />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="request"
+                      stroke="#8884d8"
+                      activeDot={{ r: 8 }}
+                    />
+                  </LineChart>
+                </div>
+
+                <div>
+                  <p>
+                    Requests today: <b>{pickDropDataOngoing[30]?.request}</b>
+                  </p>
+                  {/* <p>
+                    Earning from today&apos;s Hire Skills:{" "}
+                    <b>₹{hireSkillsData[6]?.request * 50}</b>
+                  </p> */}
+                  <br />
+                  <p>
+                    Requests in last 30 days: <b>{pickDropDataOngoingCount}</b>
+                  </p>
+                  {/* <p>
+                    Total Earning from hire skills in last 30 days:{" "}
+                    <b>₹{hireSkillsLast30DaysCount * 50}</b>
+                  </p> */}
+                </div>
+              </div>
+
+              <h4 className="">Completed Orders</h4>
+              <div className="d-flex">
+                <div>
+                  <LineChart
+                    width={1000}
+                    height={250}
+                    data={pickDropDataHistory}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip content={<CustomTooltipPickDropCompleted />} />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="completed"
+                      stroke="#8884d8"
+                      activeDot={{ r: 8 }}
+                    />
+                  </LineChart>
+                </div>
+
+                <div>
+                  <p>
+                    Orders completed today:{" "}
+                    <b>{pickDropDataHistory[30]?.completed}</b>
+                  </p>
+                  <br />
+                  <p>
+                    Successful in last 30 days:{" "}
+                    <b>{pickDropDataHistoryCount}</b>
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : null}
         </div>
       </AdminLayout>
     </Admin>
