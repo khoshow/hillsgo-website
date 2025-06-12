@@ -8,6 +8,7 @@ import Admin from "@/components/auth/Admin";
 import Header from "@/components/Header";
 import Calendar from "react-calendar";
 import { useUser } from "../../../contexts/UserContext";
+import { colors } from "@/data/colors";
 
 const WorkerAppointmentForm = () => {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -307,33 +308,37 @@ const WorkerAppointmentForm = () => {
             </div>
             {/* Confirmation Modal */}
             {modalVisible && (
-              <div style={styles.modalContainer}>
-                <div style={styles.modalContent}>
-                  <p style={styles.modalTitle}>Confirm Appointment</p>
-                  <p style={styles.modalText}>
-                    Are you sure you want to schedule a worker appointment for{" "}
-                    {formatDate(selectedDate)}?
-                  </p>
-                  <div style={styles.buttonContainer}>
-                    <button
-                      style={styles.backButton}
-                      onClick={() => setModalVisible(false)}
-                    >
-                      <p style={styles.buttonText}>Cancel</p>
-                    </button>
-                    <button
-                      style={styles.submitButton1}
-                      onClick={() => {
-                        handleConfirmSubmit();
-                      }}
-                      disabled={submitting ? true : false}
-                    >
-                      {submitting ? (
-                        <span className="loader" style={styles.loader}></span>
-                      ) : (
-                        <p style={styles.buttonText2}> Confirm</p>
-                      )}
-                    </button>
+              <div style={styles.modalOverlay}>
+                <div style={styles.modalContainer}>
+                  <div style={styles.modalContent}>
+                    <p style={styles.modalTitle}>Confirm Appointment</p>
+                    <p style={styles.modalText}>
+                      Are you sure you want to schedule a worker appointment for{" "}
+                      {formatDate(selectedDate)}?
+                    </p>
+                    <div style={styles.buttonContainer}>
+                      <button
+                        style={styles.backButton}
+                        onClick={() => setModalVisible(false)}
+                      >
+                        <p style={styles.buttonText}>Cancel</p>
+                      </button>
+                      <button
+                        style={styles.submitButton1}
+                        onClick={() => {
+                          handleConfirmSubmit();
+                        }}
+                        disabled={submitting ? true : false}
+                      >
+                        {submitting ? (
+                          <span className="loader" style={styles.loader}>
+                            Please wait...
+                          </span>
+                        ) : (
+                          <p style={styles.buttonText2}> Confirm</p>
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -451,36 +456,54 @@ const styles = {
     marginTop: 20,
   },
   buttonText: { color: "#fff", fontSize: 16 },
-
-  modalContainer: {
-    flex: 1,
+  modalOverlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100vw",
+    height: "100vh",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    zIndex: 1000,
+  },
+  modalContainer: {
+    backgroundColor: "#fff",
+    padding: 24,
+    borderRadius: 12,
+    maxWidth: 400,
+    width: "90%",
+    boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
   },
   modalContent: {
-    backgroundColor: "#fff",
-    padding: 20,
-    borderRadius: 10,
-    width: "80%",
-    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
+    gap: 16,
   },
   modalTitle: {
-    fontSize: 18,
+    fontSize: "1.5rem",
     fontWeight: "bold",
-    marginBottom: 10,
   },
   modalText: {
-    fontSize: 14,
-    textAlign: "center",
-    marginBottom: 20,
+    fontSize: "1rem",
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: 12,
   },
 
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
+  loader: {
+    width: "250px",
+    height: 16,
+
+    border: "2px solid #fff",
+    borderTop: "2px solid transparent",
+    borderRadius: "50%",
+    animation: "spin 1s linear infinite",
   },
+
   cancelButton: {
     backgroundColor: "#ccc",
     padding: 10,

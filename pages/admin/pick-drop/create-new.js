@@ -341,7 +341,9 @@ const PickDropRequestForm = () => {
                       disabled={submitting}
                     >
                       {submitting ? (
-                        <span className="loader" style={styles.loader}></span>
+                        <span className="loader" style={styles.loader}>
+                          Please wait...
+                        </span>
                       ) : (
                         <p style={styles.buttonText2}> Confirm</p>
                       )}
@@ -495,7 +497,7 @@ const styles = {
     width: "250px",
     height: 16,
     border: "2px solid #fff",
-    borderTop: "2px solid transparent",
+
     borderRadius: "50%",
     animation: "spin 1s linear infinite",
   },

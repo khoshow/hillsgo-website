@@ -37,6 +37,8 @@ export default function PickDropOrders() {
   const [deliveryNote, setDeliveryNote] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  const [tipAmount, setTipAmount] = useState({});
   const router = useRouter();
   const storage = getStorage();
 
@@ -182,6 +184,13 @@ _www.hillsgo.com_
     }));
   };
 
+  const handleTipChange = (id, value) => {
+    setTipAmount((prev) => ({
+      ...prev,
+      [id]: value, // Update only the specific item
+    }));
+  };
+
   // Update status in Firebase
   const updateOrderStatus = async (order) => {
     try {
@@ -297,6 +306,9 @@ _www.hillsgo.com_
             image: user?.image || "",
             driverId: user?.uid || "",
           },
+          tip: tipAmount[order.id] ?? 0,
+          deliveryFee: 50,
+          totalFee: 50 + (tipAmount[order.id] ?? 0),
           deliveredAt: serverTimestamp(),
         });
         transaction.delete(orderRef);
@@ -514,6 +526,36 @@ _www.hillsgo.com_
                               <p>
                                 Are you sure you want to complete this delivery?
                               </p>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "12px",
+                                  margin: "12px",
+                                }}
+                              >
+                                <p style={{ margin: 0, whiteSpace: "nowrap" }}>
+                                  Enter tip amount if any
+                                </p>
+                                <input
+                                  style={{
+                                    border: "1px solid #ccc",
+                                    borderRadius: "10px",
+                                    padding: "12px",
+                                    width: "100%", // You can also use fixed width like '150px'
+                                  }}
+                                  type="number"
+                                  placeholder=""
+                                  required
+                                  value={tipAmount[order.id] || ""}
+                                  onChange={(e) =>
+                                    handleTipChange(
+                                      order.id,
+                                      Number(e.target.value)
+                                    )
+                                  }
+                                />
+                              </div>
                               <button
                                 style={{
                                   padding: "8px 15px",

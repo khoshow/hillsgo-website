@@ -35,6 +35,7 @@ export default function PickDropOrders() {
   const [loading, setLoading] = useState(true);
   const [deliveryCode, setDeliveryCode] = useState({});
   const [deliveryNote, setDeliveryNote] = useState({});
+  const [hillsgoFee, setHillsgoFee] = useState({});
   const [showModal, setShowModal] = useState(false);
   const router = useRouter();
   const storage = getStorage();
@@ -70,8 +71,6 @@ export default function PickDropOrders() {
     fetchOrders();
   }, [user, router]);
 
-
-
   if (loading)
     return (
       <Admin>
@@ -88,6 +87,13 @@ export default function PickDropOrders() {
 
   const handleDeliveryNoteChange = (id, value) => {
     setDeliveryNote((prev) => ({
+      ...prev,
+      [id]: value, // Update only the specific item
+    }));
+  };
+
+  const handleHillsgoFeeChange = (id, value) => {
+    setHillsgoFee((prev) => ({
       ...prev,
       [id]: value, // Update only the specific item
     }));
@@ -111,7 +117,6 @@ export default function PickDropOrders() {
 
       // Reference to the Firestore document
       const orderRef = doc(db, "hireSkillsOngoing", order.id);
-     
 
       if (newStatus === "Completed" || newStatus === "Cancelled") {
         // Get the current order data
@@ -189,7 +194,10 @@ export default function PickDropOrders() {
       alert("Invalid order ID");
       return;
     }
-
+    if (!hillsgoFee) {
+      alert("Enter HillsGO fee to complete");
+      return;
+    }
     try {
       const orderRef = doc(db, "hireSkillsOngoing", order.id);
 
@@ -208,7 +216,7 @@ export default function PickDropOrders() {
         transaction.set(targetDocRef, {
           ...orderData,
           status: "completed",
-
+          fee: hillsgoFee[order.id],
           deliveredAt: serverTimestamp(),
         });
         transaction.delete(orderRef);
@@ -401,6 +409,37 @@ export default function PickDropOrders() {
                               <p>
                                 Are you sure you want to complete this delivery?
                               </p>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "12px",
+                                  margin: "12px",
+                                }}
+                              >
+                                <p style={{ margin: 0, whiteSpace: "nowrap" }}>
+                                  Enter HillsGO fee
+                                </p>
+                                <input
+                                  style={{
+                                    border: "1px solid #ccc",
+                                    borderRadius: "10px",
+                                    padding: "12px",
+                                    width: "100%", // You can also use fixed width like '150px'
+                                  }}
+                                  type="number"
+                                  placeholder="Add a fee"
+                                  required
+                                  value={hillsgoFee[order.id] || ""}
+                                  onChange={(e) =>
+                                    handleHillsgoFeeChange(
+                                      order.id,
+                                      Number(e.target.value)
+                                    )
+                                  }
+                                />
+                              </div>
+
                               <button
                                 style={{
                                   padding: "8px 15px",
@@ -571,5 +610,12 @@ const styles = {
     cursor: "pointer",
     flex: "1",
     textAlign: "center",
+  },
+  input: {
+    border: "1px solid #ccc",
+    borderRadius: "10px",
+    padding: "12px",
+    width: "100%",
+    // display: "flex",
   },
 };
