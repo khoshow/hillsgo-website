@@ -22,7 +22,6 @@ export default function Login() {
     "khoshow.developer@gmail.com",
     "afinerblue@gmail.com",
     "creativekalo1@gmail.com",
-    "roziiveinaihillsgo@gmail.com",
     "contact@hillsgo.com",
   ];
 

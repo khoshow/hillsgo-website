@@ -42,6 +42,15 @@ export default function Estores() {
                 Estores List
               </button>
             </div>
+
+            <div style={styles.productCard}>
+              <button
+                style={styles.editButton}
+                onClick={() => router.push(`/admin/estores/out-of-stocks`)}
+              >
+                Out of Stocks
+              </button>
+            </div>
           </div>
         </div>
       </AdminLayout>

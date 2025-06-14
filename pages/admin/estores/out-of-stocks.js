@@ -45,10 +45,7 @@ export default function MyProducts() {
     }
 
     try {
-      const productsQuery = query(
-        collection(db, "estoreProducts"),
-        where("ownerId", "==", id) // Fetch products created by the logged-in user
-      );
+      const productsQuery = query(collection(db, "outOfStockProductsEstores"));
 
       const querySnapshot = await getDocs(productsQuery);
       const productList = querySnapshot.docs.map((doc) => ({
@@ -95,33 +92,33 @@ export default function MyProducts() {
     }
   };
 
-  const handleOutOfStock = async (productId) => {
+  const handleReStock = async (productId) => {
     const confirmed = confirm(
-      "Are you sure you want to stock out this product?"
+      "Are you sure you want to re-stock this product?"
     );
     if (!confirmed) return;
     try {
-      console.log("Putting out of stock:", productId);
+      console.log("Re-stocking:", productId);
 
       // Step 1: Get the product document
-      const productRef = doc(db, "estoreProducts", productId);
+      const productRef = doc(db, "outOfStockProductsEstores", productId);
       const productSnap = await getDoc(productRef);
 
       if (productSnap.exists()) {
         const productData = productSnap.data();
 
         // Step 2: Write to new collection with the same ID
-        const outOfStockRef = doc(db, "outOfStockProductsEstores", productId);
+        const outOfStockRef = doc(db, "estoreProducts", productId);
         await setDoc(outOfStockRef, productData);
         await deleteDoc(productRef);
-        console.log("Product moved to outOfStockProducts.");
+        console.log("Product moved to the stocks.");
 
-        alert("Product successfullystocked out!");
+        alert("Product successfully re-stocked!");
       } else {
         console.warn("Product not found!");
       }
     } catch (error) {
-      console.error("Error moving product to out of stock:", error);
+      console.error("Error re-stocking the product:", error);
 
       alert("Something is wrong!");
     } finally {
@@ -183,7 +180,7 @@ export default function MyProducts() {
                       ? product.description
                       : "N/A"}
                   </p>
-                  <button
+                  {/* <button
                     style={styles.editButton}
                     onClick={() =>
                       router.push(
@@ -192,19 +189,19 @@ export default function MyProducts() {
                     }
                   >
                     Edit
-                  </button>
+                  </button> */}
                   <button
                     style={styles.editButton}
-                    onClick={() => handleOutOfStock(product.id)}
+                    onClick={() => handleReStock(product.id)}
                   >
-                    Out of Stock
+                    Re-Stock
                   </button>
-                  <button
+                  {/* <button
                     style={styles.deleteButton}
                     onClick={() => handleDelete(product.id, product.images)}
                   >
                     Delete
-                  </button>
+                  </button> */}
                 </div>
               ))
             ) : (
