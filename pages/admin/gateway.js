@@ -23,6 +23,9 @@ export default function Login() {
     "afinerblue@gmail.com",
     "creativekalo1@gmail.com",
     "contact@hillsgo.com",
+    "amariineemail@gmail.com",
+    "pangbilahabent@gmail.com",
+    "alicekadete02@gmail.com",
   ];
 
   const handleAdminLogin = async (e) => {
@@ -45,7 +48,7 @@ export default function Login() {
         });
         router.push("/admin/dashboard"); // Redirect after successful login
       } else {
-        return alert("Hi user");
+        return alert("Hi user. You need admin access");
       }
     } catch (error) {
       setError(error.message);
