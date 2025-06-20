@@ -84,6 +84,7 @@ const Header = () => {
         </div>
         <nav className="ml-auto">
           <ul className={styles.navLinks}>
+            <li>{user ? user.email : null}</li>
             <li>
               <Link href="/">Home</Link>
             </li>
