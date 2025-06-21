@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { db } from "../../../firebase/firebase"; // Import your Firestore config
+import { db } from "../../../../firebase/firebase";
 import {
   collection,
   query,
@@ -20,8 +20,8 @@ import {
   deleteObject,
 } from "firebase/storage";
 import { colors } from "@/data/colors";
-import ImageSlider from "../../../components/sliders/ImageSliders";
-import { useUser } from "../../../contexts/UserContext"; // Import your UserContext
+
+import { useUser } from "../../../../contexts/UserContext"; // Import your UserContext
 import Header from "@/components/Header";
 import AdminLayout from "@/components/layout/AdminLayout"; // Assuming you have a layout for Estore
 import Admin from "@/components/auth/Admin";
@@ -129,6 +129,14 @@ export default function MyItems() {
   };
 
   const outputDateTime = (time) => {
+    if (
+      !time ||
+      typeof time.seconds !== "number" ||
+      typeof time.nanoseconds !== "number"
+    ) {
+      return "Invalid time";
+    }
+
     const options = {
       year: "numeric",
       month: "long",
@@ -138,15 +146,20 @@ export default function MyItems() {
       second: "numeric",
       hour12: true,
     };
-    const milliseconds = time?.seconds * 1000 + time?.nanoseconds / 1e6;
 
-    // Create a Date object
+    const milliseconds = time.seconds * 1000 + time.nanoseconds / 1e6;
     const date = new Date(milliseconds);
-    return date.toISOString(), date.toLocaleString("en-US", options);
+
+    if (isNaN(date.getTime())) return "Invalid date";
+
+    return {
+      iso: date.toISOString(),
+      formatted: date.toLocaleString("en-US", options),
+    };
   };
 
   const groupedItems = items.reduce((acc, item) => {
-    const orderDate = outputDateTime(item.createdAt).split(",")[0]; // Extract just the date (without time)
+    const orderDate = outputDateTime(item.createdAt).formatted.split(",")[0]; // Extract just the date (without time)
 
     if (!acc[orderDate]) {
       acc[orderDate] = [];
@@ -175,7 +188,7 @@ export default function MyItems() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.heading}>Delivered Items</h1>
+          <h1>Delivered Items</h1>
 
           <div style={styles.productGrid}>
             {sortedDates.length > 0 ? (
@@ -194,7 +207,7 @@ export default function MyItems() {
                     <div key={item.id} style={styles.productCard}>
                       <h3 style={{ textAlign: "center" }}>{index + 1}</h3>
                       <img
-                        src={item.product.productData.images[0]} // Assuming first image is used for the card
+                        src={item.product?.productData.images[0]} // Assuming first image is used for the card
                         alt="image detail"
                         style={styles.image}
                       />
@@ -213,57 +226,61 @@ export default function MyItems() {
                             </tr>
                             <tr>
                               <th>Ordered Date</th>
-                              <td>{outputDateTime(item.createdAt)}</td>
+                              <td>{outputDateTime(item.createdAt).formatted}</td>
                             </tr>
                             <tr>
                               <th>Date of Delivery</th>
-                              <td>{outputDateTime(item.deliveredAt)}</td>
+                              <td>{outputDateTime(item.deliveredAt).formatted}</td>
                             </tr>
                           </table>
                         </div>
-                        <div style={styles.tableContainer}>
-                          <p className="subTitle">User Details</p>
-                          <table>
-                            <tr>
-                              <th>Name</th>
-                              <td>{item.userData.userName}</td>
-                            </tr>
-                            <tr>
-                              <th>Phone</th>
-                              <td>{item.userData.phone}</td>
-                            </tr>
-                            <tr>
-                              <th>Email</th>
-                              <td>{item.userData.email}</td>
-                            </tr>
-                            <tr>
-                              <th>Delivery Address</th>
-                              <td>{item.userData.deliveryAddress}</td>
-                            </tr>
-                          </table>
-                        </div>
+                        {item.userData &
+                        (
+                          <div style={styles.tableContainer}>
+                            <p className="subTitle">User Details</p>
+                            <table>
+                              <tr>
+                                <th>Name</th>
+                                <td>{item.userData?.userName}</td>
+                              </tr>
+                              <tr>
+                                <th>Phone</th>
+                                <td>{item.userData?.phone}</td>
+                              </tr>
+                              <tr>
+                                <th>Email</th>
+                                <td>{item.userData?.email}</td>
+                              </tr>
+                              <tr>
+                                <th>Delivery Address</th>
+                                <td>{item.userData?.deliveryAddress}</td>
+                              </tr>
+                            </table>
+                          </div>
+                        )}
+
                         <div class="table-container">
                           <p className="subTitle">Store Details</p>
                           <table>
                             <tr>
                               <th>Store Name</th>
-                              <td>{item.estoreInfo.estoreName}</td>
+                              <td>{item.estoreInfo?.estoreName}</td>
                             </tr>
                             <tr>
                               <th>Owner Name</th>
-                              <td>{item.estoreInfo.ownerName}</td>
+                              <td>{item.estoreInfo?.ownerName}</td>
                             </tr>
                             <tr>
                               <th>Owner Email</th>
-                              <td>{item.estoreInfo.ownerEmail}</td>
+                              <td>{item.estoreInfo?.ownerEmail}</td>
                             </tr>
                             <tr>
                               <th>Store Contact</th>
-                              <td>{item.estoreInfo.estoreContact}</td>
+                              <td>{item.estoreInfo?.estoreContact}</td>
                             </tr>
                             <tr>
                               <th>Store Address</th>
-                              <td>{item.estoreInfo.estoreAddress}</td>
+                              <td>{item.estoreInfo?.estoreAddress}</td>
                             </tr>
                           </table>
                         </div>
@@ -272,15 +289,15 @@ export default function MyItems() {
                           <table>
                             <tr>
                               <th>Product Name</th>
-                              <td>{item.product.productData.name}</td>
+                              <td>{item.product?.productData.name}</td>
                             </tr>
                             <tr>
                               <th>Product Description</th>
-                              <td>{item.product.productData.description}</td>
+                              <td>{item.product?.productData.description}</td>
                             </tr>
                             <tr>
                               <th>Weight</th>
-                              <td>{item.product.productData.weight}</td>
+                              <td>{item.product?.productData.weight}</td>
                             </tr>
                             <tr>
                               <th>Size</th>
@@ -303,7 +320,7 @@ export default function MyItems() {
                           <table>
                             <tr>
                               <th>Name</th>
-                              <td>{item.driver.name}</td>
+                              <td>{item.driver?.name}</td>
                             </tr>
                           </table>
                         </div>
@@ -312,33 +329,33 @@ export default function MyItems() {
                           <table>
                             <tr>
                               <th>Price</th>
-                              <td>₹{item.product.productData.price}</td>
+                              <td>₹{item.product?.productData.price}</td>
                             </tr>
 
                             <tr>
                               <th>Quantity</th>
-                              <td>{item.product.productData.quantity}</td>
+                              <td>{item.product?.productData.quantity}</td>
                             </tr>
 
                             <tr>
                               <th>Subtotal</th>
-                              <td>₹{item.product.productData.subtotal}</td>
+                              <td>₹{item.product?.productData.subtotal}</td>
                             </tr>
                             <tr>
                               <th>Tip</th>
-                              <td>₹{item.product.tip}</td>
+                              <td>₹{item.product?.tip}</td>
                             </tr>
                             <tr>
                               <th>Delivery Cost</th>
-                              <td>₹{item.product.deliveryCost}</td>
+                              <td>₹{item.product?.deliveryCost}</td>
                             </tr>
                             <tr>
                               <th>Total Payment</th>
                               <td>
                                 ₹
-                                {item.product.deliveryCost +
-                                  item.product.tip +
-                                  item.product.productData.subtotal}
+                                {item.product?.deliveryCost +
+                                  item.product?.tip +
+                                  item.product?.productData.subtotal}
                               </td>
                             </tr>
                           </table>

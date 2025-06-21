@@ -32,7 +32,7 @@ export default function Workers() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.heading}>Workers Management</h1>
+          <h1 >Workers Management</h1>
           <div style={styles.productGrid}>
             <div style={styles.productCard}>
               <button
@@ -65,7 +65,6 @@ const styles = {
     textAlign: "center",
   },
   heading: {
-    fontSize: "2.5em",
     marginBottom: "20px",
   },
   productGrid: {

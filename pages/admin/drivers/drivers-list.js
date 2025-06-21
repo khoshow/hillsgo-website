@@ -74,7 +74,7 @@ export default function MyEstores() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.heading}>Drivers</h1>
+          <h1 >Drivers</h1>
           <div style={styles.driverGrid}>
             {drivers.length > 0 ? (
               drivers.map((driver) => (

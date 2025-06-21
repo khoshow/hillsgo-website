@@ -228,7 +228,7 @@ const AdminAddWorker = () => {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.title}>Add New Worker</h1>
+          <h1 >Add New Worker</h1>
           <form onSubmit={handleSubmit} style={styles.form}>
             {error && <p style={styles.error}>{error}</p>}
             {success && <p style={styles.success}>{success}</p>}

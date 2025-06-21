@@ -108,7 +108,7 @@ export default function EditBanner() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.heading}>Edit Banner</h1>
+          <h1 >Edit Banner</h1>
           <form onSubmit={handleSubmit} style={styles.form}>
             <label style={styles.label}>
               Banner Name:

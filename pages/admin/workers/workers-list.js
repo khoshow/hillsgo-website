@@ -74,7 +74,7 @@ export default function MyEstores() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.heading}>Workers</h1>
+          <h1 >Workers</h1>
           <div style={styles.workerGrid}>
             {workers.length > 0 ? (
               workers.map((worker) => (

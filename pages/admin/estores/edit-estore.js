@@ -337,7 +337,7 @@ const ProfileEditEstore = () => {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.title}>Edit Estore</h1>
+          <h1 >Edit Estore</h1>
           <form onSubmit={handleEditSubmit} style={styles.form}>
             {error && <p style={styles.error}>{error}</p>}
             {success && <p style={styles.success}>{success}</p>}

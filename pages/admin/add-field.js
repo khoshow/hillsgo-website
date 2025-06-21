@@ -67,7 +67,7 @@ export default function AdminDashboard() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.heading}>Ongoing Orders Management</h1>
+          <h1>Ongoing Orders Management</h1>
           <div style={styles.productGrid}>
             <div style={styles.productCard}>
               <button

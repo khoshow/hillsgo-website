@@ -32,7 +32,7 @@ export default function Workers() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.heading}>Home Banner Management</h1>
+          <h1 >Home Banner Management</h1>
           <div style={styles.productGrid}>
             <div style={styles.productCard}>
               <button

@@ -12,6 +12,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
   const { setUser } = useUser();
   const [roleOption, setRoleOption] = useState("");
   const [roleDisplay, setRoleDisplay] = useState(true);
@@ -74,12 +75,20 @@ export default function Login() {
           <div style={styles.inputGroup}>
             <label>Password</label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               style={styles.input}
               required
             />
+            <label style={styles.showPassword}>
+              <input
+                type="checkbox"
+                checked={showPassword}
+                onChange={() => setShowPassword(!showPassword)}
+              />
+              Show Password
+            </label>
           </div>
           <button type="submit" style={styles.button}>
             Login

@@ -140,7 +140,7 @@ export default function MyProducts() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.heading}>My Products</h1>
+          <h1 >My Products</h1>
           <div style={styles.productGrid}>
             {products.length > 0 ? (
               products.map((product) => (

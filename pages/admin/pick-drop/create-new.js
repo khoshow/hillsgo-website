@@ -187,7 +187,7 @@ const PickDropRequestForm = () => {
           {/* Gradient Banner */}
           <div colors={["#8360c3", "#2ebf91"]}>
             {/* <p style={styles.title}>Hire Skills</p> */}
-            <h2 style={styles.title}>New Pick & Drop</h2>
+            
             {/* <Lottiediv
           source={require("../../assets/animations/pickdrop.json")}
           autoPlay
@@ -199,9 +199,11 @@ const PickDropRequestForm = () => {
           {/* Lottie Animation */}
 
           <div className="container">
+           
             {/* Section 1: Personal Details */}
             {currentIndex === 0 && (
               <div className="section">
+                 <h1 >New Pick & Drop</h1>
                 <p style={styles.label}>From whom should we pick?</p>
                 <input
                   style={styles.input}

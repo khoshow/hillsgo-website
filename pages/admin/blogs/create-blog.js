@@ -42,7 +42,7 @@ const BlogEditor = () => {
     <>
       <Header />
       <div className="container">
-        <h2 className="title">Create a New Blog Post</h2>
+        <h1>Create a New Blog Post</h1>
         {message && <p className={`message ${message.type}`}>{message.text}</p>}
 
         <form onSubmit={handleSubmit} className="form">

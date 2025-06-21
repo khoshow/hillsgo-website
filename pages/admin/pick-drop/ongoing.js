@@ -346,7 +346,7 @@ _www.hillsgo.com_
         <Header />
         <div className="container">
           <div style={styles.container}>
-            <h1 style={styles.heading}>Current Orders</h1>
+            <h1 >Current Orders</h1>
             <div style={styles.productGrid}>
               {orders.length > 0 ? (
                 orders.map((order, index) =>

@@ -24,7 +24,7 @@ export default function Estores() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.heading}>Drivers Management</h1>
+          <h1 >Drivers Management</h1>
           <div style={styles.productGrid}>
             <div style={styles.productCard}>
               <button

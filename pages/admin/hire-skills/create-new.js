@@ -203,13 +203,14 @@ const WorkerAppointmentForm = () => {
               {/* Section 1: Personal Details */}
               {currentIndex === 0 && (
                 <>
-                  <div style={styles.card}>
-                    {/* <Icon name="account-hard-hat" style={styles.icon} size={40} />
-                     */}
-                    <h2 style={styles.title}>
-                      Please fill the customer form to create a new appointment
-                    </h2>
-                  </div>
+                  <h1>Hire Skills</h1>
+
+                  {/* <Icon name="account-hard-hat" style={styles.icon} size={40} />
+                   */}
+                  <h3 style={styles.label}>
+                    Please fill the customer form to create a new appointment
+                  </h3>
+
                   <p style={styles.label}>Customer Name</p>
                   <input
                     style={styles.input}

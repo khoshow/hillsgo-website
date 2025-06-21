@@ -250,7 +250,7 @@ export default function PickDropOrders() {
         <Header />
         <div className="container">
           <div style={styles.container}>
-            <h1 style={styles.heading}>Orders History</h1>
+            <h1 >Orders History</h1>
             <div style={styles.productGrid}>
               {orders.length > 0 ? (
                 orders.map((order, index) =>

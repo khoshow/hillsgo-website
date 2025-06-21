@@ -88,7 +88,7 @@ export default function HomeBanners() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.heading}>Home Banners</h1>
+          <h1 >Home Banners</h1>
           <div style={styles.bannerGrid}>
             {banners.length > 0 ? (
               banners.map((banner) => (

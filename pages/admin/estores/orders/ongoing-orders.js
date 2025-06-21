@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-import { db } from "../../../firebase/firebase"; // Import your Firestore config
+import { db } from "../../../../firebase/firebase"; // Import your Firestore config
 import {
   collection,
   query,
@@ -14,7 +14,7 @@ import {
   setDoc,
   orderBy,
   runTransaction,
-  serverTimestamp 
+  serverTimestamp,
 } from "firebase/firestore";
 import {
   getStorage,
@@ -24,8 +24,8 @@ import {
   deleteObject,
 } from "firebase/storage";
 import { colors } from "@/data/colors";
-import ImageSlider from "../../../components/sliders/ImageSliders";
-import { useUser } from "../../../contexts/UserContext"; // Import your UserContext
+
+import { useUser } from "../../../../contexts/UserContext"; // Import your UserContext
 import Header from "@/components/Header";
 import Admin from "@/components/auth/Admin";
 import AdminLayout from "@/components/layout/AdminLayout";
@@ -346,7 +346,7 @@ _www.hillsgo.com_
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.heading}>Current Orders</h1>
+          <h1>Current Orders</h1>
           <div style={styles.productGrid}>
             {orders.length > 0 ? (
               orders.map((item, index) => (

@@ -74,7 +74,7 @@ export default function MyEstores() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.heading}>Estores</h1>
+          <h1 >Estores</h1>
           <div style={styles.estoreGrid}>
             {estores.length > 0 ? (
               estores.map((estore) => (

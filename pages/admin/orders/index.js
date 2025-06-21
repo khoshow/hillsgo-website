@@ -24,23 +24,88 @@ export default function Estores() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.heading}>Orders Management</h1>
-          <div style={styles.productGrid}>
-            <div style={styles.productCard}>
-              <button
-                style={styles.editButton}
-                onClick={() => router.push(`/admin/orders/ongoing-orders`)}
-              >
-                Ongoing Orders
-              </button>
+          <h1>Orders Management</h1>
+          <div style={styles.sectionContainer}>
+            <h3>Estores</h3>
+            <div style={styles.productGrid}>
+              <div style={styles.productCard}>
+                <button
+                  style={styles.editButton}
+                  onClick={() =>
+                    router.push(`/admin/estores/orders/ongoing-orders`)
+                  }
+                >
+                  Ongoing Orders
+                </button>
+              </div>
+              <div style={styles.productCard}>
+                <button
+                  style={styles.editButton}
+                  onClick={() =>
+                    router.push(`/admin/estores/orders/orders-history`)
+                  }
+                >
+                  Orders History
+                </button>
+              </div>
             </div>
-            <div style={styles.productCard}>
-              <button
-                style={styles.editButton}
-                onClick={() => router.push(`/admin/orders/orders-history`)}
-              >
-                Orders History
-              </button>
+          </div>
+          <div style={styles.sectionContainer}>
+            <h3>Hire Skills</h3>
+            <div style={styles.productGrid}>
+              <div style={styles.productCard}>
+                <button
+                  style={styles.editButton}
+                  onClick={() => router.push(`/admin/hire-skills/create-new`)}
+                >
+                  New Hire Skills
+                </button>
+              </div>
+              <div style={styles.productCard}>
+                <button
+                  style={styles.editButton}
+                  onClick={() => router.push(`/admin/hire-skills/ongoing`)}
+                >
+                  Ongoing Orders
+                </button>
+              </div>
+              <div style={styles.productCard}>
+                <button
+                  style={styles.editButton}
+                  onClick={() => router.push(`/admin/hire-skills/history`)}
+                >
+                  Orders History
+                </button>
+              </div>
+            </div>
+          </div>
+          <div style={styles.sectionContainer}>
+            <h3>Pick & Drop</h3>
+            <div style={styles.productGrid}>
+              <div style={styles.productCard}>
+                <button
+                  style={styles.editButton}
+                  onClick={() => router.push(`/admin/pick-drop/create-new`)}
+                >
+                  New Pick & Drop
+                </button>
+              </div>
+              <div style={styles.productCard}>
+                <button
+                  style={styles.editButton}
+                  onClick={() => router.push(`/admin/pick-drop/ongoing`)}
+                >
+                  Ongoing Orders
+                </button>
+              </div>
+              <div style={styles.productCard}>
+                <button
+                  style={styles.editButton}
+                  onClick={() => router.push(`/admin/pick-drop/history`)}
+                >
+                  Orders History
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -48,52 +113,42 @@ export default function Estores() {
     </Admin>
   );
 }
-
 const styles = {
   container: {
-    maxWidth: "1200px",
-    margin: "0 auto",
-    padding: "20px",
-    textAlign: "center",
+    padding: "40px",
+    fontFamily: "'Inter', sans-serif",
+    backgroundColor: "#f8f9fa",
+    minHeight: "100vh",
+    color: "#1f2937",
   },
   heading: {
-    fontSize: "2.5em",
-    marginBottom: "20px",
+    fontSize: "32px",
+    fontWeight: "600",
+    marginBottom: "32px",
+  },
+  sectionContainer: {
+    paddingTop: "32px",
   },
   productGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+    display: "flex",
+    flexWrap: "wrap",
     gap: "20px",
+    marginBottom: "32px",
   },
-
-  image: {
-    width: "100%",
-    height: "auto",
-    borderRadius: "8px",
-  },
-  productName: {
-    fontSize: "1.5em",
-    margin: "10px 0",
-  },
-  productPrice: {
-    fontSize: "1.2em",
-    color: "#e67e22",
-  },
-  productDescription: {
-    fontSize: "0.9em",
-    color: "#7f8c8d",
+  productCard: {
+    // flex: "1 1 240px",
+    backgroundColor: "#ffffff",
+    // padding: "24px",
+    borderRadius: "12px",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.06)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    transition: "transform 0.2s ease, box-shadow 0.2s ease",
   },
   editButton: {
     marginRight: "10px",
     backgroundColor: "#3498db",
-    color: "white",
-    border: "none",
-    padding: "10px 15px",
-    borderRadius: "5px",
-    cursor: "pointer",
-  },
-  deleteButton: {
-    backgroundColor: "#e74c3c",
     color: "white",
     border: "none",
     padding: "10px 15px",

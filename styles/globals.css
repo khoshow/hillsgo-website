@@ -56,6 +56,27 @@ header {
   align-items: center;
 }
 
+p {
+  margin-bottom: 0;
+}
+h1 {
+  font-size: 26px;
+  font-weight: 600;
+  color: #6b6d72;
+  margin-bottom: 16px;
+  letter-spacing: 0.3px;
+  line-height: 1.5;
+  font-family: "Inter", sans-serif;
+}
+h3 {
+  font-size: 22px;
+ font-weight: 600;
+
+  margin-bottom: 16px;
+  letter-spacing: 0.3px;
+  line-height: 1.5;
+  font-family: "Inter", sans-serif;
+}
 img {
   /* width: "100%"; */
   max-width: "70vw";
@@ -70,7 +91,7 @@ td {
   padding-left: 2rem;
 }
 .title {
-  font-size: 1.5rem;
+  /* font-size: 1.5rem; */
   font-weight: bold;
 }
 
@@ -164,10 +185,6 @@ a {
   color: #0056b3;
   text-decoration: underline; /* Optional: Adds an underline */
   font-weight: bold;
-}
-
-p {
-  margin-bottom: 0;
 }
 
 .section {

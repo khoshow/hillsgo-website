@@ -211,7 +211,7 @@ const ProfileEditWorker = () => {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.title}>Edit Driver</h1>
+          <h1 >Edit Driver</h1>
           <form onSubmit={handleEditSubmit} style={styles.form}>
             {error && <p style={styles.error}>{error}</p>}
             {success && <p style={styles.success}>{success}</p>}

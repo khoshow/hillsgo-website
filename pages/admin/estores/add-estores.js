@@ -230,7 +230,7 @@ const AdminAddEstore = () => {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.title}>Add New Estore</h1>
+          <h1 >Add New Estore</h1>
           <form onSubmit={handleSubmit} style={styles.form}>
             {error && <p style={styles.error}>{error}</p>}
             {success && <p style={styles.success}>{success}</p>}
@@ -393,12 +393,7 @@ const styles = {
     backgroundColor: "#f9f9f9",
     fontFamily: "'Arial', sans-serif",
   },
-  title: {
-    fontSize: "24px",
-    marginBottom: "1rem",
-    textAlign: "center",
-    color: "#333",
-  },
+
   form: {
     display: "flex",
     flexDirection: "column",

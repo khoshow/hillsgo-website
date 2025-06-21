@@ -222,7 +222,7 @@ export default function EditProduct() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 style={styles.heading}>Edit Product</h1>
+          <h1>Edit Product</h1>
           <form onSubmit={handleSubmit} style={styles.form}>
             <label style={styles.label}>
               Product Name:
