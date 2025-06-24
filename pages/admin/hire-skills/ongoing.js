@@ -507,7 +507,7 @@ _www.hillsgo.com_
                                 marginTop: "10px",
                               }}
                               onClick={() => {
-                                const phoneNumber = order.receiverPhone; // Ensure it's in the correct format
+                                const phoneNumber = order.phone; // Ensure it's in the correct format
                                 const message = encodeURIComponent(
                                   copyAcknowledgementWhatsapp(order)
                                 );
@@ -573,7 +573,7 @@ _www.hillsgo.com_
                                 marginTop: "10px",
                               }}
                               onClick={() => {
-                                const phoneNumber = order.receiverPhone; // Ensure it's in the correct format
+                                const phoneNumber = order.phone; // Ensure it's in the correct format
                                 const message = encodeURIComponent(
                                   copyTextWhatsapp(order)
                                 );
