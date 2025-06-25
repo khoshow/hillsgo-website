@@ -36,8 +36,14 @@ export default function PickDropOrders() {
   const [deliveryCode, setDeliveryCode] = useState({});
   const [deliveryNote, setDeliveryNote] = useState({});
   const [hillsgoFee, setHillsgoFee] = useState({});
+  const [workerEarning, setWorkerEarning] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [remark, setRemark] = useState("");
+  const [workerName, setWorkerName] = useState("");
+  const [workerContact, setWorkerContact] = useState("");
+  const [localNonLocal, setLocalNonLocal] = useState("");
+  const [workerRating, setWorkerRating] = useState("");
   const [copiedAcknowledgement, setCopiedAcknowledgement] = useState(false);
   const router = useRouter();
   const storage = getStorage();
@@ -212,6 +218,48 @@ _www.hillsgo.com_
     }));
   };
 
+  const handleWorkerEarningChange = (id, value) => {
+    setWorkerEarning((prev) => ({
+      ...prev,
+      [id]: value, // Update only the specific item
+    }));
+  };
+
+  const handleRemarkChange = (id, value) => {
+    setRemark((prev) => ({
+      ...prev,
+      [id]: value, // Update only the specific item
+    }));
+  };
+
+  const handleWorkerNameChange = (id, value) => {
+    setWorkerName((prev) => ({
+      ...prev,
+      [id]: value, // Update only the specific item
+    }));
+  };
+
+  const handleWorkerContactChange = (id, value) => {
+    setWorkerContact((prev) => ({
+      ...prev,
+      [id]: value, // Update only the specific item
+    }));
+  };
+
+  const handleLocalNonLocalChange = (id, value) => {
+    setLocalNonLocal((prev) => ({
+      ...prev,
+      [id]: value, // Update only the specific item
+    }));
+  };
+
+  const handleWorkerRatingChange = (id, value) => {
+    setWorkerRating((prev) => ({
+      ...prev,
+      [id]: value, // Update only the specific item
+    }));
+  };
+
   const handleDeliveryCodeChange = (id, value) => {
     setDeliveryCode((prev) => ({
       ...prev,
@@ -311,6 +359,10 @@ _www.hillsgo.com_
       alert("Enter HillsGO fee to complete");
       return;
     }
+    if (!workerEarning) {
+      alert("Enter Worker earning to complete");
+      return;
+    }
     try {
       const orderRef = doc(db, "hireSkillsOngoing", order.id);
 
@@ -330,6 +382,12 @@ _www.hillsgo.com_
           ...orderData,
           status: "completed",
           fee: hillsgoFee[order.id],
+          workerEarning: workerEarning[order.id],
+          workerName: workerName[order.id],
+          workerContact: workerContact[order.id],
+          localNonLocal: localNonLocal[order.id],
+          remark: remark[order.id],
+          workerRating: workerRating[order.id],
           deliveredAt: serverTimestamp(),
         });
         transaction.delete(orderRef);
@@ -385,6 +443,7 @@ _www.hillsgo.com_
                       <div style={styles.tableWrapper}>
                         <table
                           style={{ width: "100%", borderCollapse: "collapse" }}
+                          className="tableNoSpace"
                         >
                           <tbody>
                             {/* Order Details */}
@@ -668,9 +727,9 @@ _www.hillsgo.com_
                                   margin: "12px",
                                 }}
                               >
-                                <p style={{ margin: 0, whiteSpace: "nowrap" }}>
+                                {/* <p style={{ margin: 0, whiteSpace: "nowrap" }}>
                                   Enter HillsGO earning
-                                </p>
+                                </p> */}
                                 <input
                                   style={{
                                     border: "1px solid #ccc",
@@ -679,7 +738,7 @@ _www.hillsgo.com_
                                     width: "100%", // You can also use fixed width like '150px'
                                   }}
                                   type="number"
-                                  placeholder="Add a fee"
+                                  placeholder="Enter HillsGO fee"
                                   required
                                   value={hillsgoFee[order.id] || ""}
                                   onChange={(e) =>
@@ -690,7 +749,182 @@ _www.hillsgo.com_
                                   }
                                 />
                               </div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "12px",
+                                  margin: "12px",
+                                }}
+                              >
+                                {/* <p style={{ margin: 0, whiteSpace: "nowrap" }}>
+                                  Enter Worker earning
+                                </p> */}
+                                <input
+                                  style={{
+                                    border: "1px solid #ccc",
+                                    borderRadius: "10px",
+                                    padding: "12px",
+                                    width: "100%", // You can also use fixed width like '150px'
+                                  }}
+                                  type="number"
+                                  placeholder="Enter worker earning"
+                                  required
+                                  value={workerEarning[order.id] || ""}
+                                  onChange={(e) =>
+                                    handleWorkerEarningChange(
+                                      order.id,
+                                      Number(e.target.value)
+                                    )
+                                  }
+                                />
+                              </div>
 
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "12px",
+                                  margin: "12px",
+                                }}
+                              >
+                                {/* <p style={{ margin: 0, whiteSpace: "nowrap" }}>
+                                  Name of the Worker
+                                </p> */}
+                                <input
+                                  style={{
+                                    border: "1px solid #ccc",
+                                    borderRadius: "10px",
+                                    padding: "12px",
+                                    width: "100%", // You can also use fixed width like '150px'
+                                  }}
+                                  placeholder="Worker Name"
+                                  value={workerName[order.id] || ""}
+                                  onChange={(e) =>
+                                    handleWorkerNameChange(
+                                      order.id,
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </div>
+
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "12px",
+                                  margin: "12px",
+                                }}
+                              >
+                                {/* <p style={{ margin: 0, whiteSpace: "nowrap" }}>
+                                  Worker Contact
+                                </p> */}
+                                <input
+                                  style={{
+                                    border: "1px solid #ccc",
+                                    borderRadius: "10px",
+                                    padding: "12px",
+                                    width: "100%", // You can also use fixed width like '150px'
+                                  }}
+                                  type="tel"
+                                  placeholder="Worker Contact"
+                                  value={workerContact[order.id] || ""}
+                                  onChange={(e) =>
+                                    handleWorkerContactChange(
+                                      order.id,
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "12px",
+                                  margin: "12px",
+                                }}
+                              >
+                                <select
+                                  style={{
+                                    border: "1px solid #ccc",
+                                    borderRadius: "10px",
+                                    padding: "12px",
+                                    width: "100%",
+                                  }}
+                                  value={localNonLocal[order.id] || ""}
+                                  onChange={(e) =>
+                                    handleLocalNonLocalChange(
+                                      order.id,
+                                      e.target.value
+                                    )
+                                  }
+                                >
+                                  <option value="" disabled>
+                                    Select One
+                                  </option>
+                                  <option value="Local">Local</option>
+                                  <option value="Non Local">Non Local</option>
+                                  <option value="Mix">Mix</option>
+                                </select>
+                              </div>
+
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "12px",
+                                  margin: "12px",
+                                }}
+                              >
+                                {/* <p style={{ margin: 0, whiteSpace: "nowrap" }}>
+                                  Add remark if any
+                                </p> */}
+                                <textarea
+                                  style={{
+                                    border: "1px solid #ccc",
+                                    borderRadius: "10px",
+                                    padding: "12px",
+                                    width: "100%", // You can also use fixed width like '150px'
+                                  }}
+                                  placeholder="Remark"
+                                  value={remark[order.id] || ""}
+                                  onChange={(e) =>
+                                    handleRemarkChange(order.id, e.target.value)
+                                  }
+                                />
+                              </div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "12px",
+                                  margin: "12px",
+                                }}
+                              >
+                                <p style={{ margin: 0, whiteSpace: "nowrap" }}>
+                                  Rating:
+                                </p>
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                  <span
+                                    key={star}
+                                    style={{
+                                      fontSize: "24px",
+                                      cursor: "pointer",
+                                      color:
+                                        workerRating[order.id] >= star
+                                          ? "#ffc107"
+                                          : "#ccc",
+                                    }}
+                                    onClick={() =>
+                                      handleWorkerRatingChange(order.id, star)
+                                    }
+                                  >
+                                    ★
+                                  </span>
+                                ))}
+                              </div>
                               <button
                                 style={{
                                   padding: "8px 15px",
@@ -793,7 +1027,7 @@ const styles = {
   },
   th: {
     textAlign: "left",
-    padding: "10px",
+    // padding: "10px",
     backgroundColor: "#f4f4f4",
     border: "1px solid #ddd",
   },

@@ -70,12 +70,18 @@ h1 {
 }
 h3 {
   font-size: 22px;
- font-weight: 600;
+  font-weight: 600;
 
   margin-bottom: 16px;
   letter-spacing: 0.3px;
   line-height: 1.5;
   font-family: "Inter", sans-serif;
+}
+.tableNoSpace th {
+  padding: 0 !important;
+}
+.tableNoSpace td {
+  padding: 0 !important;
 }
 img {
   /* width: "100%"; */
