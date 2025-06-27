@@ -48,7 +48,7 @@ export default function PickDropOrders() {
     try {
       const ordersQuery = query(
         collection(db, "pickDropHistory"),
-        orderBy("createdAt", "desc")
+        orderBy("deliveredAt", "desc")
         // where("driverId", "==", user.uid) // Fetch products created by the logged-in user
       );
 
@@ -250,7 +250,7 @@ export default function PickDropOrders() {
         <Header />
         <div className="container">
           <div style={styles.container}>
-            <h1 >Orders History</h1>
+            <h1>Pick & Drop Orders History</h1>
             <div style={styles.productGrid}>
               {orders.length > 0 ? (
                 orders.map((order, index) =>
@@ -274,6 +274,10 @@ export default function PickDropOrders() {
                             <tr>
                               <th style={styles.label}>Order ID:</th>
                               <td style={styles.value}>{order.id}</td>
+                              <th style={styles.label}>Order ID:</th>
+                              <td style={styles.value}>{order.orderId}</td>
+                            </tr>
+                            <tr>
                               <th style={styles.label}>Status:</th>
                               <td style={styles.value}>{order.status}</td>
                             </tr>
@@ -345,6 +349,25 @@ export default function PickDropOrders() {
                               <td style={styles.value}>{order.itemWeight}</td>
                               <th></th>
                               <td></td>
+                            </tr>
+
+                            <tr>
+                              <th colSpan="4" style={styles.sectionHeader}>
+                                Charges
+                              </th>
+                            </tr>
+
+                            <tr>
+                              <th style={styles.label}>Delivery Fee:</th>
+                              <td style={styles.value}>₹{order.deliveryFee}</td>
+                              <th style={styles.label}>
+                                Tip/Extra Charges (If Any):
+                              </th>
+                              <td style={styles.value}>₹{order.tip}</td>
+                            </tr>
+                            <tr>
+                              <th style={styles.label}>Total:</th>
+                              <td style={styles.value}>₹{order.totalFee}</td>
                             </tr>
                           </tbody>
                         </table>

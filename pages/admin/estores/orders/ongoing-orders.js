@@ -354,7 +354,6 @@ _www.hillsgo.com_
     }
 
     const newStatus = deliveryNote[order.orderId];
-    console.log("status", newStatus);
 
     try {
       const orderRef = doc(db, "orders", order.id);

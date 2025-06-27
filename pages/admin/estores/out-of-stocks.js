@@ -98,8 +98,6 @@ export default function MyProducts() {
     );
     if (!confirmed) return;
     try {
-      console.log("Re-stocking:", productId);
-
       // Step 1: Get the product document
       const productRef = doc(db, "outOfStockProductsEstores", productId);
       const productSnap = await getDoc(productRef);
@@ -140,7 +138,7 @@ export default function MyProducts() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 >My Products</h1>
+          <h1>My Products</h1>
           <div style={styles.productGrid}>
             {products.length > 0 ? (
               products.map((product) => (

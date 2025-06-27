@@ -37,8 +37,9 @@ export default function PickDropOrders() {
   const [deliveryNote, setDeliveryNote] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const [copiedAcknowledgement, setCopiedAcknowledgement] = useState(false);
-
+  const [completingOrder, setCompletingOrder] = useState(false);
   const [tipAmount, setTipAmount] = useState({});
   const [deliveryCharge, setDeliveryCharge] = useState({});
   const router = useRouter();
@@ -76,8 +77,6 @@ export default function PickDropOrders() {
   }, [user, router]);
 
   const copyAcknowledgementText = (order) => {
-    console.log("order", order);
-
     const copyItem = () => {
       return `
 
@@ -105,8 +104,6 @@ _www.hillsgo.com_
   };
 
   const copyAcknowledgementWhatsapp = (order) => {
-    console.log("order", order);
-
     return `
 *Dear ${order.receiverName},*
 
@@ -127,8 +124,6 @@ _www.hillsgo.com_
   };
 
   const copyThankYouText = (order) => {
-    console.log("order", order);
-
     const copyItem = () => {
       return `
 
@@ -156,8 +151,6 @@ _www.hillsgo.com_
   };
 
   const copyTextWhatsapp = (order) => {
-    console.log("order", order);
-
     return `
 *Dear ${order.receiverName},*
 
@@ -333,6 +326,7 @@ _www.hillsgo.com_
   };
 
   const completeOrder = async (order) => {
+    setCompletingOrder(true);
     if (!order?.id) {
       alert("Invalid order ID");
       return;
@@ -381,6 +375,8 @@ _www.hillsgo.com_
     } catch (error) {
       console.error("Error updating order status:", error);
       alert("Failed to update order status. Please try again.");
+    } finally {
+      setCompletingOrder(false);
     }
   };
 
@@ -407,7 +403,7 @@ _www.hillsgo.com_
         <Header />
         <div className="container">
           <div style={styles.container}>
-            <h1>Current Orders</h1>
+            <h1>Pick & Drop Ongoing Orders</h1>
             <div style={styles.productGrid}>
               {orders.length > 0 ? (
                 orders.map((order, index) =>
@@ -425,12 +421,18 @@ _www.hillsgo.com_
                       <div style={styles.tableWrapper}>
                         <table
                           style={{ width: "100%", borderCollapse: "collapse" }}
+                          className="tableNoSpace"
                         >
                           <tbody>
                             {/* Order Details */}
                             <tr>
-                              <th style={styles.label}>Order ID:</th>
+                              <th style={styles.label}>Request ID:</th>
                               <td style={styles.value}>{order.id}</td>
+
+                              <th style={styles.label}>Order ID:</th>
+                              <td style={styles.value}>{order.orderId}</td>
+                            </tr>
+                            <tr>
                               <th style={styles.label}>Status:</th>
                               <td style={styles.value}>{order.status}</td>
                             </tr>
@@ -553,124 +555,6 @@ _www.hillsgo.com_
                         </div>
 
                         {/* Complete Delivery */}
-
-                        {showModal && (
-                          <div
-                            style={{
-                              position: "fixed",
-                              top: "0",
-                              left: "0",
-                              width: "100%",
-                              height: "100%",
-                              backgroundColor: "rgba(0, 0, 0, 0.5)",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                          >
-                            <div
-                              style={{
-                                backgroundColor: "white",
-                                padding: "20px",
-                                borderRadius: "10px",
-                                textAlign: "center",
-                              }}
-                            >
-                              <p>
-                                Are you sure you want to complete this delivery?
-                              </p>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "12px",
-                                  margin: "12px",
-                                }}
-                              >
-                                <p style={{ margin: 0, whiteSpace: "nowrap" }}>
-                                  Enter Delivery Fee
-                                </p>
-                                <input
-                                  style={{
-                                    border: "1px solid #ccc",
-                                    borderRadius: "10px",
-                                    padding: "12px",
-                                    width: "100%", // You can also use fixed width like '150px'
-                                  }}
-                                  type="number"
-                                  placeholder=""
-                                  required
-                                  value={deliveryCharge[order.id] || ""}
-                                  onChange={(e) =>
-                                    handleDeliveryChargeChange(
-                                      order.id,
-                                      Number(e.target.value)
-                                    )
-                                  }
-                                />
-                              </div>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "12px",
-                                  margin: "12px",
-                                }}
-                              >
-                                <p style={{ margin: 0, whiteSpace: "nowrap" }}>
-                                  Enter tip amount if any
-                                </p>
-                                <input
-                                  style={{
-                                    border: "1px solid #ccc",
-                                    borderRadius: "10px",
-                                    padding: "12px",
-                                    width: "100%", // You can also use fixed width like '150px'
-                                  }}
-                                  type="number"
-                                  placeholder=""
-                                  required
-                                  value={tipAmount[order.id] || ""}
-                                  onChange={(e) =>
-                                    handleTipChange(
-                                      order.id,
-                                      Number(e.target.value)
-                                    )
-                                  }
-                                />
-                              </div>
-                              <button
-                                style={{
-                                  padding: "8px 15px",
-                                  backgroundColor: "red",
-                                  color: "white",
-                                  border: "none",
-                                  borderRadius: "5px",
-                                  cursor: "pointer",
-                                }}
-                                onClick={() => setShowModal(false)}
-                              >
-                                Cancel
-                              </button>
-                              <button
-                                style={{
-                                  marginLeft: "10px",
-                                  padding: "8px 15px",
-                                  backgroundColor: "green",
-                                  color: "white",
-                                  border: "none",
-                                  borderRadius: "5px",
-                                  cursor: "pointer",
-                                }}
-                                onClick={() =>
-                                  completeOrder(order, deliveryCode)
-                                }
-                              >
-                                Yes, Confirm
-                              </button>
-                            </div>
-                          </div>
-                        )}
 
                         <div className="d-flex">
                           <div>
@@ -812,11 +696,135 @@ _www.hillsgo.com_
                         <div style={styles.actionRow}>
                           <button
                             style={styles.completeButton}
-                            onClick={() => setShowModal(true)}
+                            onClick={() => {
+                              setShowModal(true);
+                              setSelectedOrder(order);
+                            }}
                           >
                             Complete Delivery
                           </button>
                         </div>
+                        {showModal && (
+                          <div
+                            style={{
+                              position: "fixed",
+                              top: "0",
+                              left: "0",
+                              width: "100%",
+                              height: "100%",
+                              backgroundColor: "rgba(0, 0, 0, 0.5)",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            <div
+                              style={{
+                                backgroundColor: "white",
+                                padding: "20px",
+                                borderRadius: "10px",
+                                textAlign: "center",
+                              }}
+                            >
+                              <p>
+                                Are you sure you want to complete this delivery?
+                              </p>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "12px",
+                                  margin: "12px",
+                                }}
+                              >
+                                <p style={{ margin: 0, whiteSpace: "nowrap" }}>
+                                  Enter Delivery Fee
+                                </p>
+                                <input
+                                  style={{
+                                    border: "1px solid #ccc",
+                                    borderRadius: "10px",
+                                    padding: "12px",
+                                    width: "100%", // You can also use fixed width like '150px'
+                                  }}
+                                  type="number"
+                                  placeholder=""
+                                  required
+                                  value={
+                                    deliveryCharge[selectedOrder?.id] || ""
+                                  }
+                                  onChange={(e) =>
+                                    handleDeliveryChargeChange(
+                                      selectedOrder?.id,
+                                      Number(e.target.value)
+                                    )
+                                  }
+                                />
+                              </div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "12px",
+                                  margin: "12px",
+                                }}
+                              >
+                                <p style={{ margin: 0, whiteSpace: "nowrap" }}>
+                                  Enter tip amount if any
+                                </p>
+                                <input
+                                  style={{
+                                    border: "1px solid #ccc",
+                                    borderRadius: "10px",
+                                    padding: "12px",
+                                    width: "100%", // You can also use fixed width like '150px'
+                                  }}
+                                  type="number"
+                                  placeholder=""
+                                  required
+                                  value={tipAmount[selectedOrder?.id] || ""}
+                                  onChange={(e) =>
+                                    handleTipChange(
+                                      selectedOrder?.id,
+                                      Number(e.target.value)
+                                    )
+                                  }
+                                />
+                              </div>
+                              <button
+                                style={{
+                                  padding: "8px 15px",
+                                  backgroundColor: "red",
+                                  color: "white",
+                                  border: "none",
+                                  borderRadius: "5px",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() => setShowModal(false)}
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                style={{
+                                  marginLeft: "10px",
+                                  padding: "8px 15px",
+                                  backgroundColor: "green",
+                                  color: "white",
+                                  border: "none",
+                                  borderRadius: "5px",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() =>
+                                  completeOrder(selectedOrder, deliveryCode)
+                                }
+                              >
+                                {completingOrder
+                                  ? "Loading..."
+                                  : "Yes, Confirm"}
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ) : (

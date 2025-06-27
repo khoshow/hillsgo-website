@@ -103,7 +103,6 @@ export default function PickDropOrders() {
     const date = new Date(milliseconds);
     return date.toISOString(), date.toLocaleString("en-US", options);
   };
-  console.log("order", orders);
 
   return (
     <Admin>
@@ -148,6 +147,10 @@ export default function PickDropOrders() {
                             <tr>
                               <th style={styles.label}>Request ID:</th>
                               <td style={styles.value}>{order.id}</td>
+                              <th style={styles.label}>Order ID:</th>
+                              <td style={styles.value}>{order.orderId}</td>
+                            </tr>
+                            <tr>
                               <th style={styles.label}>Status:</th>
                               <td style={styles.value}>{order.status}</td>
                             </tr>

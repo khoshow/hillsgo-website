@@ -46,6 +46,7 @@ export default function PickDropOrders() {
   const [workerRating, setWorkerRating] = useState("");
   const [copiedAcknowledgement, setCopiedAcknowledgement] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [completingOrder, setCompletingOrder] = useState(false);
   const router = useRouter();
   const storage = getStorage();
 
@@ -344,15 +345,16 @@ _www.hillsgo.com_
   };
 
   const completeOrder = async (order) => {
+    setCompletingOrder(true);
     if (!order?.id) {
       alert("Invalid order ID");
       return;
     }
-    if (!hillsgoFee) {
+    if (!hillsgoFee[order.id]) {
       alert("Enter HillsGO fee to complete");
       return;
     }
-    if (!workerEarning) {
+    if (!workerEarning[order.id]) {
       alert("Enter Worker earning to complete");
       return;
     }
@@ -393,6 +395,8 @@ _www.hillsgo.com_
     } catch (error) {
       console.error("Error updating order status:", error);
       alert("Failed to update order status. Please try again.");
+    } finally {
+      setCompletingOrder(false);
     }
   };
 
@@ -419,7 +423,7 @@ _www.hillsgo.com_
         <Header />
         <div className="container">
           <div style={styles.container}>
-            <h1>Hire Skills Requests</h1>
+            <h1>Hire Skills Ongoing Requests</h1>
             <div style={styles.productGrid}>
               {orders.length > 0 ? (
                 orders.map((order, index) =>
@@ -444,14 +448,16 @@ _www.hillsgo.com_
                             <tr>
                               <th style={styles.label}>Request ID:</th>
                               <td style={styles.value}>{order.id}</td>
-                              <th style={styles.label}>Status:</th>
-                              <td style={styles.value}>{order.status}</td>
+                              <th style={styles.label}>Order ID:</th>
+                              <td style={styles.value}>{order.orderId}</td>
                             </tr>
                             <tr>
                               <th style={styles.label}>Ordered Date:</th>
                               <td style={styles.value}>
                                 {outputDateTime(order.createdAt)}
                               </td>
+                              <th style={styles.label}>Status:</th>
+                              <td style={styles.value}>{order.status}</td>
                             </tr>
 
                             {/* Sender Details */}
@@ -713,9 +719,6 @@ _www.hillsgo.com_
                                 textAlign: "center",
                               }}
                             >
-                              <p>
-                                Are you sure you want to complete this delivery?
-                              </p>
                               <div
                                 style={{
                                   display: "flex",
@@ -863,7 +866,7 @@ _www.hillsgo.com_
                                   </option>
                                   <option value="Local">Local</option>
                                   <option value="Non Local">Non Local</option>
-                                  <option value="Mix">Mix</option>
+                                  <option value="Others">Others</option>
                                 </select>
                               </div>
 
@@ -901,10 +904,12 @@ _www.hillsgo.com_
                                   alignItems: "center",
                                   gap: "12px",
                                   margin: "12px",
+                                  padding: "12px",
+                                  border: "1px solid #ccc",
                                 }}
                               >
                                 <p style={{ margin: 0, whiteSpace: "nowrap" }}>
-                                  Rating: {selectedOrder?.id}
+                                  Rating:
                                 </p>
                                 {[1, 2, 3, 4, 5].map((star) => (
                                   <span
@@ -928,6 +933,21 @@ _www.hillsgo.com_
                                   </span>
                                 ))}
                               </div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "12px",
+                                  margin: "12px",
+                                  padding: "12px",
+                                  // border: "1px solid #ccc",
+                                }}
+                              >
+                                <p>
+                                  Are you sure you want to close this project?
+                                </p>
+                              </div>
+
                               <button
                                 style={{
                                   padding: "8px 15px",
@@ -953,7 +973,9 @@ _www.hillsgo.com_
                                 }}
                                 onClick={() => completeOrder(selectedOrder)}
                               >
-                                Yes, Confirm
+                                {completingOrder
+                                  ? "Loading..."
+                                  : " Yes, Confirm"}
                               </button>
                             </div>
                           </div>

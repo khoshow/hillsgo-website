@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
 import { db } from "../../../firebase/firebase";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, updateDoc } from "firebase/firestore";
 
 import AdminLayout from "@/components/layout/AdminLayout";
 import Admin from "@/components/auth/Admin";
@@ -106,8 +106,9 @@ const WorkerAppointmentForm = () => {
     };
 
     try {
-      await addDoc(collection(db, "hireSkillsOngoing"), {
+      const newOrderRef = await addDoc(collection(db, "hireSkillsOngoing"), {
         userId: isSignedIn ? userId : "",
+        orderId: null,
         name,
         phone,
         date: formatDate(selectedDate),
@@ -118,6 +119,8 @@ const WorkerAppointmentForm = () => {
         adminEmail: user.email,
         createdAt: new Date(),
       });
+      const orderId = `SKILL-${newOrderRef.id.slice(0, 8).toUpperCase()}`;
+      await updateDoc(newOrderRef, { orderId });
       await sendWorkerAppointmentEmail(userData, skills);
       window.alert(
         "Success!",

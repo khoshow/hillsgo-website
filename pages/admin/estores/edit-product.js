@@ -66,8 +66,6 @@ export default function EditProduct() {
     fetchProduct();
   }, [user, id]);
 
-  console.log("producr", productData);
-
   // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;

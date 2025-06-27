@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
 import { db } from "../../../firebase/firebase";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, updateDoc } from "firebase/firestore";
 
 import AdminLayout from "@/components/layout/AdminLayout";
 import Admin from "@/components/auth/Admin";
@@ -96,8 +96,9 @@ const PickDropRequestForm = () => {
     };
 
     try {
-      await addDoc(collection(db, "pickDropOngoing"), {
+      const newOrderRef = await addDoc(collection(db, "pickDropOngoing"), {
         userId: isSignedIn ? userId : "",
+        orderId: null,
         senderName,
         senderPhone,
         senderLocation,
@@ -112,6 +113,9 @@ const PickDropRequestForm = () => {
         adminEmail: user.email,
         createdAt: new Date(),
       });
+
+      const orderId = `PD-${newOrderRef.id.slice(0, 8).toUpperCase()}`;
+      await updateDoc(newOrderRef, { orderId });
       await sendPickDropRequestEmail(userData, pickDrop);
       window.alert(
         "Success!",
@@ -187,7 +191,7 @@ const PickDropRequestForm = () => {
           {/* Gradient Banner */}
           <div colors={["#8360c3", "#2ebf91"]}>
             {/* <p style={styles.title}>Hire Skills</p> */}
-            
+
             {/* <Lottiediv
           source={require("../../assets/animations/pickdrop.json")}
           autoPlay
@@ -199,11 +203,10 @@ const PickDropRequestForm = () => {
           {/* Lottie Animation */}
 
           <div className="container">
-           
             {/* Section 1: Personal Details */}
             {currentIndex === 0 && (
               <div className="section">
-                 <h1 >New Pick & Drop</h1>
+                <h1>New Pick & Drop</h1>
                 <p style={styles.label}>From whom should we pick?</p>
                 <input
                   style={styles.input}
