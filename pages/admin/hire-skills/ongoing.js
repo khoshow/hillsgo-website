@@ -45,6 +45,7 @@ export default function PickDropOrders() {
   const [localNonLocal, setLocalNonLocal] = useState("");
   const [workerRating, setWorkerRating] = useState("");
   const [copiedAcknowledgement, setCopiedAcknowledgement] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const router = useRouter();
   const storage = getStorage();
 
@@ -90,8 +91,6 @@ export default function PickDropOrders() {
     );
 
   const copyAcknowledgementText = (order) => {
-    console.log("order", order);
-
     const copyItem = () => {
       return `
 
@@ -122,8 +121,6 @@ _www.hillsgo.com_
   };
 
   const copyAcknowledgementWhatsapp = (order) => {
-    console.log("order", order);
-
     return `
 
 *Dear ${order.name},*
@@ -148,8 +145,6 @@ _www.hillsgo.com_
   };
 
   const copyThankYouText = (order) => {
-    console.log("order", order);
-
     const copyItem = () => {
       return `
 *Dear ${order.name},*
@@ -177,8 +172,6 @@ _www.hillsgo.com_
   };
 
   const copyTextWhatsapp = (order) => {
-    console.log("order", order);
-
     return `
 
 *Dear ${order.name},*
@@ -365,6 +358,7 @@ _www.hillsgo.com_
     }
     try {
       const orderRef = doc(db, "hireSkillsOngoing", order.id);
+      // console.log("Order id", order.id);
 
       // Get the current order data
       const orderSnapshot = await getDoc(orderRef);
@@ -688,7 +682,10 @@ _www.hillsgo.com_
                         <div style={styles.actionRow}>
                           <button
                             style={styles.completeButton}
-                            onClick={() => setShowModal(true)}
+                            onClick={() => {
+                              setSelectedOrder(order);
+                              setShowModal(true);
+                            }}
                           >
                             Complete Order
                           </button>
@@ -740,10 +737,10 @@ _www.hillsgo.com_
                                   type="number"
                                   placeholder="Enter HillsGO fee"
                                   required
-                                  value={hillsgoFee[order.id] || ""}
+                                  value={hillsgoFee[selectedOrder?.id] || ""}
                                   onChange={(e) =>
                                     handleHillsgoFeeChange(
-                                      order.id,
+                                      selectedOrder?.id,
                                       Number(e.target.value)
                                     )
                                   }
@@ -770,10 +767,10 @@ _www.hillsgo.com_
                                   type="number"
                                   placeholder="Enter worker earning"
                                   required
-                                  value={workerEarning[order.id] || ""}
+                                  value={workerEarning[selectedOrder?.id] || ""}
                                   onChange={(e) =>
                                     handleWorkerEarningChange(
-                                      order.id,
+                                      selectedOrder?.id,
                                       Number(e.target.value)
                                     )
                                   }
@@ -799,10 +796,10 @@ _www.hillsgo.com_
                                     width: "100%", // You can also use fixed width like '150px'
                                   }}
                                   placeholder="Worker Name"
-                                  value={workerName[order.id] || ""}
+                                  value={workerName[selectedOrder?.id] || ""}
                                   onChange={(e) =>
                                     handleWorkerNameChange(
-                                      order.id,
+                                      selectedOrder?.id,
                                       e.target.value
                                     )
                                   }
@@ -829,10 +826,10 @@ _www.hillsgo.com_
                                   }}
                                   type="tel"
                                   placeholder="Worker Contact"
-                                  value={workerContact[order.id] || ""}
+                                  value={workerContact[selectedOrder?.id] || ""}
                                   onChange={(e) =>
                                     handleWorkerContactChange(
-                                      order.id,
+                                      selectedOrder?.id,
                                       e.target.value
                                     )
                                   }
@@ -853,10 +850,10 @@ _www.hillsgo.com_
                                     padding: "12px",
                                     width: "100%",
                                   }}
-                                  value={localNonLocal[order.id] || ""}
+                                  value={localNonLocal[selectedOrder?.id] || ""}
                                   onChange={(e) =>
                                     handleLocalNonLocalChange(
-                                      order.id,
+                                      selectedOrder?.id,
                                       e.target.value
                                     )
                                   }
@@ -889,9 +886,12 @@ _www.hillsgo.com_
                                     width: "100%", // You can also use fixed width like '150px'
                                   }}
                                   placeholder="Remark"
-                                  value={remark[order.id] || ""}
+                                  value={remark[selectedOrder?.id] || ""}
                                   onChange={(e) =>
-                                    handleRemarkChange(order.id, e.target.value)
+                                    handleRemarkChange(
+                                      selectedOrder?.id,
+                                      e.target.value
+                                    )
                                   }
                                 />
                               </div>
@@ -904,7 +904,7 @@ _www.hillsgo.com_
                                 }}
                               >
                                 <p style={{ margin: 0, whiteSpace: "nowrap" }}>
-                                  Rating:
+                                  Rating: {selectedOrder?.id}
                                 </p>
                                 {[1, 2, 3, 4, 5].map((star) => (
                                   <span
@@ -913,12 +913,15 @@ _www.hillsgo.com_
                                       fontSize: "24px",
                                       cursor: "pointer",
                                       color:
-                                        workerRating[order.id] >= star
+                                        workerRating[selectedOrder?.id] >= star
                                           ? "#ffc107"
                                           : "#ccc",
                                     }}
                                     onClick={() =>
-                                      handleWorkerRatingChange(order.id, star)
+                                      handleWorkerRatingChange(
+                                        selectedOrder?.id,
+                                        star
+                                      )
                                     }
                                   >
                                     ★
@@ -948,9 +951,7 @@ _www.hillsgo.com_
                                   borderRadius: "5px",
                                   cursor: "pointer",
                                 }}
-                                onClick={() =>
-                                  completeOrder(order, deliveryCode)
-                                }
+                                onClick={() => completeOrder(selectedOrder)}
                               >
                                 Yes, Confirm
                               </button>
