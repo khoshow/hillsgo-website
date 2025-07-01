@@ -641,6 +641,8 @@ _www.hillsgo.com_
                               }}
                               onClick={() => {
                                 const phoneNumber = order.receiverPhone; // Ensure it's in the correct format
+                                console.log("Phioen Number", phoneNumber);
+
                                 const message = encodeURIComponent(
                                   copyTextWhatsapp(order)
                                 );
