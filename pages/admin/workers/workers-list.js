@@ -33,6 +33,7 @@ export default function HireSkills() {
   const { user, loading: userLoading } = useUser(); // Access the user context
   const [workers, setWorkers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [thumbnailCreatingId, setThumbnailCreatingId] = useState(null);
   const router = useRouter();
   const storage = getStorage();
 
@@ -73,6 +74,7 @@ export default function HireSkills() {
   };
 
   const handleCreateThumbnail = async (workerId) => {
+    setThumbnailCreatingId(workerId);
     try {
       const res = await fetch(api, {
         method: "POST",
@@ -90,6 +92,7 @@ export default function HireSkills() {
     } catch (err) {
       console.error(err);
       alert("Thumbnail creation failed: " + err.message);
+      setThumbnailCreatingId(null);
     }
   };
 
@@ -148,8 +151,11 @@ export default function HireSkills() {
                       <button
                         style={styles.editButton}
                         onClick={() => handleCreateThumbnail(worker.id)}
+                        disabled={thumbnailCreatingId === worker.id}
                       >
-                        Create Thumbnail
+                        {thumbnailCreatingId === worker.id
+                          ? "Creating..."
+                          : "Create Thumbnail"}
                       </button>
                     )}
                   </div>

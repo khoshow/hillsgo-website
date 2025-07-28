@@ -33,6 +33,7 @@ export default function MyEstores() {
   const { user, loading: userLoading } = useUser(); // Access the user context
   const [estores, setEstores] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [thumbnailCreatingId, setThumbnailCreatingId] = useState(null);
   const router = useRouter();
   const storage = getStorage();
 
@@ -72,6 +73,7 @@ export default function MyEstores() {
     alert("Thumbnail Present");
   };
   const handleCreateThumbnail = async (estoreId) => {
+    setThumbnailCreatingId(estoreId);
     try {
       const res = await fetch(api, {
         method: "POST",
@@ -89,6 +91,7 @@ export default function MyEstores() {
     } catch (err) {
       console.error(err);
       alert("Thumbnail creation failed: " + err.message);
+      setThumbnailCreatingId(null);
     }
   };
 
@@ -157,8 +160,11 @@ export default function MyEstores() {
                       <button
                         style={styles.editButton}
                         onClick={() => handleCreateThumbnail(estore.id)}
+                        disabled={thumbnailCreatingId === estore.id}
                       >
-                        Create Thumbnail
+                        {thumbnailCreatingId === estore.id
+                          ? "Creating..."
+                          : "Create Thumbnail"}
                       </button>
                     )}
                   </div>

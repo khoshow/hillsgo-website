@@ -36,6 +36,8 @@ export default function MyProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [thumbnailCreatingId, setThumbnailCreatingId] = useState(null);
+
   const router = useRouter();
   const { id, ownerId } = router.query;
   const storage = getStorage();
@@ -140,6 +142,7 @@ export default function MyProducts() {
   };
 
   const handleCreateThumbnail = async (productId) => {
+    setThumbnailCreatingId(productId);
     try {
       const res = await fetch(api, {
         method: "POST",
@@ -157,6 +160,7 @@ export default function MyProducts() {
     } catch (err) {
       console.error(err);
       alert("Thumbnail creation failed: " + err.message);
+      setThumbnailCreatingId(null);
     }
   };
 
@@ -243,8 +247,11 @@ export default function MyProducts() {
                       <button
                         style={styles.editButton}
                         onClick={() => handleCreateThumbnail(product.id)}
+                        disabled={thumbnailCreatingId === product.id}
                       >
-                        Create Thumbnail
+                        {thumbnailCreatingId === product.id
+                          ? "Creating..."
+                          : "Create Thumbnail"}
                       </button>
                     )}
 
