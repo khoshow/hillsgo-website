@@ -24,7 +24,7 @@ export default function Estores() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 >Estores Management</h1>
+          <h1>Estores Management</h1>
           <div style={styles.productGrid}>
             <div style={styles.productCard}>
               <button
@@ -49,6 +49,14 @@ export default function Estores() {
                 onClick={() => router.push(`/admin/estores/out-of-stocks`)}
               >
                 Out of Stocks
+              </button>
+            </div>
+            <div style={styles.productCard}>
+              <button
+                style={styles.editButton}
+                onClick={() => router.push(`/admin/estores/products`)}
+              >
+                Products
               </button>
             </div>
           </div>

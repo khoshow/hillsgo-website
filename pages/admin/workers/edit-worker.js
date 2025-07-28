@@ -175,7 +175,8 @@ const ProfileEditWorker = () => {
         console.log("No document found for this workerId.");
       }
     } catch (error) {
-      console.error("Error updating e-store:", error);
+      alert("Error updating worker:", error);
+      console.error("Error updating worker:", error);
     }
 
     try {
@@ -353,7 +354,7 @@ const ProfileEditWorker = () => {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 >Edit Worker</h1>
+          <h1>Edit Worker</h1>
           <form onSubmit={handleEditSubmit} style={styles.form}>
             {error && <p style={styles.error}>{error}</p>}
             {success && <p style={styles.success}>{success}</p>}

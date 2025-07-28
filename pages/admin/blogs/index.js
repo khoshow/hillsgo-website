@@ -14,8 +14,8 @@ import AdminLayout from "@/components/layout/AdminLayout"; // Assuming you have 
 import Admin from "@/components/auth/Admin";
 
 export default function Estores() {
-  const { user, loading: userLoading } = useUser(); // Access the user context
 
+  const { user, loading: userLoading } = useUser(); // Access the user context
   const router = useRouter();
   const storage = getStorage();
 
