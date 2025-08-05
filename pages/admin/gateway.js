@@ -24,9 +24,9 @@ export default function Login() {
     "afinerblue@gmail.com",
     "creativekalo1@gmail.com",
     "contact@hillsgo.com",
-    "amariineemail@gmail.com",
+  "nai905558@gmail.com"
     "pangbilahabent@gmail.com",
-    "alicekadete02@gmail.com",
+   
   ];
 
   const handleAdminLogin = async (e) => {
