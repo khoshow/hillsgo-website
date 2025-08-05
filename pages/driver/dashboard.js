@@ -1,7 +1,7 @@
 import Head from "next/head";
 import styles from "../../styles/Home.module.css";
 import Header from "../../components/Header";
-import Lottie from "lottie-react";
+
 import run_scooty from "../../public/assets/animations/run_scooty.json";
 import Driver from "@/components/auth/Driver";
 import DriverLayout from "@/components/layout/DriverLayout";
