@@ -12,11 +12,8 @@ const Admin = ({ children }) => {
     "afinerblue@gmail.com",
     "contact@hillsgo.com",
     "admin@hillsgo.com",
-    "amariineemail@gmail.com",
+    "nai905558@gmail.com",
     "pangbilahabent@gmail.com",
-    "alicekadete02@gmail.com"
-
-
   ];
 
   useEffect(() => {
