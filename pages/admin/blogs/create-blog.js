@@ -14,6 +14,7 @@ const BlogEditor = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
+  const [slug, setSlug] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,11 +24,13 @@ const BlogEditor = () => {
     try {
       await addDoc(collection(db, "blogs"), {
         title,
+        slug,
         imageUrl,
         content,
 
         createdAt: new Date(),
       });
+      console.log("slug", slug);
 
       setMessage({ type: "success", text: "Blog successfully created!" });
       setTitle("");
@@ -36,6 +39,18 @@ const BlogEditor = () => {
       setMessage({ type: "error", text: "Error: " + err.message });
     }
     setLoading(false);
+  };
+
+  const createSlugTitle = (x) => {
+    setTitle(x);
+
+    const slug = x
+      .toLowerCase() // convert to lowercase
+      .trim() // remove leading/trailing spaces
+      .replace(/[^\w\s-]/g, "") // remove non-word characters
+      .replace(/\s+/g, "-") // replace spaces with hyphens
+      .replace(/-+/g, "-");
+    setSlug(slug);
   };
 
   return (
@@ -50,7 +65,7 @@ const BlogEditor = () => {
             type="text"
             placeholder="Blog Title"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => createSlugTitle(e.target.value)}
             required
             className="input"
           />

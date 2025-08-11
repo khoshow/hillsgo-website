@@ -14,7 +14,6 @@ import AdminLayout from "@/components/layout/AdminLayout"; // Assuming you have 
 import Admin from "@/components/auth/Admin";
 
 export default function Estores() {
-
   const { user, loading: userLoading } = useUser(); // Access the user context
   const router = useRouter();
   const storage = getStorage();
@@ -37,7 +36,7 @@ export default function Estores() {
             <div style={styles.productCard}>
               <button
                 style={styles.editButton}
-                onClick={() => router.push(`/admin/blogs/drivers-list`)}
+                onClick={() => router.push(`/admin/blogs/blogs-list`)}
               >
                 Blogs List
               </button>

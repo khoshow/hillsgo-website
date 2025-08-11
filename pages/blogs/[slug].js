@@ -1,36 +1,58 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { db } from "../../firebase/firebase";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  query,
+  getDocs,
+  collection,
+  where,
+} from "firebase/firestore";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
 const BlogDetail = () => {
   const router = useRouter();
-  const { id } = router.query;
+  console.log("router", router.query);
+
+  const { slug } = router.query;
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!id) return;
+    if (!slug) return;
 
-    const fetchBlog = async () => {
+    const fetchBlogBySlug = async (slug) => {
+      setLoading(true);
+      console.log("slug", slug);
+
       try {
-        const docRef = doc(db, "blogs", id);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          setBlog(docSnap.data());
+        const q = query(
+          collection(db, "blogs"),
+          where("slug", "==", slug) // match slug exactly
+        );
+
+        const querySnapshot = await getDocs(q);
+        console.log("gg", querySnapshot);
+        if (!querySnapshot.empty) {
+          // Since slug is unique, take the first match
+          const blogData = querySnapshot.docs[0].data();
+          console.log("Blog found:", blogData);
+          return setBlog(blogData);
         } else {
-          console.error("No such blog!");
+          console.log("No blog found with this slug");
+          return null;
         }
       } catch (error) {
         console.error("Error fetching blog:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
-    fetchBlog();
-  }, [id]);
+    fetchBlogBySlug(slug);
+  }, [slug]);
 
   if (loading) return <p style={styles2.loading}>Loading...</p>;
   if (!blog) return <p style={styles2.error}>Blog not found.</p>;

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { db } from "../../firebase/firebase"; // Adjust path if needed
+import { db } from "../../../firebase/firebase"; // Adjust path if needed
 import { collection, getDocs } from "firebase/firestore";
 import Link from "next/link";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
+import Header from "../../../components/Header";
+import Footer from "../../../components/Footer";
 
 const BlogList = () => {
   const [blogs, setBlogs] = useState([]);
