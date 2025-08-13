@@ -14,8 +14,6 @@ import Footer from "../../components/Footer";
 
 const BlogDetail = () => {
   const router = useRouter();
-  console.log("router", router.query);
-
   const { slug } = router.query;
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -25,20 +23,16 @@ const BlogDetail = () => {
 
     const fetchBlogBySlug = async (slug) => {
       setLoading(true);
-      console.log("slug", slug);
 
       try {
-        const q = query(
-          collection(db, "blogs"),
-          where("slug", "==", slug) // match slug exactly
-        );
+        const q = query(collection(db, "blogs"), where("slug", "==", slug));
 
         const querySnapshot = await getDocs(q);
-        console.log("gg", querySnapshot);
+
         if (!querySnapshot.empty) {
           // Since slug is unique, take the first match
           const blogData = querySnapshot.docs[0].data();
-          console.log("Blog found:", blogData);
+
           return setBlog(blogData);
         } else {
           console.log("No blog found with this slug");
@@ -100,7 +94,7 @@ const styles2 = {
     marginBottom: "20px",
   },
   image: {
-    width: "100%",
+    width: "500px",
     maxWidth: "70vw",
     height: "auto",
     borderRadius: "8px",
