@@ -1,109 +1,47 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import Head from "next/head";
 import { db } from "../../firebase/firebase";
 import {
-  doc,
-  getDoc,
-  query,
-  getDocs,
   collection,
+  query,
   where,
+  getDocs,
+  doc,
   updateDoc,
   increment,
 } from "firebase/firestore";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { FiShare2 } from "react-icons/fi";
+import { useState } from "react";
 
-const BlogDetail = () => {
-  const router = useRouter();
-  const { slug } = router.query;
-  const [blog, setBlog] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [views, setViews] = useState(0);
-
+const BlogDetail = ({ blog }) => {
   const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
-    if (!slug) return;
+  if (!blog) return <p style={styles2.error}>Blog not found.</p>;
 
-    const fetchBlogBySlug = async (slug) => {
-      setLoading(true);
-
-      try {
-        const q = query(collection(db, "blogs"), where("slug", "==", slug));
-
-        const querySnapshot = await getDocs(q);
-
-        if (!querySnapshot.empty) {
-          // Since slug is unique, take the first match
-          const docSnap = querySnapshot.docs[0];
-          const blogData = { id: docSnap.id, ...docSnap.data() };
-
-          return setBlog(blogData);
-        } else {
-          console.log("No blog found with this slug");
-          return null;
-        }
-      } catch (error) {
-        console.error("Error fetching blog:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBlogBySlug(slug);
-  }, [slug]);
-
-  useEffect(() => {
-    if (!blog?.id) return;
-
-    const blogRef = doc(db, "blogs", blog.id);
-
-    // Increment view count
-    updateDoc(blogRef, { viewCount: increment(1) });
-
-    // Fetch updated count
-    const fetchViews = async () => {
-      const snap = await getDoc(blogRef);
-      if (snap.exists()) {
-        setViews(snap.data().viewCount || 0);
-      }
-    };
-
-    fetchViews();
-  }, [blog?.id]);
+  const metaDescription = blog?.content
+    ? blog.content.replace(/<[^>]+>/g, "").slice(0, 160) + "..."
+    : "Read the latest stories, tips, and updates from HillsGo.";
 
   const handleShare = async () => {
     const url = `https://www.hillsgo.com/blogs/${blog?.slug || ""}`;
 
     if (navigator.share) {
-      // Use native share dialog if available (mobile browsers)
       await navigator.share({
         title: blog?.title || "HillsGo Blog",
         text: "Check out this blog from HillsGo!",
         url,
       });
     } else {
-      // Fallback: copy link to clipboard
       await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
   };
 
-  const metaDescription = blog?.content
-    ? blog.content.replace(/<[^>]+>/g, "").slice(0, 160) + "..."
-    : "Read the latest stories, tips, and updates from HillsGo.";
-
-  if (loading) return <p style={styles2.loading}>Loading...</p>;
-  if (!blog) return <p style={styles2.error}>Blog not found.</p>;
-
   return (
     <>
       <Head>
-        {/* Basic Meta */}
         <title>
           {blog?.title ? `${blog.title} | HillsGo Blog` : "HillsGo Blog"}
         </title>
@@ -150,10 +88,10 @@ const BlogDetail = () => {
       <Header />
       <div style={styles2.container}>
         <h1 style={styles2.title}>{blog.title}</h1>
-
         <p style={styles2.date}>
           {new Date(blog.createdAt.seconds * 1000).toDateString()}
         </p>
+
         <div
           style={{
             display: "flex",
@@ -191,6 +129,31 @@ const BlogDetail = () => {
     </>
   );
 };
+
+export default BlogDetail;
+
+// ✅ Fetch blog data on the server (so meta tags work for scrapers)
+export async function getServerSideProps({ params }) {
+  const q = query(collection(db, "blogs"), where("slug", "==", params.slug));
+  const querySnapshot = await getDocs(q);
+
+  if (querySnapshot.empty) {
+    return { notFound: true };
+  }
+
+  const docSnap = querySnapshot.docs[0];
+  const blog = { id: docSnap.id, ...docSnap.data() };
+
+  // Increment views count directly on the server
+  const blogRef = doc(db, "blogs", docSnap.id);
+  await updateDoc(blogRef, { viewCount: increment(1) });
+
+  return {
+    props: {
+      blog: JSON.parse(JSON.stringify(blog)), // serialize Firestore data
+    },
+  };
+}
 
 const styles2 = {
   container: {
@@ -250,5 +213,3 @@ const styles2 = {
     color: "#555",
   },
 };
-
-export default BlogDetail;
