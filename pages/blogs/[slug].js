@@ -29,7 +29,7 @@ const BlogDetail = ({ blog }) => {
     if (navigator.share) {
       await navigator.share({
         title: blog?.title || "HillsGo Blog",
-        text: "Check out this blog from HillsGo!",
+        text: "Check out this blog from HillsGO!",
         url,
       });
     } else {
