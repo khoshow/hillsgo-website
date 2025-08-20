@@ -137,7 +137,7 @@ const DriverLayout = ({ children }) => {
               Pick & Drop
             </Link>
           </li> */}
-{/* 
+          {/* 
           <li style={styles.sidebarItem}>
             <Link href="/admin/hire-skills" style={styles.sidebarLink}>
               Hire Skills
@@ -156,8 +156,8 @@ const DriverLayout = ({ children }) => {
           </li>
 
           <li style={styles.sidebarItem}>
-            <Link href="/admin/home-banner" style={styles.sidebarLink}>
-              Home Banner
+            <Link href="/admin/banners" style={styles.sidebarLink}>
+              Banners
             </Link>
           </li>
           <li style={styles.sidebarItem}>

@@ -8,12 +8,12 @@ import {
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
-import { useUser } from "../../../contexts/UserContext"; // Import your UserContext
+import { useUser } from "../../../../contexts/UserContext"; // Import your UserContext
 import Header from "@/components/Header";
 import AdminLayout from "@/components/layout/AdminLayout"; // Assuming you have a layout for Estore
 import Admin from "@/components/auth/Admin";
 
-export default function Estores() {
+export default function Categories() {
   const { user, loading: userLoading } = useUser(); // Access the user context
 
   const router = useRouter();
@@ -24,47 +24,24 @@ export default function Estores() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1>Estores Management</h1>
+          <h1>Estores Categories Management</h1>
           <div style={styles.productGrid}>
             <div style={styles.productCard}>
               <button
                 style={styles.editButton}
-                onClick={() => router.push(`/admin/estores/add-estores`)}
+                onClick={() =>
+                  router.push(`/admin/estores/categories/create-new`)
+                }
               >
-                Add Estores
+                Add Category
               </button>
             </div>
             <div style={styles.productCard}>
               <button
                 style={styles.editButton}
-                onClick={() => router.push(`/admin/estores/estores-list`)}
+                onClick={() => router.push(`/admin/estores/categories/list`)}
               >
-                Estores List
-              </button>
-            </div>
-
-            <div style={styles.productCard}>
-              <button
-                style={styles.editButton}
-                onClick={() => router.push(`/admin/estores/out-of-stocks`)}
-              >
-                Out of Stocks
-              </button>
-            </div>
-            <div style={styles.productCard}>
-              <button
-                style={styles.editButton}
-                onClick={() => router.push(`/admin/estores/products`)}
-              >
-                Products
-              </button>
-            </div>
-            <div style={styles.productCard}>
-              <button
-                style={styles.editButton}
-                onClick={() => router.push(`/admin/estores/categories`)}
-              >
-                Categories
+                Category List
               </button>
             </div>
           </div>

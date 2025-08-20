@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { auth, db } from "../../../firebase/firebase"; // Adjust your import path
+import { auth, db } from "../../../../firebase/firebase"; // Adjust your import path
 import { collection, addDoc, doc, setDoc, getDoc } from "firebase/firestore";
 import Header from "@/components/Header";
 import Admin from "@/components/auth/Admin";

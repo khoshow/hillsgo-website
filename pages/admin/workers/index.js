@@ -32,7 +32,7 @@ export default function Workers() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 >Workers Management</h1>
+          <h1>Workers Management</h1>
           <div style={styles.productGrid}>
             <div style={styles.productCard}>
               <button
@@ -48,6 +48,14 @@ export default function Workers() {
                 onClick={() => router.push(`/admin/workers/workers-list`)}
               >
                 Workers List
+              </button>
+            </div>
+            <div style={styles.productCard}>
+              <button
+                style={styles.editButton}
+                onClick={() => router.push(`/admin/workers/categories`)}
+              >
+                Categories
               </button>
             </div>
           </div>

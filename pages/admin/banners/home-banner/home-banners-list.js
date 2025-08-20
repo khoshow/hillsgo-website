@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { db } from "../../../firebase/firebase"; // Import your Firestore config
+import { db } from "../../../../firebase/firebase"; // Import your Firestore config
 import {
   collection,
   query,
@@ -16,7 +16,7 @@ import {
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
-import { useUser } from "../../../contexts/UserContext"; // Import your UserContext
+import { useUser } from "../../../../contexts/UserContext"; // Import your UserContext
 import Header from "@/components/Header";
 import AdminLayout from "@/components/layout/AdminLayout"; // Assuming you have a layout for Estore
 import Admin from "@/components/auth/Admin";

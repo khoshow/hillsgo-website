@@ -1,14 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { db } from "../../../firebase/firebase"; // Import your Firestore config
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
+
 import {
   getStorage,
   ref,
@@ -16,12 +8,12 @@ import {
   getDownloadURL,
   deleteObject,
 } from "firebase/storage";
-import { useUser } from "../../../contexts/UserContext"; // Import your UserContext
+import { useUser } from "../../../../contexts/UserContext"; // Import your UserContext
 import Header from "@/components/Header";
 import AdminLayout from "@/components/layout/AdminLayout"; // Assuming you have a layout for Estore
 import Admin from "@/components/auth/Admin";
 
-export default function Workers() {
+export default function Categories() {
   const { user, loading: userLoading } = useUser(); // Access the user context
 
   const router = useRouter();
@@ -32,26 +24,24 @@ export default function Workers() {
       <AdminLayout>
         <Header />
         <div style={styles.container}>
-          <h1 >Home Banner Management</h1>
+          <h1>Hire Skills Categories Management</h1>
           <div style={styles.productGrid}>
             <div style={styles.productCard}>
               <button
                 style={styles.editButton}
                 onClick={() =>
-                  router.push(`/admin/home-banner/add-home-banner`)
+                  router.push(`/admin/workers/categories/create-new`)
                 }
               >
-                Add Banner
+                Add Category
               </button>
             </div>
             <div style={styles.productCard}>
               <button
                 style={styles.editButton}
-                onClick={() =>
-                  router.push(`/admin/home-banner/home-banners-list`)
-                }
+                onClick={() => router.push(`/admin/workers/categories/list`)}
               >
-                Banners List
+                Category List
               </button>
             </div>
           </div>
